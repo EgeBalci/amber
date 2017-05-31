@@ -4,7 +4,8 @@
 ; #  EBP -> API-BLOCK			     | Un-Clobbered#  				
 ; ##########################################################
 ; 
-; Author: Ege Balcı <egebalci[at]protonmail[dot]com> 
+; Author: Ege Balcı <ege.balci@invictuseurope.com> 
+; Date: 29.03.2017
 ; Version: 1.0
 ;
 ;######## FUNCTION USAGE #######
@@ -17,9 +18,6 @@
 
 [BITS 32]
 [ORG 0]
-
-;%define LoadLibraryA
-;%define GetProcAddress
 
 BuildHere:
 	mov eax,[esi+0x3C]	; Offset to IMAGE_NT_HEADER ("PE")
