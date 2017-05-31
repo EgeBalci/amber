@@ -54,24 +54,13 @@ func main() {
   }
 
   Banner()
-  progressBar = pb.New(29)
-  progressBar.SetWidth(80)
-  progressBar.Start()
-
-  if CheckRequirments() == false {
-    BoldRed.Println("\n\n[!] ERROR: Amber is not installed properly (missing dependencies)")
-    os.Exit(1)
-  }
-
-  progressBar.Increment()
-
   parameters.inputName = ARGS[0]
 
   for i := 0; i < len(ARGS); i++{
   	if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
   		ks, Err := strconv.Atoi(ARGS[i+1])
       if Err != nil {
-        BoldRed.Println("[!] ERROR: Invalid key size.")
+        BoldRed.Println("\n[!] ERROR: Invalid key size.\n")
         fmt.Println(Err)
         os.Exit(1)
       }else{
@@ -86,16 +75,27 @@ func main() {
     }
   }
 
-  if parameters.verbose == true {
-    BoldYellow.Print("\n[*] File: ")
-    BoldBlue.Println(parameters.inputName)
-    BoldYellow.Print("[*] Verbose: ")
-    BoldBlue.Println(parameters.verbose)
+  BoldYellow.Print("\n[*] File: ")
+  BoldBlue.Println(parameters.inputName)
+  BoldYellow.Print("[*] Verbose: ")
+  BoldBlue.Println(parameters.verbose)
+  if len(parameters.key) != 0 {
+    BoldYellow.Print("[*] Key: ")
+    BoldBlue.Println(parameters.key)
+  }else{
     BoldYellow.Print("[*] Key Size: ")
-    BoldBlue.Println(parameters.keySize)
+    BoldBlue.Println(parameters.keySize,"\n")   
   }
 
+  progressBar = pb.New(28)
+  progressBar.SetWidth(80)
+  progressBar.Start()  
 
+
+  if CheckRequirments() == false {
+    BoldRed.Println("\n\n[!] ERROR: Amber is not installed properly (missing dependencies)")
+    os.Exit(1)
+  }
 
   progressBar.Increment()
   InspectPE()
@@ -287,29 +287,6 @@ func CleanFiles() {
   progressBar.Increment() 
 }
 
-func Help() {
-	 var Help string = `Version : `+VERSION+`
-Source : github.com/EgeBalci/Amber
-
-USAGE: 
-  amber file.exe [options]
-
-
-OPTIONS:
-  
-  -k, --key [string]          Custom cipher key
-  -ks, --keysize <length>        Size of the encryption key in bytes (Max:100/Min:4)
-  -v, --verbose                   Verbose output mode
-  -h, --help                      Show this massage
-
-EXAMPLE:
-  (Default settings if no option parameter passed)
-  amber file.exe -ks 8 -o crypted.exe
-`
-  Green.Println(Help)
-
-}
-
 func CheckRequirments() (bool){
 
   CheckMingw, _ := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 --version").Output()
@@ -379,13 +356,32 @@ func Banner() {
 //  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
 //  POC Crypter For ReplaceProcess                                             
 `
-	var LABEL string = `
-# Version: `+VERSION+`
-# Source: github.com/EgeBalci/Amber
-
-  `
   BoldRed.Print(BANNER)
-  BoldBlue.Println(LABEL)
+  BoldBlue.Print("\n# Version: ")
+  BoldGreen.Println(VERSION)
+  BoldBlue.Print("# Source: ")
+  BoldGreen.Println("github.com/EgeBalci/Amber")
   
 }
 	
+func Help() {
+   var Help string = `
+
+USAGE: 
+  amber file.exe [options]
+
+
+OPTIONS:
+  
+  -k, --key       [string]        Custom cipher key
+  -ks,--keysize   <length>        Size of the encryption key in bytes (Max:100/Min:4)
+  -v, --verbose                   Verbose output mode
+  -h, --help                      Show this massage
+
+EXAMPLE:
+  (Default settings if no option parameter passed)
+  amber file.exe -ks 8 -o crypted.exe
+`
+  color.Green(Help)
+
+}
