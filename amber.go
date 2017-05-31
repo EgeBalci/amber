@@ -15,22 +15,14 @@ const VERSION string = "1.0.0"
 
 type PARAMETERS struct {
   inputName string 
-  outputName string
   keySize int
   key []byte
-  VP string 				// VirtualProtect address
-  LLA string				// LoadLibraryA address
-  GPA string				// GetProcAddress address
   verbose	bool
 }
 
 type PE struct {
   imageBase string
   subSystem string
-  LLA string
-  GPA string
-  VP string
-  mapView []byte
 }
 
 var Red *color.Color = color.New(color.FgRed)
@@ -51,7 +43,6 @@ func main() {
 
   runtime.GOMAXPROCS(runtime.NumCPU())
 
-  parameters.outputName = "crypted.exe"
   parameters.keySize = 8
   parameters.verbose = false
 
@@ -63,7 +54,7 @@ func main() {
   }
 
   Banner()
-  progressBar = pb.New(25)
+  progressBar = pb.New(27)
   progressBar.SetWidth(80)
   progressBar.Start()
 
@@ -71,7 +62,6 @@ func main() {
     BoldRed.Println("\n\n[!] ERROR: Amber is not installed properly (missing dependencies)")
     os.Exit(1)
   }
-
 
   progressBar.Increment()
 
@@ -91,28 +81,16 @@ func main() {
   	if ARGS[i] == "-k" || ARGS[i] == "--key" {
   		parameters.key = []byte(ARGS[i+1]) 
   	}
-  	if ARGS[i] == "-o" || ARGS[i] == "--out" {
-  		parameters.outputName = ARGS[i+1]
-  	}
     if ARGS[i] == "-v" || ARGS[i] == "--verbose" {
       parameters.verbose = true 
     }
-  	if ARGS[i] == "--virtualprotect" {
-  		parameters.VP = ARGS[i+1] 
-  	}
-  	if ARGS[i] == "--loadlibrarya" {
-  		parameters.VP = ARGS[i+1] 
-  	} 
-  	if ARGS[i] == "--getprocaddress" {
-  		parameters.VP = ARGS[i+1] 
-  	}
   }
 
   if parameters.verbose == true {
     BoldYellow.Print("\n[*] File: ")
     BoldBlue.Println(parameters.inputName)
     BoldYellow.Print("\n[*] Output: ")
-    BoldBlue.Println(parameters.outputName)
+    BoldBlue.Println(parameters.inputName)
     BoldYellow.Print("[*] Verbose: ")
     BoldBlue.Println(parameters.verbose)
     BoldYellow.Print("[*] Key Size: ")
@@ -122,16 +100,14 @@ func main() {
 
 
   progressBar.Increment()
-
   InspectPE()
   BuildPayload()
   CryptPayload()
   CompileStub()
   CleanFiles()
-
   progressBar.FinishPrint("\n")
 
-  BoldGreen.Println("[+] Operation successfull !")
+  BoldGreen.Println("[+] File successfully crypted !")
 
 }
 
@@ -143,9 +119,9 @@ func CompileStub() {
 
   var CompileCommand string = ""
   if pe.subSystem == "(Windows GUI)"{
-    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.cpp -Wl,--image-base=0x"+pe.imageBase+" -o "+parameters.outputName)  
+    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.cpp -Wl,--image-base=0x"+pe.imageBase+" -o "+parameters.inputName)  
   }else{
-    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.cpp -Wl,--image-base=0x"+pe.imageBase+" -mwindows -o "+parameters.outputName)
+    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.cpp -Wl,--image-base=0x"+pe.imageBase+" -mwindows -o "+parameters.inputName)
   }
   mingw, Err := exec.Command("sh", "-c", CompileCommand).Output()
   if strings.Contains(string(mingw), "error") {
@@ -157,13 +133,11 @@ func CompileStub() {
   }
 
   if parameters.verbose == true {
-    BoldYellow.Println(CompileCommand)
+    BoldYellow.Println("\n[*] "+CompileCommand)
     BoldYellow.Println("\n[*] Striping pe file... ")
   }
   progressBar.Increment()
-  exec.Command("sh", "-c", string("strip "+parameters.outputName)).Run()
-  progressBar.Increment()
-  exec.Command("sh", "-c", string("mkdir /tmp/Amber/ && mv "+parameters.outputName+" /tmp/Amber/")).Run()
+  exec.Command("sh", "-c", string("strip "+parameters.inputName)).Run()
   progressBar.Increment()
 }
 
@@ -188,7 +162,7 @@ func InspectPE() {
 		os.Exit(1)
 	}
   progressBar.Increment()
-	arch, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.inputName+"|grep architecture")).Output()
+	arch, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.inputName+"|grep architecture|tr -d \"\\n\"")).Output()
 	if !strings.Contains(string(arch), "i386"){
 		BoldRed.Println("\n[!] ERROR: Unsupported file architecture (only 32 PE files supported)")
 		BoldYellow.Println(string(arch))
@@ -220,8 +194,8 @@ func InspectPE() {
 	}
   progressBar.Increment()
   if parameters.verbose == true {
-    BoldYellow.Print("\n[*] "+string(magic))
-    BoldYellow.Print("[*] "+string(arch))
+    BoldYellow.Println("\n[*] "+string(magic))
+    BoldYellow.Println("[*] "+string(arch))
     BoldYellow.Println("[*] ImageBase: 0x"+pe.imageBase)
     BoldYellow.Println("[*] SubSystem: "+pe.subSystem)
   }
@@ -231,10 +205,14 @@ func BuildPayload() {
 
   MapPE, _ := exec.Command("sh", "-c", string("wine MapPE.exe "+parameters.inputName)).Output()
   progressBar.Increment()
-  nasm := exec.Command("sh", "-c", "nasm -f bin ReplaceProcess.asm -o Payload")
-  nasm.Stdout = os.Stdout
-  nasm.Stderr = os.Stderr
-  nasm.Run()
+  nasm, Err := exec.Command("sh", "-c", "nasm -f bin ReplaceProcess.asm -o Payload").Output()
+  if Err != nil {
+    BoldRed.Println("\n[!] ERROR: While assembling payload :(")
+    BoldRed.Println(string(nasm))
+    BoldRed.Println(Err)
+    os.Exit(1)    
+  }
+
   progressBar.Increment()
 
   if parameters.verbose == true {
@@ -297,9 +275,8 @@ USAGE:
 
 OPTIONS:
   
-  -k, --key [string]          Payload type to use (1-5)
+  -k, --key [string]          Custom cipher key
   -ks, --keysize <length>        Size of the encryption key in bytes (Max:100/Min:4)
-  -o, --out       <name>          Output file name
   -v, --verbose                   Verbose output mode
   -h, --help                      Show this massage
 

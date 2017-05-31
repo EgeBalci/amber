@@ -1,0 +1,24 @@
+id ICON "amber.ico"
+1 VERSIONINFO
+FILEVERSION     1,0,0,0
+PRODUCTVERSION  1,0,0,0
+BEGIN
+  BLOCK "Amber Crypter - POC crypter for ReplaceProcess"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", "My Company Name"
+      VALUE "FileDescription", "Amber Crypter - POC crypter for ReplaceProcess"
+      VALUE "FileVersion", "1.0"
+      VALUE "InternalName", "Amber"
+      VALUE "LegalCopyright", "EgeBalcı"
+      VALUE "OriginalFilename", "Amber_POC.exe"
+      VALUE "ProductName", "Amber"
+      VALUE "ProductVersion", "1.0"
+    END
+  END
+  BLOCK "Amber"
+  BEGIN
+    VALUE "Translation", 0x809, 1252
+  END
+END
