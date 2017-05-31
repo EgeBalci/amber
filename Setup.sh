@@ -47,7 +47,7 @@ mv BitBender/BitBender $AMBERPATH/bitbender
 go build -ldflags "-s -w" amber.go
 
 echo "#!/bin/bash" >> /tmp/amber
-echo "$AMBERPATH/amber \$\@" >> /tmp/amber
+echo "$AMBERPATH/amber \$@" >> /tmp/amber
 sudo mv /tmp/amber /usr/local/bin/
 sudo chmod 777 /usr/local/bin/amber
 

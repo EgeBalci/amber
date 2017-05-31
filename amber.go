@@ -117,20 +117,32 @@ func CompileStub() {
     BoldYellow.Println("[*] Compiling Stub... ")
   }
 
-  var CompileCommand string = ""
-  if pe.subSystem == "(Windows GUI)"{
-    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.cpp -Wl,--image-base=0x"+pe.imageBase+" -o "+parameters.inputName)  
-  }else{
-    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.cpp -Wl,--image-base=0x"+pe.imageBase+" -mwindows -o "+parameters.inputName)
-  }
-  mingw, Err := exec.Command("sh", "-c", CompileCommand).Output()
-  if strings.Contains(string(mingw), "error") {
+  mingwObj, Err := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub.cpp").Output()
+  if strings.Contains(string(mingwObj), "error") {
     BoldRed.Println("\n[!] ERROR: While compiling the stub :(")
-    Red.Println(string(mingw))
+    Red.Println(string(mingwObj))
     Red.Println(Err)
     CleanFiles()
     os.Exit(1)
   }
+
+
+  var CompileCommand string = ""
+
+  if pe.subSystem == "(Windows GUI)"{
+    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.res -Wl,--image-base=0x"+pe.imageBase+" -o "+parameters.inputName)  
+  }else{
+    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.res -Wl,--image-base=0x"+pe.imageBase+" -mwindows -o "+parameters.inputName)
+  }
+  mingw, Err2 := exec.Command("sh", "-c", CompileCommand).Output()
+  if strings.Contains(string(mingw), "error") {
+    BoldRed.Println("\n[!] ERROR: While compiling the stub :(")
+    Red.Println(string(mingw))
+    Red.Println(Err2)
+    CleanFiles()
+    os.Exit(1)
+  }
+
 
   if parameters.verbose == true {
     BoldYellow.Println("\n[*] "+CompileCommand)
@@ -140,8 +152,6 @@ func CompileStub() {
   exec.Command("sh", "-c", string("strip "+parameters.inputName)).Run()
   progressBar.Increment()
 }
-
-
 
 func InspectPE() {
 
@@ -260,6 +270,7 @@ func CryptPayload() {
 func CleanFiles() {
 
   exec.Command("sh", "-c", "rm Mem.dmp").Run()
+  exec.Command("sh", "-c", "rm Stub.o").Run()
   exec.Command("sh", "-c", "rm Payload").Run()
   exec.Command("sh", "-c", "rm Payload.xor").Run()
   exec.Command("sh", "-c", "rm Payload.key").Run()
@@ -297,7 +308,7 @@ func CheckRequirments() (bool){
   progressBar.Increment()
   CheckMingwDress, _ := exec.Command("sh", "-c", "i686-w64-mingw32-windres -V").Output()
   if (!strings.Contains(string(CheckMingwDress), "Copyright")) {
-   	return false
+    return false
   }
   progressBar.Increment()
  	CheckNasm, _ := exec.Command("sh", "-c", "nasm -h").Output()
@@ -320,13 +331,13 @@ func CheckRequirments() (bool){
     return false
   }
   progressBar.Increment()
-  CheckMapPE, _ := exec.Command("sh", "-c", "wine MapPE.exe").Output()
-  if (!strings.Contains(string(CheckMapPE), "Usage:")) {
+  CheckMapPE, _ := exec.Command("sh", "-c", "ls MapPE.exe").Output()
+  if (!strings.Contains(string(CheckMapPE), "MapPE.exe")) {
     return false
   }
   progressBar.Increment()
- 	CheckXXD, _ := exec.Command("sh", "-c", "echo Ambe | xxd").Output()
-  if (!strings.Contains(string(CheckXXD), "416d 6265 0a")) {
+ 	CheckXXD, _ := exec.Command("sh", "-c", "echo Amber|xxd").Output()
+  if (!strings.Contains(string(CheckXXD), "Amber")) {
     return false
   }
   progressBar.Increment()
