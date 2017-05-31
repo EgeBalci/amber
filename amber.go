@@ -54,7 +54,7 @@ func main() {
   }
 
   Banner()
-  progressBar = pb.New(27)
+  progressBar = pb.New(29)
   progressBar.SetWidth(80)
   progressBar.Start()
 
@@ -89,8 +89,6 @@ func main() {
   if parameters.verbose == true {
     BoldYellow.Print("\n[*] File: ")
     BoldBlue.Println(parameters.inputName)
-    BoldYellow.Print("\n[*] Output: ")
-    BoldBlue.Println(parameters.inputName)
     BoldYellow.Print("[*] Verbose: ")
     BoldBlue.Println(parameters.verbose)
     BoldYellow.Print("[*] Key Size: ")
@@ -118,42 +116,49 @@ func CompileStub() {
   }
 
   mingwObj, Err := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub.cpp").Output()
-  if strings.Contains(string(mingwObj), "error") {
-    BoldRed.Println("\n[!] ERROR: While compiling the stub :(")
+  if Err != nil {
+    BoldRed.Println("\n[!] ERROR: While compiling the stub object :(")
     Red.Println(string(mingwObj))
     Red.Println(Err)
     CleanFiles()
     os.Exit(1)
   }
 
-
+  progressBar.Increment()
   var CompileCommand string = ""
 
-  if pe.subSystem == "(Windows GUI)"{
-    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.res -Wl,--image-base=0x"+pe.imageBase+" -o "+parameters.inputName)  
+  if pe.subSystem != "(Windows GUI)"{
+    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.o -Wl,--image-base=0x"+pe.imageBase+" -o "+parameters.inputName)  
   }else{
-    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.res -Wl,--image-base=0x"+pe.imageBase+" -mwindows -o "+parameters.inputName)
+    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.o -Wl,--image-base=0x"+pe.imageBase+" -mwindows -o "+parameters.inputName)
   }
   mingw, Err2 := exec.Command("sh", "-c", CompileCommand).Output()
-  if strings.Contains(string(mingw), "error") {
+  if Err != nil {
     BoldRed.Println("\n[!] ERROR: While compiling the stub :(")
     Red.Println(string(mingw))
     Red.Println(Err2)
     CleanFiles()
     os.Exit(1)
   }
-
+  progressBar.Increment()
 
   if parameters.verbose == true {
-    BoldYellow.Println("\n[*] "+CompileCommand)
-    BoldYellow.Println("\n[*] Striping pe file... ")
+    BoldYellow.Println("[*] "+CompileCommand)
+    BoldYellow.Println("[*] Striping crypted file... ")
   }
-  progressBar.Increment()
+
   exec.Command("sh", "-c", string("strip "+parameters.inputName)).Run()
   progressBar.Increment()
 }
 
 func InspectPE() {
+
+  if parameters.verbose == true {
+    BoldYellow.Println("[*] Striping pe file... ")
+  }
+
+  exec.Command("sh", "-c", string("strip "+parameters.inputName)).Run()
+  progressBar.Increment()
 
   ls, Err := exec.Command("sh", "-c", string("ls  "+parameters.inputName)).Output()
   if (!strings.Contains(string(ls), parameters.inputName)) || (Err != nil)  {
@@ -165,7 +170,7 @@ func InspectPE() {
 
   progressBar.Increment()
 
-	magic, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.inputName+"|grep Magic")).Output()
+	magic, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.inputName+"|grep Magic|tr -d \"\\n\"")).Output()
 	if !strings.Contains(string(magic), "010b") {
 		BoldRed.Println("\n[!] ERROR: File is not a valid PE")
 		BoldRed.Println(string(magic))
@@ -274,6 +279,12 @@ func CleanFiles() {
   exec.Command("sh", "-c", "rm Payload").Run()
   exec.Command("sh", "-c", "rm Payload.xor").Run()
   exec.Command("sh", "-c", "rm Payload.key").Run()
+
+
+  exec.Command("sh", "-c", "echo //> PAYLOAD.h").Run()
+  exec.Command("sh", "-c", "echo //> KEY.h").Run()
+
+  progressBar.Increment() 
 }
 
 func Help() {
@@ -357,7 +368,8 @@ func CheckRequirments() (bool){
 
 
 func Banner() {
-  var BANNER string = `
+
+  	var BANNER string = `
 
 //   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ 
 //  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗
@@ -366,12 +378,14 @@ func Banner() {
 //  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
 //  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
 //  POC Crypter For ReplaceProcess                                             
-    
+`
+	var LABEL string = `
 # Version: `+VERSION+`
 # Source: github.com/EgeBalci/Amber
 
   `
-  BoldRed.Println(BANNER)
+  BoldRed.Print(BANNER)
+  BoldBlue.Println(LABEL)
   
 }
 	
