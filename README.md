@@ -3,7 +3,7 @@ POC crypter for ReplaceProcess method.
 
 ![](https://github.com/EgeBalci/Amber/raw/master/amber.ico)
 
-#INSTALLATION
+# INSTALLATION
 
 SUPPORTED PLATFORMS:
 <table>
@@ -13,34 +13,34 @@ SUPPORTED PLATFORMS:
     </tr>
     <tr>
         <td>Ubuntu</td>
-        <td> 16.04  / 15.10 </td>
+        <td> * </td>
     </tr>
     <tr>
         <td>Kali linux</td>
-        <td> Rolling / Sana</td>
+        <td> * </td>
     </tr>
     <tr>
         <td>Manjaro</td>
-        <td>* </td>
+        <td> * </td>
     </tr>
     <tr>
         <td>Arch Linux</td>
-        <td>* </td>
+        <td> * </td>
     </tr>
     <tr>
         <td>Black Arch</td>
-        <td>* </td>
+        <td> * </td>
     </tr>
     <tr>
         <td>Parrot OS</td>
-        <td>3.1 </td>
+        <td> * </td>
     </tr>
 </table>
 
 
 		sudo chmod +x Setup.sh
 		sudo ./Setup.sh
-#USAGE
+# USAGE
 
 
 		//   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ 
