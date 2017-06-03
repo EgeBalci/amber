@@ -14,10 +14,11 @@ const VERSION string = "1.0.0"
 
 
 type PARAMETERS struct {
-  inputName string 
+  fileName string 
   keySize int
   key []byte
-  verbose	bool
+  staged bool
+  verbose bool
 }
 
 type PE struct {
@@ -44,6 +45,7 @@ func main() {
   runtime.GOMAXPROCS(runtime.NumCPU())
 
   parameters.keySize = 8
+  parameters.staged = false
   parameters.verbose = false
 
  	ARGS := os.Args[1:]
@@ -54,7 +56,7 @@ func main() {
   }
 
   Banner()
-  parameters.inputName = ARGS[0]
+  parameters.fileName = ARGS[0]
 
   for i := 0; i < len(ARGS); i++{
   	if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
@@ -70,24 +72,34 @@ func main() {
   	if ARGS[i] == "-k" || ARGS[i] == "--key" {
   		parameters.key = []byte(ARGS[i+1]) 
   	}
+  	if ARGS[i] == "--staged" {
+  		parameters.staged = true 
+  	}
     if ARGS[i] == "-v" || ARGS[i] == "--verbose" {
       parameters.verbose = true 
     }
   }
 
   BoldYellow.Print("\n[*] File: ")
-  BoldBlue.Println(parameters.inputName)
-  BoldYellow.Print("[*] Verbose: ")
-  BoldBlue.Println(parameters.verbose)
+  BoldBlue.Println(parameters.fileName)
+  BoldYellow.Print("[*] Staged: ")
+  BoldBlue.Println(parameters.staged)
   if len(parameters.key) != 0 {
     BoldYellow.Print("[*] Key: ")
     BoldBlue.Println(parameters.key)
   }else{
     BoldYellow.Print("[*] Key Size: ")
-    BoldBlue.Println(parameters.keySize,"\n")   
+    BoldBlue.Println(parameters.keySize)   
   }
+  BoldYellow.Print("[*] Verbose: ")
+  BoldBlue.Println(parameters.verbose,"\n")
 
-  progressBar = pb.New(28)
+
+  if parameters.staged == true {
+  	progressBar = pb.New(22)
+  }else{
+  	progressBar = pb.New(28)
+  }
   progressBar.SetWidth(80)
   progressBar.Start()  
 
@@ -100,56 +112,24 @@ func main() {
   progressBar.Increment()
   InspectPE()
   BuildPayload()
-  CryptPayload()
-  CompileStub()
+  if parameters.staged == true {
+  	exec.Command("sh", "-c", string("mv Payload "+parameters.fileName+".stage")).Run()
+  }else{
+  	CryptPayload()
+  	CompileStub()
+  }
   CleanFiles()
   progressBar.FinishPrint("\n")
 
-  BoldGreen.Println("[+] File successfully crypted !")
-
-}
-
-func CompileStub() {
-
-  if parameters.verbose == true {
-    BoldYellow.Println("[*] Compiling Stub... ")
-  }
-
-  mingwObj, Err := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub.cpp").Output()
-  if Err != nil {
-    BoldRed.Println("\n[!] ERROR: While compiling the stub object :(")
-    Red.Println(string(mingwObj))
-    Red.Println(Err)
-    CleanFiles()
-    os.Exit(1)
-  }
-
-  progressBar.Increment()
-  var CompileCommand string = ""
-
-  if pe.subSystem != "(Windows GUI)"{
-    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.o -Wl,--image-base=0x"+pe.imageBase+" -o "+parameters.inputName)  
+  if parameters.staged == true {
+  	BoldGreen.Println("[+] Stage generated !\n")	
   }else{
-    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.o -Wl,--image-base=0x"+pe.imageBase+" -mwindows -o "+parameters.inputName)
+  	BoldGreen.Println("[+] File successfully crypted !\n")	
   }
-  mingw, Err2 := exec.Command("sh", "-c", CompileCommand).Output()
-  if Err != nil {
-    BoldRed.Println("\n[!] ERROR: While compiling the stub :(")
-    Red.Println(string(mingw))
-    Red.Println(Err2)
-    CleanFiles()
-    os.Exit(1)
-  }
-  progressBar.Increment()
+  
 
-  if parameters.verbose == true {
-    BoldYellow.Println("[*] "+CompileCommand)
-    BoldYellow.Println("[*] Striping crypted file... ")
-  }
-
-  exec.Command("sh", "-c", string("strip "+parameters.inputName)).Run()
-  progressBar.Increment()
 }
+
 
 func InspectPE() {
 
@@ -157,11 +137,11 @@ func InspectPE() {
     BoldYellow.Println("[*] Striping pe file... ")
   }
 
-  exec.Command("sh", "-c", string("strip "+parameters.inputName)).Run()
+  exec.Command("sh", "-c", string("strip "+parameters.fileName)).Run()
   progressBar.Increment()
 
-  ls, Err := exec.Command("sh", "-c", string("ls  "+parameters.inputName)).Output()
-  if (!strings.Contains(string(ls), parameters.inputName)) || (Err != nil)  {
+  ls, Err := exec.Command("sh", "-c", string("ls  "+parameters.fileName)).Output()
+  if (!strings.Contains(string(ls), parameters.fileName)) || (Err != nil)  {
     BoldRed.Println("\n[!] ERROR: Unable to locate file :(")
     Red.Println(string(ls))
     Red.Println(Err)
@@ -170,38 +150,38 @@ func InspectPE() {
 
   progressBar.Increment()
 
-	magic, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.inputName+"|grep Magic|tr -d \"\\n\"")).Output()
+	magic, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName+"|grep Magic|tr -d \"\\n\"")).Output()
 	if !strings.Contains(string(magic), "010b") {
 		BoldRed.Println("\n[!] ERROR: File is not a valid PE")
 		BoldRed.Println(string(magic))
 		os.Exit(1)
 	}
   progressBar.Increment()
-	arch, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.inputName+"|grep architecture|tr -d \"\\n\"")).Output()
+	arch, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName+"|grep architecture|tr -d \"\\n\"")).Output()
 	if !strings.Contains(string(arch), "i386"){
 		BoldRed.Println("\n[!] ERROR: Unsupported file architecture (only 32 PE files supported)")
 		BoldYellow.Println(string(arch))
 		os.Exit(1)		
 	}
   progressBar.Increment()
-	imageBase, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.inputName+"| grep ImageBase|tr -d \"ImageBase		\"|tr -d \"\\n\" ")).Output()
+	imageBase, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName+"| grep ImageBase|tr -d \"ImageBase		\"|tr -d \"\\n\" ")).Output()
   pe.imageBase = string(imageBase)
   progressBar.Increment()
-	subSystem, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.inputName)).Output()
+	subSystem, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName)).Output()
 	if strings.Contains(string(subSystem), "(Windows GUI)") {
 		pe.subSystem = "(Windows GUI)"
 	}else{
 		pe.subSystem = "(Windows CUI)"
 	}
   progressBar.Increment()
-	imports, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.inputName+"|grep \"<none>\"")).Output()
+	imports, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName+"|grep \"<none>\"")).Output()
 	if len(imports) > 1 {
 		BoldRed.Println("\n[!] ERROR: Incompatible PE file (file has unbounded import names)")
 		BoldYellow.Println(string(imports))
 		os.Exit(1)
 	}
 	progressBar.Increment()
-	boundImports, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.inputName+"|grep \"Bound Import Directory\" |tr -d \"Entry b \"|tr -d \"BoudImpoDieco\"")).Output()
+	boundImports, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName+"|grep \"Bound Import Directory\" |tr -d \"Entry b \"|tr -d \"BoudImpoDieco\"")).Output()
 	if string(boundImports) != "0000000000000000\n" {
 		BoldRed.Println("\n[!] ERROR: Incompatible PE file (file has bounded imports)")
 		BoldYellow.Println(string(boundImports))
@@ -216,9 +196,10 @@ func InspectPE() {
   }
 }
 
+
 func BuildPayload() {
 
-  MapPE, _ := exec.Command("sh", "-c", string("wine MapPE.exe "+parameters.inputName)).Output()
+  MapPE, _ := exec.Command("sh", "-c", string("wine MapPE.exe "+parameters.fileName)).Output()
   progressBar.Increment()
   nasm, Err := exec.Command("sh", "-c", "nasm -f bin ReplaceProcess.asm -o Payload").Output()
   if Err != nil {
@@ -271,6 +252,49 @@ func CryptPayload() {
   }
   
 }
+
+func CompileStub() {
+
+  if parameters.verbose == true {
+    BoldYellow.Println("[*] Compiling Stub... ")
+  }
+
+  mingwObj, Err := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub.cpp").Output()
+  if Err != nil {
+    BoldRed.Println("\n[!] ERROR: While compiling the stub object :(")
+    Red.Println(string(mingwObj))
+    Red.Println(Err)
+    CleanFiles()
+    os.Exit(1)
+  }
+
+  progressBar.Increment()
+  var CompileCommand string = ""
+
+  if pe.subSystem != "(Windows GUI)"{
+    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.o -Wl,--image-base=0x"+pe.imageBase+" -o "+parameters.fileName)  
+  }else{
+    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.o -Wl,--image-base=0x"+pe.imageBase+" -mwindows -o "+parameters.fileName)
+  }
+  mingw, Err2 := exec.Command("sh", "-c", CompileCommand).Output()
+  if Err != nil {
+    BoldRed.Println("\n[!] ERROR: While compiling the stub :(")
+    Red.Println(string(mingw))
+    Red.Println(Err2)
+    CleanFiles()
+    os.Exit(1)
+  }
+  progressBar.Increment()
+
+  if parameters.verbose == true {
+    BoldYellow.Println("[*] "+CompileCommand)
+    BoldYellow.Println("[*] Striping crypted file... ")
+  }
+
+  exec.Command("sh", "-c", string("strip "+parameters.fileName)).Run()
+  progressBar.Increment()
+}
+
 
 func CleanFiles() {
 
@@ -375,6 +399,7 @@ OPTIONS:
   
   -k, --key       [string]        Custom cipher key
   -ks,--keysize   <length>        Size of the encryption key in bytes (Max:100/Min:4)
+  --Staged                        Generated a staged payload
   -v, --verbose                   Verbose output mode
   -h, --help                      Show this massage
 

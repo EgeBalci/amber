@@ -8,4 +8,4 @@ sudo rm -r MapPE.exe
 sudo rm -r src
 sudo rm -r pkg
 sudo rm -r amber
-
+sudo rm -r handler

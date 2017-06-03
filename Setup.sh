@@ -45,6 +45,7 @@ mv MapPE/MapPE.exe $AMBERPATH
 mv BitBender/BitBender $AMBERPATH/bitbender
 
 go build -ldflags "-s -w" amber.go
+go build -ldflags "-s -w" handler.go
 
 echo "#!/bin/bash" >> /tmp/amber
 echo "cd $AMBERPATH" >> /tmp/amber
