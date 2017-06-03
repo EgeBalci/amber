@@ -18,6 +18,7 @@ type PARAMETERS struct {
   keySize int
   key []byte
   staged bool
+  resource bool
   verbose bool
 }
 
@@ -46,6 +47,7 @@ func main() {
 
   parameters.keySize = 8
   parameters.staged = false
+  parameters.resource = true
   parameters.verbose = false
 
  	ARGS := os.Args[1:]
@@ -74,6 +76,9 @@ func main() {
   	}
   	if ARGS[i] == "--staged" {
   		parameters.staged = true 
+  	}
+  	if ARGS[i] == "--no-resource" {
+  		parameters.resource = false 
   	}
     if ARGS[i] == "-v" || ARGS[i] == "--verbose" {
       parameters.verbose = true 
@@ -200,12 +205,19 @@ func InspectPE() {
 func BuildPayload() {
 
   MapPE, _ := exec.Command("sh", "-c", string("wine MapPE.exe "+parameters.fileName)).Output()
+  if strings.Contains(string(MapPE), "[!]") {
+    BoldRed.Println("\n[!] ERROR: While mapping pe file :(")
+    BoldRed.Println(string(MapPE))
+    CleanFiles()
+    os.Exit(1)    	
+  }
   progressBar.Increment()
   nasm, Err := exec.Command("sh", "-c", "nasm -f bin ReplaceProcess.asm -o Payload").Output()
   if Err != nil {
     BoldRed.Println("\n[!] ERROR: While assembling payload :(")
     BoldRed.Println(string(nasm))
     BoldRed.Println(Err)
+    CleanFiles()
     os.Exit(1)    
   }
 
@@ -259,25 +271,34 @@ func CompileStub() {
     BoldYellow.Println("[*] Compiling Stub... ")
   }
 
-  mingwObj, Err := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub.cpp").Output()
-  if Err != nil {
-    BoldRed.Println("\n[!] ERROR: While compiling the stub object :(")
-    Red.Println(string(mingwObj))
-    Red.Println(Err)
-    CleanFiles()
-    os.Exit(1)
-  }
 
   progressBar.Increment()
   var CompileCommand string = ""
 
-  if pe.subSystem != "(Windows GUI)"{
-    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.o -Wl,--image-base=0x"+pe.imageBase+" -o "+parameters.fileName)  
+  if parameters.resource == true {
+  	mingwObj, Err := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub.cpp").Output()
+  	if Err != nil {
+    	BoldRed.Println("\n[!] ERROR: While compiling the stub object :(")
+    	Red.Println(string(mingwObj))
+    	Red.Println(Err)
+    	CleanFiles()
+    	os.Exit(1)
+  	}
+
+  	CompileCommand += string("i686-w64-mingw32-g++-win32 Stub.o Resource.o -Wl,--image-base=0x"+pe.imageBase)
   }else{
-    CompileCommand = string("i686-w64-mingw32-g++-win32 Stub.o Resource.o -Wl,--image-base=0x"+pe.imageBase+" -mwindows -o "+parameters.fileName)
+  	CompileCommand += string("i686-w64-mingw32-g++-win32 Stub.cpp -Wl,--image-base=0x"+pe.imageBase)
   }
+
+
+  if pe.subSystem == "(Windows GUI)"{
+    CompileCommand += string("-mwindows -o "+parameters.fileName)  
+  }else{
+  	CompileCommand += string("-o "+parameters.fileName)
+  }
+
   mingw, Err2 := exec.Command("sh", "-c", CompileCommand).Output()
-  if Err != nil {
+  if Err2 != nil {
     BoldRed.Println("\n[!] ERROR: While compiling the stub :(")
     Red.Println(string(mingw))
     Red.Println(Err2)
@@ -399,7 +420,8 @@ OPTIONS:
   
   -k, --key       [string]        Custom cipher key
   -ks,--keysize   <length>        Size of the encryption key in bytes (Max:100/Min:4)
-  --Staged                        Generated a staged payload
+  --staged                        Generated a staged payload
+  --no-resource                   Don't add any resource
   -v, --verbose                   Verbose output mode
   -h, --help                      Show this massage
 
