@@ -4,8 +4,7 @@
 ; #  EBP -> API-BLOCK			     | Un-Clobbered#  				
 ; ##########################################################
 ; 
-; Author: Ege Balcı <ege.balci@invictuseurope.com> 
-; Date: 29.03.2017
+; Author: Ege Balcı <egebalci[at]protonmail[dot]com> 
 ; Version: 1.0
 ;
 ;######## FUNCTION USAGE #######
@@ -18,6 +17,9 @@
 
 [BITS 32]
 [ORG 0]
+
+;%define LoadLibraryA
+;%define GetProcAddress
 
 BuildHere:
 	mov eax,[esi+0x3C]	; Offset to IMAGE_NT_HEADER ("PE")
@@ -48,9 +50,16 @@ Resolve:
 	cmp dword [eax],0x00 	; Check if end of the import names table
 	jz AllResolved		; If yes resolving process is done
 	mov eax,[eax]		; Get the RVA of function hint to eax
+	cmp eax,0x80000000	; Check if the high order bit is set
+	js NameResolve		; If high order bit is not set resolve with INT entry
+	sub eax,0x80000000	; Zero out the high bit
+	call GetProcAddress	; Get the API address with hint
+	jmp InsertIAT		; Insert the address of API tı IAT
+NameResolve:
 	add eax,esi		; Set the address of function hint
 	add dword eax,0x02	; Move to function name
 	call GetProcAddress	; Get the function address to eax
+InsertIAT:
 	mov ecx,[esp+4]		; Move the IAT address to ecx 
 	mov [ecx],eax		; Insert the function address to IAT
 	add dword [esp],0x04	; Increase the import names table index

@@ -101,9 +101,9 @@ func main() {
 
 
   if parameters.staged == true {
-  	progressBar = pb.New(22)
+  	progressBar = pb.New(21)
   }else{
-  	progressBar = pb.New(28)
+  	progressBar = pb.New(27)
   }
   progressBar.SetWidth(80)
   progressBar.Start()  
@@ -177,13 +177,6 @@ func InspectPE() {
 		pe.subSystem = "(Windows GUI)"
 	}else{
 		pe.subSystem = "(Windows CUI)"
-	}
-  progressBar.Increment()
-	imports, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName+"|grep \"<none>\"")).Output()
-	if len(imports) > 1 {
-		BoldRed.Println("\n[!] ERROR: Incompatible PE file (file has unbounded import names)")
-		BoldYellow.Println(string(imports))
-		os.Exit(1)
 	}
 	progressBar.Increment()
 	boundImports, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName+"|grep \"Bound Import Directory\" |tr -d \"Entry b \"|tr -d \"BoudImpoDieco\"")).Output()
@@ -319,7 +312,7 @@ func CompileStub() {
 
 func CleanFiles() {
 
-  exec.Command("sh", "-c", "rm Mem.dmp").Run()
+  exec.Command("sh", "-c", "rm Mem.map").Run()
   exec.Command("sh", "-c", "rm Stub.o").Run()
   exec.Command("sh", "-c", "rm Payload").Run()
   exec.Command("sh", "-c", "rm Payload.xor").Run()

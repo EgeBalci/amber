@@ -18,7 +18,7 @@ Start:
 	pop ebp
 	call Stub
 PE:
-	incbin "Mem.dmp"		; PE file image
+	incbin "Mem.map"		; PE file image
 	ImageSize: equ $-PE
 Stub:
 	pop esi				; Get the address of image to esi
