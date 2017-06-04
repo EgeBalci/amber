@@ -205,7 +205,17 @@ func BuildPayload() {
     os.Exit(1)    	
   }
   progressBar.Increment()
-  nasm, Err := exec.Command("sh", "-c", "nasm -f bin ReplaceProcess.asm -o Payload").Output()
+
+  moveMap, moveMapErr := exec.Command("sh", "-c", "mv Mem.map ReplaceProcess/").Output()
+  if moveMapErr != nil {
+    BoldRed.Println("\n[!] ERROR: While moving the file map")
+    BoldRed.Println(string(moveMap))
+    CleanFiles()
+    os.Exit(1)    	
+  }
+
+  progressBar.Increment()
+  nasm, Err := exec.Command("sh", "-c", "cd ReplaceProcess && nasm -f bin ReplaceProcess.asm -o Payload").Output()
   if Err != nil {
     BoldRed.Println("\n[!] ERROR: While assembling payload :(")
     BoldRed.Println(string(nasm))
@@ -213,6 +223,16 @@ func BuildPayload() {
     CleanFiles()
     os.Exit(1)    
   }
+
+  movePayload, movePayErr := exec.Command("sh", "-c", "mv ReplaceProcess/Payload ./").Output()
+  if movePayErr != nil {
+    BoldRed.Println("\n[!] ERROR: While moving the payload")
+    BoldRed.Println(string(movePayload))
+    BoldRed.Println(Err)
+    CleanFiles()
+    os.Exit(1)    
+  }
+
 
   progressBar.Increment()
 
@@ -236,14 +256,14 @@ func CryptPayload() {
   }
   progressBar.Increment()  
 
-  xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > PAYLOAD.h")
+  xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > Stub/PAYLOAD.h")
   xxd.Stdout = os.Stdout
   xxd.Stderr = os.Stderr
   xxd.Run()
 
   progressBar.Increment()  
 
-  _xxd := exec.Command("sh", "-c", "xxd -i Payload.key > KEY.h")
+  _xxd := exec.Command("sh", "-c", "xxd -i Payload.key > Stub/KEY.h")
   _xxd.Stdout = os.Stdout
   _xxd.Stderr = os.Stderr
   _xxd.Run()
@@ -269,7 +289,7 @@ func CompileStub() {
   var CompileCommand string = ""
 
   if parameters.resource == true {
-  	mingwObj, Err := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub.cpp").Output()
+  	mingwObj, Err := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub/Stub.cpp").Output()
   	if Err != nil {
     	BoldRed.Println("\n[!] ERROR: While compiling the stub object :(")
     	Red.Println(string(mingwObj))
@@ -278,7 +298,7 @@ func CompileStub() {
     	os.Exit(1)
   	}
 
-  	CompileCommand += string("i686-w64-mingw32-g++-win32 Stub.o Resource.o -Wl,--image-base=0x"+pe.imageBase)
+  	CompileCommand += string("i686-w64-mingw32-g++-win32 Stub.o Stub/Resource.o -Wl,--image-base=0x"+pe.imageBase)
   }else{
   	CompileCommand += string("i686-w64-mingw32-g++-win32 Stub.cpp -Wl,--image-base=0x"+pe.imageBase)
   }
@@ -287,7 +307,7 @@ func CompileStub() {
   if pe.subSystem == "(Windows GUI)"{
     CompileCommand += string("-mwindows -o "+parameters.fileName)  
   }else{
-  	CompileCommand += string("-o "+parameters.fileName)
+  	CompileCommand += string(" -o "+parameters.fileName)
   }
 
   mingw, Err2 := exec.Command("sh", "-c", CompileCommand).Output()
@@ -312,15 +332,15 @@ func CompileStub() {
 
 func CleanFiles() {
 
-  exec.Command("sh", "-c", "rm Mem.map").Run()
+  exec.Command("sh", "-c", "rm ReplaceProcess/Mem.map").Run()
   exec.Command("sh", "-c", "rm Stub.o").Run()
   exec.Command("sh", "-c", "rm Payload").Run()
   exec.Command("sh", "-c", "rm Payload.xor").Run()
   exec.Command("sh", "-c", "rm Payload.key").Run()
 
 
-  exec.Command("sh", "-c", "echo //> PAYLOAD.h").Run()
-  exec.Command("sh", "-c", "echo //> KEY.h").Run()
+  exec.Command("sh", "-c", "echo   > Stub/PAYLOAD.h").Run()
+  exec.Command("sh", "-c", "echo   > Stub/KEY.h").Run()
 
   progressBar.Increment() 
 }

@@ -9,3 +9,7 @@ sudo rm -r src
 sudo rm -r pkg
 sudo rm -r amber
 sudo rm -r handler
+
+echo 0 > Stub/PAYLOAD.h
+echo 0 > Stub/KEY.h
+
