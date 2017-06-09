@@ -179,12 +179,18 @@ func InspectPE() {
 		pe.subSystem = "(Windows CUI)"
 	}
 	progressBar.Increment()
-	boundImports, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName+"|grep \"Bound Import Directory\" |tr -d \"Entry b \"|tr -d \"BoudImpoDieco\"")).Output()
+	boundImports, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName+"|grep \"Bound Import Directory\" |tr -d \"Entry b \"|tr -d \" Bound Import Directory\"")).Output()
 	if string(boundImports) != "0000000000000000\n" {
 		BoldRed.Println("\n[!] ERROR: Incompatible PE file (file has bounded imports)")
-		BoldYellow.Println(string(boundImports))
 		os.Exit(1)
 	}
+	progressBar.Increment()
+	delayImports, _ := exec.Command("sh", "-c", string("objdump -x "+parameters.fileName+"|grep \"Delay Import Directory\" |tr -d \"Entry d \"|tr -d \" Delay Import Directory\"")).Output()
+	if string(delayImports) != "0000000000000000\n" {
+		BoldRed.Println("\n[!] ERROR: Incompatible PE file (file has delayed imports)")
+		os.Exit(1)
+	}
+
   progressBar.Increment()
   if parameters.verbose == true {
     BoldYellow.Println("\n[*] "+string(magic))
@@ -440,7 +446,7 @@ OPTIONS:
 
 EXAMPLE:
   (Default settings if no option parameter passed)
-  amber file.exe -ks 8 -o crypted.exe
+  amber file.exe -ks 8
 `
   color.Green(Help)
 

@@ -33,7 +33,7 @@ Stub:
 	call ebp			; VirtualProtect( ImageBase, ImageSize, PAGE_EXECUTE_READWRITE, lpflOldProtect)
 
 	test eax,eax			; Check success 
-	jz Fail				; If VirtualProtect fails don't bother :/
+	jz Fail				; If VirtualProtect fails don't even bother :(
 	
 	%include "BuildImportTable.asm"	; Call the module responsible for building the import address table
 	xor ecx,ecx 			; Zero out the ECX
@@ -50,4 +50,5 @@ Memcpy:
 	jnz Memcpy 			; If not loop
 	ret
 Fail:
+	pop eax				; Clean the stack before return
 	ret				; VirtualProtect failed :(
