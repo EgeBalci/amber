@@ -8,6 +8,9 @@ echo "//  ██╔══██║██║╚██╔╝██║██╔═�
 echo "//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║"
 echo "//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝"
 echo "//  POC Crypter For ReplaceProcess              "     
+echo " "
+echo "Author: Ege Balcı"
+echo "Source: github.com/EgeBalci/Amber"
 
 echo " "
 echo " "
@@ -22,27 +25,16 @@ sudo apt-get install -y golang nasm wine mingw-w64-i686-dev mingw-w64-tools ming
 echo "[*] Cloning git tools..."
 
 git clone https://github.com/EgeBalci/MapPE.git
-git clone https://github.com/EgeBalci/BitBender.git
 
 export AMBERPATH=$(pwd)
-export GOPATH=$AMBERPATH
-
-echo "[*] Downloading golang packages..."
-go get github.com/fatih/color
-go get gopkg.in/cheggaaa/pb.v1
-
-cd BitBender
+cd lib
 export GOPATH=$(pwd)
-echo "[*] GOPATH=$GOPATH"
-go get github.com/fatih/color
-echo "[*] Building BitBender..."
-go build -ldflags "-s -w" BitBender.go
 cd ..
-export GOPATH=$AMBERPATH
+
+echo "[*] AMBERPATH=$AMBERPATH"
 echo "[*] GOPATH=$GOPATH"
 
 mv MapPE/MapPE.exe $AMBERPATH
-mv BitBender/BitBender $AMBERPATH/bitbender
 
 go build -ldflags "-s -w" amber.go
 go build -ldflags "-s -w" handler.go
