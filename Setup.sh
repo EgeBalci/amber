@@ -36,10 +36,10 @@ echo "[*] GOPATH=$GOPATH"
 
 mv MapPE/MapPE.exe $AMBERPATH
 
-go build -ldflags "-s -w" amber.go
-go build -ldflags "-s -w" handler.go
+go build -ldflags "-s -w" src/amber.go
+go build -ldflags "-s -w" src/handler.go
 
-echo "#!/bin/bash" >> /tmp/amber
+echo "#!/bin/bash" > /tmp/amber
 echo "cd $AMBERPATH" >> /tmp/amber
 echo "./amber \$@" >> /tmp/amber
 sudo mv /tmp/amber /usr/local/bin/

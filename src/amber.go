@@ -27,6 +27,7 @@ type peID struct {
   verbose bool
 
   //Analysis...
+  fileSize string
   imageBase uint32
   subsystem uint16
   VP string
@@ -49,96 +50,108 @@ var peid peID
 
 func main() {
 
-  	runtime.GOMAXPROCS(runtime.NumCPU())
+  runtime.GOMAXPROCS(runtime.NumCPU())
 
- 	peid.keySize = 8
-  	peid.staged = false
-  	peid.resource = true
-  	peid.verbose = false
- 	peid.iat = false
+  peid.keySize = 8
+  peid.staged = false
+  peid.resource = true
+  peid.verbose = false
+  peid.iat = false
 
- 	ARGS := os.Args[1:]
+  ARGS := os.Args[1:]
 
-  	if len(ARGS) == 0 || ARGS[0] == "--help" || ARGS[0] == "-h"{
-    	Banner()
-    	Help()
-    	os.Exit(0)
-  	}
+  if len(ARGS) == 0 || ARGS[0] == "--help" || ARGS[0] == "-h"{
+    Banner()
+    Help()
+    os.Exit(0)
+  }
 
-  	Banner()
-  	peid.fileName = ARGS[0]
+  Banner()
+  peid.fileName = ARGS[0]
 
-  	for i := 0; i < len(ARGS); i++{
-  		if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
-  			ks, Err := strconv.Atoi(ARGS[i+1])
-      		if Err != nil {
-        		boldRed.Println("\n[!] ERROR: Invalid key size.\n")
-        		fmt.Println(Err)
-        		os.Exit(1)
-      		}else{
-        		peid.keySize = ks
-      		} 
-  		}
-  		if ARGS[i] == "-k" || ARGS[i] == "--key" {
-  			peid.key = []byte(ARGS[i+1]) 
-  		}
-  		if ARGS[i] == "--staged" {
-  			peid.staged = true 
-  		}
-  		if ARGS[i] == "--no-resource" {
-  			peid.resource = false 
-  		}
-    	if ARGS[i] == "-v" || ARGS[i] == "--verbose" {
-      		peid.verbose = true 
-    	}
-  	}
+  for i := 0; i < len(ARGS); i++{
+    if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
+      ks, Err := strconv.Atoi(ARGS[i+1])
+      if Err != nil {
+        boldRed.Println("\n[!] ERROR: Invalid key size.\n")
+        fmt.Println(Err)
+        os.Exit(1)
+      }else{
+        peid.keySize = ks
+      } 
+    }
+    if ARGS[i] == "-k" || ARGS[i] == "--key" {
+      peid.key = []byte(ARGS[i+1]) 
+    }
+    if ARGS[i] == "--staged" {
+      peid.staged = true 
+    }
+    if ARGS[i] == "--no-resource" {
+      peid.resource = false 
+    }
+    if ARGS[i] == "-v" || ARGS[i] == "--verbose" {
+        peid.verbose = true 
+    }
+  }
 
-  	boldYellow.Print("\n[*] File: ")
-  	boldBlue.Println(peid.fileName)
-  	boldYellow.Print("[*] Staged: ")
-  	boldBlue.Println(peid.staged)
-  	if len(peid.key) != 0 {
-    	boldYellow.Print("[*] Key: ")
-    	boldBlue.Println(peid.key)
-  	}else{
-    	boldYellow.Print("[*] Key Size: ")
-    	boldBlue.Println(peid.keySize)   
-  	}
-  	boldYellow.Print("[*] IAT: ")
-  	boldBlue.Println(peid.iat)
-  	boldYellow.Print("[*] Verbose: ")
-  	boldBlue.Println(peid.verbose,"\n")
+  boldYellow.Print("\n[*] File: ")
+  boldBlue.Println(peid.fileName)
+  boldYellow.Print("[*] Staged: ")
+  boldBlue.Println(peid.staged)
+  if len(peid.key) != 0 {
+    boldYellow.Print("[*] Key: ")
+    boldBlue.Println(peid.key)
+  }else{
+    boldYellow.Print("[*] Key Size: ")
+    boldBlue.Println(peid.keySize)   
+  }
+  boldYellow.Print("[*] IAT: ")
+  boldBlue.Println(peid.iat)
+  boldYellow.Print("[*] Verbose: ")
+  boldBlue.Println(peid.verbose,"\n")
 
 
-	createBar()
-  	checkRequired() // 8 steps
+  createBar()
+  checkRequired() // 8 steps
 
-  	file, fileErr := pe.Open(ARGS[0])
-  	if fileErr != nil {
-    	boldRed.Println("\n[!] ERROR: Can't open file.")
-    	boldRed.Println(fileErr)
-    	os.Exit(1)   
-  	}
-  	progress()
+  file, fileErr := pe.Open(ARGS[0])
+  if fileErr != nil {
+    boldRed.Println("\n[!] ERROR: Can't open file.")
+    boldRed.Println(fileErr)
+    os.Exit(1)   
+  }
+  progress()
 
-  	analyze(file) // 6 steps
-  	progress()
-  	assemble() // 8 steps
+  analyze(file) // 8 steps
+  assemble() // 8 steps
 
-  	if peid.staged == true {
-  		exec.Command("sh", "-c", string("mv Payload "+peid.fileName+".stage")).Run()
-  	}else{
-  		compile() // 9 steps
-  	}
-  	clean() // 7 steps
+  if peid.staged == true {
+    exec.Command("sh", "-c", string("mv Payload "+peid.fileName+".stage")).Run()
+  }else{
+    compile() // 10 steps
+  }
+  clean() // 8 steps
 
-  	progressBar.Finish()
+  progressBar.Finish()
 
-  	if peid.staged == true {
-  		boldGreen.Println("[+] Stage generated !\n")	
-  	}else{
-  		boldGreen.Println("[+] File successfully crypted !\n")	
-  	}
+
+  wc, wcErr := exec.Command("sh", "-c", string("wc -c "+peid.fileName+"|tr -d \""+peid.fileName+"\"")).Output()
+  if wcErr != nil {
+    boldRed.Println("\n[!] ERROR: While getting the file size")
+    boldRed.Println(string(wc))
+    fmt.Println(wcErr)
+    clean()
+    os.Exit(1)      
+  }
+
+    
+  boldYellow.Print("[*] Final Size: "+peid.fileSize+" -> "+string(wc)+" bytes")
+
+  if peid.staged == true {
+    boldGreen.Println("[+] Stage generated !\n")  
+  }else{
+    boldGreen.Println("[+] File successfully crypted !\n")  
+  }
 
 
 }
@@ -172,9 +185,33 @@ func analyze(file *pe.File) {
       boldRed.Println("\n[!] ERROR: File has delayed imports.")
       os.Exit(1) 
   }
-
   progress()
+
+
+  if (OPT.DataDirectory[1].Size) == 0x00 {
+    boldRed.Println("\n[!] ERROR: File has empty import table.")
+    os.Exit(1) 
+  }
+  progress()
+
+
+  wc, wcErr := exec.Command("sh", "-c", string("wc -c "+peid.fileName+"|tr -d \""+peid.fileName+"\""+"|tr -d \\\"")).Output()
+  if wcErr != nil {
+    boldRed.Println("\n[!] ERROR: While getting the file size")
+    boldRed.Println(string(wc))
+    fmt.Println(wcErr)
+    clean()
+    os.Exit(1)      
+  }
+
+  peid.fileSize = string(wc)
+
+  progress()  
+
+
+
   if peid.verbose == true {
+    boldYellow.Println("[*] File Size: "+peid.fileSize)
     boldYellow.Printf("[*] Machine: %X\n", file.FileHeader.Machine)
     boldYellow.Printf("[*] Magic: %X\n", OPT.Magic)
     boldYellow.Printf("[*] Subsystem: %X\n", OPT.Subsystem)
@@ -189,7 +226,7 @@ func analyze(file *pe.File) {
 
 /*
 func parseIAT(file *pe.File) {
-	// Parse the IAT and find required function addresses
+  // Parse the IAT and find required function addresses
 }
 */
 
@@ -209,65 +246,65 @@ func assemble() {
   progress()
 
   if peid.iat == false {
-  	moveMap, moveMapErr := exec.Command("sh", "-c", "mv Mem.map ReplaceProcess/peb-based/").Output()
-  	if moveMapErr != nil {
-    	boldRed.Println("\n[!] ERROR: While moving the file map")
-    	boldRed.Println(string(moveMap))
-    	clean()
-    	os.Exit(1)      
-  	}
+    moveMap, moveMapErr := exec.Command("sh", "-c", "mv Mem.map ReplaceProcess/peb/").Output()
+    if moveMapErr != nil {
+      boldRed.Println("\n[!] ERROR: While moving the file map")
+      boldRed.Println(string(moveMap))
+      clean()
+      os.Exit(1)      
+    }
 
-  	progress()
-  	nasm, Err := exec.Command("sh", "-c", "cd ReplaceProcess/peb-based && nasm -f bin ReplaceProcess.asm -o Payload").Output()
-  	if Err != nil {
-    	boldRed.Println("\n[!] ERROR: While assembling payload :(")
-    	boldRed.Println(string(nasm))
-    	boldRed.Println(Err)
-    	clean()
-    	os.Exit(1)    
-  	}
+    progress()
+    nasm, Err := exec.Command("sh", "-c", "cd ReplaceProcess/peb && nasm -f bin ReplaceProcess.asm -o Payload").Output()
+    if Err != nil {
+      boldRed.Println("\n[!] ERROR: While assembling payload :(")
+      boldRed.Println(string(nasm))
+      boldRed.Println(Err)
+      clean()
+      os.Exit(1)    
+    }
 
-  	progress()
+    progress()
 
-  	movePayload, movePayErr := exec.Command("sh", "-c", "mv ReplaceProcess/peb-based/Payload ./").Output()
-  	if movePayErr != nil {
-    	boldRed.Println("\n[!] ERROR: While moving the payload")
-    	boldRed.Println(string(movePayload))
-    	boldRed.Println(Err)
-    	clean()
-    	os.Exit(1)    
-  	}
-  	progress() 
+    movePayload, movePayErr := exec.Command("sh", "-c", "mv ReplaceProcess/peb/Payload ./").Output()
+    if movePayErr != nil {
+      boldRed.Println("\n[!] ERROR: While moving the payload")
+      boldRed.Println(string(movePayload))
+      boldRed.Println(Err)
+      clean()
+      os.Exit(1)    
+    }
+    progress() 
   }else{
-  	moveMap, moveMapErr := exec.Command("sh", "-c", "mv Mem.map ReplaceProcess/iat-based/").Output()
-  	if moveMapErr != nil {
-    	boldRed.Println("\n[!] ERROR: While moving the file map")
-    	boldRed.Println(string(moveMap))
-    	clean()
-    	os.Exit(1)      
-  	}
+    moveMap, moveMapErr := exec.Command("sh", "-c", "mv Mem.map ReplaceProcess/iat/").Output()
+    if moveMapErr != nil {
+      boldRed.Println("\n[!] ERROR: While moving the file map")
+      boldRed.Println(string(moveMap))
+      clean()
+      os.Exit(1)      
+    }
 
-  	progress()
-  	nasm, Err := exec.Command("sh", "-c", "cd ReplaceProcess/iat-based && nasm -f bin ReplaceProcess.asm -o Payload").Output()
-  	if Err != nil {
-    	boldRed.Println("\n[!] ERROR: While assembling payload :(")
-    	boldRed.Println(string(nasm))
-    	boldRed.Println(Err)
-    	clean()
-    	os.Exit(1)    
-  	}
+    progress()
+    nasm, Err := exec.Command("sh", "-c", "cd ReplaceProcess/iat && nasm -f bin ReplaceProcess.asm -o Payload").Output()
+    if Err != nil {
+      boldRed.Println("\n[!] ERROR: While assembling payload :(")
+      boldRed.Println(string(nasm))
+      boldRed.Println(Err)
+      clean()
+      os.Exit(1)    
+    }
 
-  	progress()
+    progress()
 
-  	movePayload, movePayErr := exec.Command("sh", "-c", "mv ReplaceProcess/iat-based/Payload ./").Output()
-  	if movePayErr != nil {
-    	boldRed.Println("\n[!] ERROR: While moving the payload")
-    	boldRed.Println(string(movePayload))
-    	boldRed.Println(Err)
-    	clean()
-    	os.Exit(1)    
-  	}
-  	progress() 
+    movePayload, movePayErr := exec.Command("sh", "-c", "mv ReplaceProcess/iat/Payload ./").Output()
+    if movePayErr != nil {
+      boldRed.Println("\n[!] ERROR: While moving the payload")
+      boldRed.Println(string(movePayload))
+      boldRed.Println(Err)
+      clean()
+      os.Exit(1)    
+    }
+    progress() 
   }
 
   if peid.verbose == true {
@@ -275,12 +312,6 @@ func assemble() {
     fmt.Println(string(_MapPE[1]))
   }
 
-
-  if strings.Contains(string(MapPE), "[!] Enpty Import Table........................... [NULL]") {
-    boldRed.Println("\n[!] ERROR: File has a empty import table :(")
-    clean()
-    os.Exit(1)
-  }
   progress()
 
 }
@@ -291,11 +322,10 @@ func compile() {
     if peid.verbose == true {
       boldYellow.Println("[*] Ciphering payload...")    
     }
-    crypt() // 6 steps
-    progress() 
+    crypt() // 4 steps
 
     xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > Stub/PAYLOAD.h")
-  xxd.Stdout = os.Stdout
+    xxd.Stdout = os.Stdout
     xxd.Stderr = os.Stderr
     xxd.Run()
 
@@ -308,6 +338,48 @@ func compile() {
 
     progress()  
 
+    mingwObj, mingwObjErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub/Stub.cpp").Output()
+    if mingwObjErr != nil {
+      boldRed.Println("[!] ERROR: While compiling the object file.")
+      color.Red(string(mingwObj))
+      fmt.Println(mingwObjErr)
+      clean()
+      os.Exit(1)
+    }    
+
+    progress()
+
+    var compileCommand string = "i686-w64-mingw32-g++-win32 Stub.o "
+    if peid.resource == true {
+      compileCommand += "Stub/Resource.o "
+    }
+    if peid.subsystem == 2 { // GUI
+      compileCommand += string(" -mwindows -o "+peid.fileName)
+    }else{
+      compileCommand += string(" -o "+peid.fileName)
+    }
+
+    progress()
+
+    mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
+    if mingwErr != nil {
+      boldRed.Println("[!] ERROR: While compiling the exe.")
+      color.Red(string(mingw))
+      fmt.Println(mingwErr)
+      clean()
+      os.Exit(1)
+    }    
+    progress()
+
+    strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.fileName)).Output()
+    if stripErr != nil {
+      boldRed.Println("[!] ERROR: While compiling the exe.")
+      color.Red(string(strip))
+      fmt.Println(stripErr)
+      clean()
+      os.Exit(1)
+    }    
+    progress()
     if peid.verbose == true {
       key, _ := exec.Command("sh", "-c", "xxd -i Payload.key").Output() 
       boldYellow.Println("[*] Payload ciphered with: ")
@@ -377,26 +449,13 @@ func crypt() {
         os.Exit(1)      
       }
       payload_xor.Write(payload)
-      payload_xor.Write(key)
+      payload_key.Write(key)
 
       payload_xor.Close()
       payload_key.Close()
     }
     progress()  
 
-    xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > Stub/PAYLOAD.h")
-    xxd.Stdout = os.Stdout
-    xxd.Stderr = os.Stderr
-    xxd.Run()
-
-    progress()  
-
-    _xxd := exec.Command("sh", "-c", "xxd -i Payload.key > Stub/KEY.h")
-    _xxd.Stdout = os.Stdout
-    _xxd.Stderr = os.Stderr
-    _xxd.Run()
-
-    progress()  
 
     if peid.verbose == true {
       key, _ := exec.Command("sh", "-c", "xxd -i Payload.key").Output() 
@@ -501,11 +560,11 @@ func progress() {
 
 func createBar() {
   
-  var full int = 40
+  var full int = 42
 
   if peid.verbose == false {
     if peid.staged == true {
-      full -= 9
+      full -= 10
     }
 
     progressBar = pb.New(full)
@@ -517,13 +576,13 @@ func createBar() {
 
 func clean() {
 
-  exec.Command("sh", "-c", "rm ReplaceProcess/Mem.map").Run()
+  exec.Command("sh", "-c", "rm ReplaceProcess/peb/Mem.map").Run()
   progress()
+  exec.Command("sh", "-c", "rm ReplaceProcess/iat/Mem.map").Run()
+  progress()  
   exec.Command("sh", "-c", "rm Stub.o").Run()
   progress()
   exec.Command("sh", "-c", "rm Payload").Run()
-  progress()
-  exec.Command("sh", "-c", "rm Payload.xor").Run()
   progress()
   exec.Command("sh", "-c", "rm Payload.key").Run()
   progress()
@@ -539,7 +598,7 @@ func clean() {
 //################################################### GRAPHICS ###################################################
 func Banner() {
 
-  	var BANNER string = `
+    var BANNER string = `
 
 //   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ 
 //  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗
@@ -556,7 +615,7 @@ func Banner() {
   boldGreen.Println("github.com/EgeBalci/Amber")
   
 }
-	
+  
 func Help() {
    var Help string = `
 

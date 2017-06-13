@@ -1,10 +1,11 @@
 ; 
-; Author: Ege Balcı <ege.balci@invictuseurope.com> 
-; Date: 29.03.2017
+; Author: Ege Balcı <egebalci[at]protonmail[dot]com> 
 ; Version: 1.0
 
 [BITS 32]
 [ORG 0]
+
+%include "IAT.asm"
 
 	call Stub
 PE:
@@ -22,7 +23,7 @@ Stub:
 	call [VP]			; VirtualProtect( ImageBase, ImageSize, PAGE_EXECUTE_READWRITE, lpflOldProtect)
 
 	test eax,eax			; Check success 
-	jz Fail				; If VirtualProtect fails don't even bother :(
+	jz Fail				; If VirtualProtect fails don't bother :/
 	
 	%include "BuildImportTable.asm"	; Call the module responsible for building the import address table
 	xor ecx,ecx 			; Zero out the ECX
@@ -37,12 +38,13 @@ Memcpy:
 	inc ecx 			; Decrease loop counter
 	cmp ecx,ImageSize 		; Check if ECX is 0
 	jnz Memcpy 			; If not loop
-	ret
+	mov dword eax,[esp]		; Copy the AOEP to eax
+	ret				; Return to the AOEP
 GetAOE:
 	mov eax,[esi+0x3C]		; Get the offset of "PE" to eax
 	mov ebx,[eax+esi+0x34]		; Get the image base address to ebx
 	mov eax,[eax+esi+0x28]		; Get the address of entry point to eax
 	ret				; <-
+
 Fail:
-	pop eax				; Clean the stack before return
 	ret				; VirtualProtect failed :(

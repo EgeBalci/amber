@@ -1,10 +1,11 @@
 ; 
-; Author: Ege Balcı <ege.balci@invictuseurope.com> 
-; Date: 29.03.2017
+; Author: Ege Balcı <egebalci[at]protonmail[dot]com> 
 ; Version: 1.0
 
 [BITS 32]
 [ORG 0]
+
+;%define VirtualProtect
 
 	cld
 	call Start
@@ -33,7 +34,7 @@ Stub:
 	call ebp			; VirtualProtect( ImageBase, ImageSize, PAGE_EXECUTE_READWRITE, lpflOldProtect)
 
 	test eax,eax			; Check success 
-	jz Fail				; If VirtualProtect fails don't even bother :(
+	jz Fail				; If VirtualProtect fails don't bother :/
 	
 	%include "BuildImportTable.asm"	; Call the module responsible for building the import address table
 	xor ecx,ecx 			; Zero out the ECX
@@ -48,7 +49,7 @@ Memcpy:
 	inc ecx 			; Decrease loop counter
 	cmp ecx,ImageSize 		; Check if ECX is 0
 	jnz Memcpy 			; If not loop
-	ret
+	mov dword eax,[esp]		; Copy the AOEP to eax
+	ret				; Return to the AOEP
 Fail:
-	pop eax				; Clean the stack before return
 	ret				; VirtualProtect failed :(
