@@ -21,7 +21,7 @@
 ;%define LoadLibraryA
 ;%define GetProcAddress
 
-BuildHere:
+BuildImportTable:
 	mov eax,[esi+0x3C]	; Offset to IMAGE_NT_HEADER ("PE")
 	mov eax,[eax+esi+0x80] 	; Import table RVA
 	add eax,esi		; Import table memory address (first image import descriptor)

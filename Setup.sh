@@ -1,28 +1,28 @@
 #!/bin/bash
 
 
-echo "//   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ "
-echo "//  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗"
-echo "//  ███████║██╔████╔██║██████╔╝█████╗  ██████╔╝"
-echo "//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗"
-echo "//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║"
-echo "//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝"
-echo "//  POC Crypter For ReplaceProcess              "     
-echo " "
-echo "Author: Ege Balcı"
-echo "Source: github.com/EgeBalci/Amber"
+tput setaf 1;echo "//   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ "
+tput setaf 1;echo "//  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗"
+tput setaf 1;echo "//  ███████║██╔████╔██║██████╔╝█████╗  ██████╔╝"
+tput setaf 1;echo "//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗"
+tput setaf 1;echo "//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║"
+tput setaf 1;echo "//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝"
+tput setaf 1;echo "//  POC Crypter For ReplaceProcess              "     
+tput setaf 1;echo " "
+tput setaf 2;echo "Author: Ege Balcı"
+tput setaf 4;echo "Source: github.com/EgeBalci/Amber"
 
 echo " "
 echo " "
 echo " "
-echo "[*] Installing dependencies..."
+tput setaf 3;echo "[*] Installing dependencies..."
 
 sudo apt-get update
 sudo apt-get upgrade
 
 sudo apt-get install -y golang nasm wine mingw-w64-i686-dev mingw-w64-tools mingw-w64-x86-64-dev mingw-w64-common mingw-w64 mingw-ocaml gcc-multilib g++-multilib
 
-echo "[*] Cloning git tools..."
+tput setaf 3;echo "[*] Cloning git tools..."
 
 git clone https://github.com/EgeBalci/MapPE.git
 
@@ -31,8 +31,8 @@ cd lib
 export GOPATH=$(pwd)
 cd ..
 
-echo "[*] AMBERPATH=$AMBERPATH"
-echo "[*] GOPATH=$GOPATH"
+tput setaf 3;echo "[*] AMBERPATH=$AMBERPATH"
+tput setaf 3;echo "[*] GOPATH=$GOPATH"
 
 mv MapPE/MapPE.exe $AMBERPATH
 
@@ -46,5 +46,5 @@ sudo mv /tmp/amber /usr/local/bin/
 sudo chmod 777 /usr/local/bin/amber
 
 
-echo "[+] Setup completed !"
+tput setaf 4;echo "[+] Setup completed !"
 

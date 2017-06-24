@@ -135,7 +135,13 @@ func main() {
   progressBar.Finish()
 
 
-  wc, wcErr := exec.Command("sh", "-c", string("wc -c "+peid.fileName+"|tr -d \""+peid.fileName+"\"")).Output()
+  var getSize string = string("wc -c "+peid.fileName+"|tr -d \""+peid.fileName+"\"|tr -d \"\n\"")
+
+  if peid.staged == true {
+    getSize = string("wc -c "+peid.fileName+"|tr -d \""+peid.fileName+".stage\"|tr -d \"\n\"")
+  }
+
+  wc, wcErr := exec.Command("sh", "-c", getSize).Output()
   if wcErr != nil {
     boldRed.Println("\n[!] ERROR: While getting the file size")
     boldRed.Println(string(wc))
@@ -145,7 +151,7 @@ func main() {
   }
 
     
-  boldYellow.Print("[*] Final Size: "+peid.fileSize+" -> "+string(wc)+" bytes")
+  boldYellow.Println("\n[*] Final Size: "+peid.fileSize+"-> "+string(wc)+"bytes")
 
   if peid.staged == true {
     boldGreen.Println("[+] Stage generated !\n")  
@@ -195,7 +201,7 @@ func analyze(file *pe.File) {
   progress()
 
 
-  wc, wcErr := exec.Command("sh", "-c", string("wc -c "+peid.fileName+"|tr -d \""+peid.fileName+"\""+"|tr -d \\\"")).Output()
+  wc, wcErr := exec.Command("sh", "-c", string("wc -c "+peid.fileName+"|tr -d \""+peid.fileName+"\""+"|tr -d \"\n\"")).Output()
   if wcErr != nil {
     boldRed.Println("\n[!] ERROR: While getting the file size")
     boldRed.Println(string(wc))
@@ -319,72 +325,75 @@ func assemble() {
 
 func compile() {
 
-    if peid.verbose == true {
-      boldYellow.Println("[*] Ciphering payload...")    
-    }
-    crypt() // 4 steps
+  if peid.verbose == true {
+    boldYellow.Println("[*] Ciphering payload...")    
+  }
+  crypt() // 4 steps
 
-    xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > Stub/PAYLOAD.h")
-    xxd.Stdout = os.Stdout
-    xxd.Stderr = os.Stderr
-    xxd.Run()
+  xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > Stub/PAYLOAD.h")
+  xxd.Stdout = os.Stdout
+  xxd.Stderr = os.Stderr
+  xxd.Run()
 
-    progress()  
+  progress()  
 
-    _xxd := exec.Command("sh", "-c", "xxd -i Payload.key > Stub/KEY.h")
-    _xxd.Stdout = os.Stdout
-    _xxd.Stderr = os.Stderr
-    _xxd.Run()
+  _xxd := exec.Command("sh", "-c", "xxd -i Payload.key > Stub/KEY.h")
+  _xxd.Stdout = os.Stdout
+  _xxd.Stderr = os.Stderr
+  _xxd.Run()
 
-    progress()  
+  progress()  
 
-    mingwObj, mingwObjErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub/Stub.cpp").Output()
-    if mingwObjErr != nil {
-      boldRed.Println("[!] ERROR: While compiling the object file.")
-      color.Red(string(mingwObj))
-      fmt.Println(mingwObjErr)
-      clean()
-      os.Exit(1)
-    }    
+  mingwObj, mingwObjErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub/Stub.cpp").Output()
+  if mingwObjErr != nil {
+    boldRed.Println("\n[!] ERROR: While compiling the object file.")
+    color.Red(string(mingwObj))
+    fmt.Println(mingwObjErr)
+    clean()
+    os.Exit(1)
+  }    
 
-    progress()
+  progress()
 
-    var compileCommand string = "i686-w64-mingw32-g++-win32 Stub.o "
-    if peid.resource == true {
-      compileCommand += "Stub/Resource.o "
-    }
-    if peid.subsystem == 2 { // GUI
-      compileCommand += string(" -mwindows -o "+peid.fileName)
-    }else{
-      compileCommand += string(" -o "+peid.fileName)
-    }
+  var compileCommand string = "i686-w64-mingw32-g++-win32 Stub.o "
 
-    progress()
+  if peid.resource == true {
+    compileCommand += "Stub/Resource.o "
+  }
+  if peid.subsystem == 2 { // GUI
+    compileCommand += string("-mwindows -o "+peid.fileName)
+  }else{
+    compileCommand += string("-o "+peid.fileName)
+  }
 
-    mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
-    if mingwErr != nil {
-      boldRed.Println("[!] ERROR: While compiling the exe.")
-      color.Red(string(mingw))
-      fmt.Println(mingwErr)
-      clean()
-      os.Exit(1)
-    }    
-    progress()
+  progress()
 
-    strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.fileName)).Output()
-    if stripErr != nil {
-      boldRed.Println("[!] ERROR: While compiling the exe.")
-      color.Red(string(strip))
-      fmt.Println(stripErr)
-      clean()
-      os.Exit(1)
-    }    
-    progress()
-    if peid.verbose == true {
-      key, _ := exec.Command("sh", "-c", "xxd -i Payload.key").Output() 
-      boldYellow.Println("[*] Payload ciphered with: ")
-      boldBlue.Println(string(key))    
-    }
+  mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
+  if mingwErr != nil {
+    boldRed.Println("\n[!] ERROR: While compiling to exe.")
+    color.Red(compileCommand)
+    color.Red(string(mingw))
+    fmt.Println(mingwErr)
+    clean()
+    os.Exit(1)
+  }    
+  progress()
+
+  strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.fileName)).Output()
+  if stripErr != nil {
+    boldRed.Println("\n[!] ERROR: While striping the exe.")
+    color.Red(string(strip))
+    fmt.Println(stripErr)
+    clean()
+    os.Exit(1)
+  }
+
+  progress()
+  if peid.verbose == true {
+    key, _ := exec.Command("sh", "-c", "xxd -i Payload.key").Output() 
+    boldYellow.Println("[*] Payload ciphered with: ")
+    boldBlue.Println(string(key))    
+  }
 }
 
 //################################################### CRYPT ###################################################
