@@ -30,6 +30,7 @@ type peID struct {
   fileSize string
   imageBase uint32
   subsystem uint16
+  aslr bool
   VP string
   GPA string
   LLA string
@@ -122,7 +123,7 @@ func main() {
   }
   progress()
 
-  analyze(file) // 8 steps
+  analyze(file) // 9 steps
   assemble() // 8 steps
 
   if peid.staged == true {
@@ -182,6 +183,22 @@ func analyze(file *pe.File) {
   progress()
   peid.subsystem = OPT.Subsystem
   progress()
+
+  if (OPT.DataDirectory[5].Size) != 0x00 {
+    peid.aslr = true
+    if peid.verbose == true {
+      boldGreen.Println("[+] ASLR supported !")
+    } 
+  }else{
+    peid.aslr = false
+    if peid.verbose == true {
+      boldYellow.Println("[-] ASLR not supported :(")
+    } 
+  }
+  progress()
+
+
+
   if (OPT.DataDirectory[11].Size) != 0x00 {
       boldRed.Println("\n[!] ERROR: File has bounded imports.")
       os.Exit(1) 
@@ -223,20 +240,14 @@ func analyze(file *pe.File) {
     boldYellow.Printf("[*] Subsystem: %X\n", OPT.Subsystem)
     boldYellow.Printf("[*] Image Base: %X\n", peid.imageBase)
     boldYellow.Printf("[*] Size Of Image: %X\n", OPT.SizeOfImage)
+    boldYellow.Printf("[*] Export Table: %X\n", (OPT.DataDirectory[0].VirtualAddress+OPT.ImageBase))
     boldYellow.Printf("[*] Import Table: %X\n", (OPT.DataDirectory[1].VirtualAddress+OPT.ImageBase))
+    boldYellow.Printf("[*] Base Relocation Table: %X\n", (OPT.DataDirectory[5].VirtualAddress+OPT.ImageBase))
     boldYellow.Printf("[*] Import Address Table: %X\n", (OPT.DataDirectory[12].VirtualAddress+OPT.ImageBase))
   }
 
 
 }
-
-/*
-func parseIAT(file *pe.File) {
-  // Parse the IAT and find required function addresses
-}
-*/
-
-
 
 //################################################### BUILD ###################################################
 
@@ -250,18 +261,16 @@ func assemble() {
     os.Exit(1)      
   }
   progress()
-
-  if peid.iat == false {
-    moveMap, moveMapErr := exec.Command("sh", "-c", "mv Mem.map ReplaceProcess/peb/").Output()
+  if peid.aslr == false {
+    moveMap, moveMapErr := exec.Command("sh", "-c", "mv Mem.map Ophio/Non-ASLR/").Output()
     if moveMapErr != nil {
       boldRed.Println("\n[!] ERROR: While moving the file map")
       boldRed.Println(string(moveMap))
       clean()
       os.Exit(1)      
     }
-
     progress()
-    nasm, Err := exec.Command("sh", "-c", "cd ReplaceProcess/peb && nasm -f bin ReplaceProcess.asm -o Payload").Output()
+    nasm, Err := exec.Command("sh", "-c", "cd Ophio/Non-ASLR/ && nasm -f bin Ophio.asm -o Payload").Output()
     if Err != nil {
       boldRed.Println("\n[!] ERROR: While assembling payload :(")
       boldRed.Println(string(nasm))
@@ -272,7 +281,7 @@ func assemble() {
 
     progress()
 
-    movePayload, movePayErr := exec.Command("sh", "-c", "mv ReplaceProcess/peb/Payload ./").Output()
+    movePayload, movePayErr := exec.Command("sh", "-c", "mv Ophio/Non-ASLR/Payload ./").Output()
     if movePayErr != nil {
       boldRed.Println("\n[!] ERROR: While moving the payload")
       boldRed.Println(string(movePayload))
@@ -282,7 +291,7 @@ func assemble() {
     }
     progress() 
   }else{
-    moveMap, moveMapErr := exec.Command("sh", "-c", "mv Mem.map ReplaceProcess/iat/").Output()
+    moveMap, moveMapErr := exec.Command("sh", "-c", "mv Mem.map Ophio/ASLR/").Output()
     if moveMapErr != nil {
       boldRed.Println("\n[!] ERROR: While moving the file map")
       boldRed.Println(string(moveMap))
@@ -291,7 +300,7 @@ func assemble() {
     }
 
     progress()
-    nasm, Err := exec.Command("sh", "-c", "cd ReplaceProcess/iat && nasm -f bin ReplaceProcess.asm -o Payload").Output()
+    nasm, Err := exec.Command("sh", "-c", "cd Ophio/ASLR/ && nasm -f bin Ophio.asm -o Payload").Output()
     if Err != nil {
       boldRed.Println("\n[!] ERROR: While assembling payload :(")
       boldRed.Println(string(nasm))
@@ -302,15 +311,15 @@ func assemble() {
 
     progress()
 
-    movePayload, movePayErr := exec.Command("sh", "-c", "mv ReplaceProcess/iat/Payload ./").Output()
+    movePayload, movePayErr := exec.Command("sh", "-c", "mv Ophio/ASLR/Payload ./").Output()
     if movePayErr != nil {
       boldRed.Println("\n[!] ERROR: While moving the payload")
       boldRed.Println(string(movePayload))
       boldRed.Println(Err)
       clean()
       os.Exit(1)    
-    }
-    progress() 
+    }  
+    progress()  
   }
 
   if peid.verbose == true {
@@ -377,16 +386,6 @@ func compile() {
     clean()
     os.Exit(1)
   }    
-  progress()
-
-  strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.fileName)).Output()
-  if stripErr != nil {
-    boldRed.Println("\n[!] ERROR: While striping the exe.")
-    color.Red(string(strip))
-    fmt.Println(stripErr)
-    clean()
-    os.Exit(1)
-  }
 
   progress()
   if peid.verbose == true {
@@ -463,9 +462,7 @@ func crypt() {
       payload_xor.Close()
       payload_key.Close()
     }
-    progress()  
-
-
+    progress()
     if peid.verbose == true {
       key, _ := exec.Command("sh", "-c", "xxd -i Payload.key").Output() 
       boldYellow.Println("[*] Payload ciphered with: ")
@@ -569,7 +566,7 @@ func progress() {
 
 func createBar() {
   
-  var full int = 42
+  var full int = 43
 
   if peid.verbose == false {
     if peid.staged == true {
@@ -585,9 +582,9 @@ func createBar() {
 
 func clean() {
 
-  exec.Command("sh", "-c", "rm ReplaceProcess/peb/Mem.map").Run()
+  exec.Command("sh", "-c", "rm Ophio/Mem.map").Run()
   progress()
-  exec.Command("sh", "-c", "rm ReplaceProcess/iat/Mem.map").Run()
+  exec.Command("sh", "-c", "rm Ophio/iat/Mem.map").Run()
   progress()  
   exec.Command("sh", "-c", "rm Stub.o").Run()
   progress()
@@ -603,7 +600,6 @@ func clean() {
 }
 
 
-
 //################################################### GRAPHICS ###################################################
 func Banner() {
 
@@ -615,7 +611,7 @@ func Banner() {
 //  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
 //  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
 //  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-//  POC Crypter For ReplaceProcess                                             
+//  POC Packer For Ophio                                             
 `
   boldRed.Print(BANNER)
   boldBlue.Print("\n# Version: ")
@@ -637,7 +633,6 @@ OPTIONS:
   -k, --key       [string]        Custom cipher key
   -ks,--keysize   <length>        Size of the encryption key in bytes (Max:100/Min:4)
   --staged                        Generated a staged payload
-  --iat                           Use the import address table entries instead of hash_api
   --no-resource                   Don't add any resource
   -v, --verbose                   Verbose output mode
   -h, --help                      Show this massage

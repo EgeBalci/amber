@@ -7,7 +7,7 @@ tput setaf 1;echo "//  ███████║██╔████╔██║
 tput setaf 1;echo "//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗"
 tput setaf 1;echo "//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║"
 tput setaf 1;echo "//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝"
-tput setaf 1;echo "//  POC Crypter For ReplaceProcess              "     
+tput setaf 1;echo "//  POC Packer For Ophio              "     
 tput setaf 1;echo " "
 tput setaf 2;echo "Author: Ege Balcı"
 tput setaf 4;echo "Source: github.com/EgeBalci/Amber"
