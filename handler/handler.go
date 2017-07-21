@@ -11,8 +11,8 @@ import "os"
 
 
 
-var Red *color.Color = color.New(color.FgRed)
-var BoldRed *color.Color = Red.Add(color.Bold)
+var	Red *color.Color = color.New(color.FgRed)
+var	BoldRed *color.Color = Red.Add(color.Bold)
 var	Blue *color.Color = color.New(color.FgBlue)
 var	BoldBlue *color.Color = Blue.Add(color.Bold)
 var	Yellow *color.Color = color.New(color.FgYellow)
@@ -28,12 +28,12 @@ func main() {
 
 	var PORT string = "4444"
 
- 	ARGS := os.Args[1:]
-  	if len(ARGS) == 0 || ARGS[0] == "--help" || ARGS[0] == "-h"{
-    	Banner()
-    	Help()
-    	os.Exit(0)
-  	}
+	ARGS := os.Args[1:]
+	if len(ARGS) == 0 || ARGS[0] == "--help" || ARGS[0] == "-h"{
+	Banner()
+	Help()
+	os.Exit(0)
+	}
 
 	Banner()
 
