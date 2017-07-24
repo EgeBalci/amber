@@ -103,9 +103,9 @@ func checkRequired() {
 
 func clean() {
 
-	exec.Command("sh", "-c", "rm Ophio/Mem.map").Run()
+	exec.Command("sh", "-c", "rm core/Mem.map").Run()
 	progress()
-	exec.Command("sh", "-c", "rm Ophio/iat/Mem.map").Run()
+	exec.Command("sh", "-c", "rm core/iat/Mem.map").Run()
 	progress()
 	exec.Command("sh", "-c", "rm Stub.o").Run()
 	progress()

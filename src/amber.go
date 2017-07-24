@@ -128,7 +128,7 @@ func Banner() {
 //  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
 //  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
 //  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-//  POC Packer For Ophio                                             
+//  POC Packer                                             
 `
 	boldRed.Print(BANNER)
 	boldBlue.Print("\n# Version: ")
