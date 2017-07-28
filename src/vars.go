@@ -1,7 +1,7 @@
 package main
 
-import "gopkg.in/cheggaaa/pb.v1"
 import "github.com/fatih/color"
+import "gopkg.in/cheggaaa/pb.v1"
 import "debug/pe"
 
 const VERSION string = "1.0.0"
@@ -22,7 +22,7 @@ type peID struct {
 	imageBase uint32
 	subsystem uint16
 	aslr      bool
-	OPT       *pe.OptionalHeader32
+	Opt       *pe.OptionalHeader32
 	VP        string
 	GPA       string
 	LLA       string
