@@ -38,7 +38,7 @@ Stub:
 	push dword ImageSize		; dwSize
 	push dword 0x00			; lpAddress
 	push 0xE553A458			; hash( "kernel32.dll", "VirtualAlloc" )
-	call ebp			; VirtualProtect( ImageBase, ImageSize, PAGE_EXECUTE_READWRITE, lpflOldProtect)
+	call ebp			; VirtualAlloc(lpAddress,ImageSize,MEM_COMMIT|MEM_TOP_DOWN|MEM_RESERVE,PAGE_EXECUTE_READWRITE)
 
 	test eax,eax			; Check success 
 	jz OpEnd			; If VirtualAlloc fails don't bother :/	

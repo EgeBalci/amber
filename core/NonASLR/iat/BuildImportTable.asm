@@ -1,8 +1,10 @@
-; ##########################################################
-; #  EAX -> API Returns  		     | Clobbered   #
-; #  EBX -> DLL Handle			     | Clobbered   #
-; #  EBP -> API-BLOCK			     | Un-Clobbered#  				
-; ##########################################################
+; This block requires following values inside the specified registers...
+;
+; #########################################
+; #  EBX -> Original image base           #
+; #  ESI -> Address of PE image		  #
+; #  EBP -> &hash_api			  #  				
+; #########################################
 ; 
 ; Author: Ege Balcı <egebalci[at]protonmail[dot]com> 
 ; Version: 1.0
@@ -17,9 +19,6 @@
 
 [BITS 32]
 [ORG 0]
-
-;%define LoadLibraryA
-;%define GetProcAddress
 
 BuildImportTable:
 	mov eax,[esi+0x3C]	; Offset to IMAGE_NT_HEADER ("PE")
@@ -77,8 +76,7 @@ LoadLibraryA:
 	push ecx		; Save ecx to stack
 	push edx		; Save edx to stack
 	push eax 		; Push the address of linrary name string
-	push 0x0726774C 	; hash( "kernel32.dll", "LoadLibraryA" )
-	call ebp 		; LoadLibraryA([esp+4])
+	call [LLA] 		; LoadLibraryA([esp+4])
 	pop edx			; Retreive edx
 	pop ecx			; Retreive ecx
 	ret 			; <-
@@ -88,11 +86,10 @@ GetProcAddress:
 	push edx		; Save edx to stack
 	push eax		; Push the address of proc name string
 	push ebx 		; Push the dll handle
-	push 0x7802F749		; hash( "kernel32.dll", "GetProcAddress" )
-	call ebp		; GetProcAddress(ebx,[esp+4])
+	call [GPA]		; GetProcAddress(ebx,[esp+4])
 	pop edx			; Retrieve edx
 	pop ecx			; Retrieve ecx
 	ret 			; <-
 ;-----------------------------------------------------------------------------------
-	
 Complete:
+	pop eax			; Clean out the stack

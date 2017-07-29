@@ -13,20 +13,10 @@
 [BITS 32]
 [ORG 0]
 
-;%define VirtualAlloc
+%include "IAT.asm"
 
 	pushad				; Save all registers to stack
 	pushfd				; Save all flags to stack
-	cld				; Clear out direction flags
-	call Start			; Start OP
-	%include "HASH-API.asm"		; hash_api
-GetAOE:
-	mov eax,[esi+0x3C]		; Get the offset of "PE" to eax
-	mov ebx,[eax+esi+0x34]		; Get the image base address to ebx
-	mov eax,[eax+esi+0x28]		; Get the address of entry point to eax
-	ret				; <-
-Start:
-	pop ebp				; Pop the address of hash_api to ebp
 	call Stub			; ...
 PE:
 	incbin "Mem.map"		; PE file image
@@ -37,8 +27,7 @@ Stub:
 	push dword 0x103000		; MEM_COMMI | MEM_TOP_DOWN | MEM_RESERVE
 	push dword ImageSize		; dwSize
 	push dword 0x00			; lpAddress
-	push 0xE553A458			; hash( "kernel32.dll", "VirtualAlloc" )
-	call ebp			; VirtualProtect( ImageBase, ImageSize, PAGE_EXECUTE_READWRITE, lpflOldProtect)
+	call [VA]			; VirtualAlloc(lpAddress,dwSize,MEM_COMMIT|MEM_TOP_DOWN|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
 
 	test eax,eax			; Check success 
 	jz OpEnd			; If VirtualAlloc fails don't bother :/	
@@ -68,9 +57,13 @@ CreateThread:
   	push ebx			; lpStartAddress
   	push eax			; dwStackSize
   	push eax			; lpThreadAttributes
-  	push 0x160D6838 		; hash( "kernel32.dll", "CreateThread" )
-  	call ebp 			; CreateThread( NULL, 0, &threadstart, NULL, 0, NULL );
+  	call [CT] 			; CreateThread( NULL, 0, &threadstart, NULL, 0, NULL );
   	jmp OpEnd			; <-
+GetAOE:
+	mov eax,[esi+0x3C]		; Get the offset of "PE" to eax
+	mov ebx,[eax+esi+0x34]		; Get the image base address to ebx
+	mov eax,[eax+esi+0x28]		; Get the address of entry point to eax
+	ret				; <-
 OpEnd:
 	popfd				; Put back all saved flags
 	popad				; Put back all saved registers
