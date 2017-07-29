@@ -23,7 +23,7 @@ func assemble() {
 			os.Exit(1)
 		}
 		progress()
-		nasm, Err := exec.Command("sh", "-c", "cd core/NonASLR/ && nasm -f bin core.asm -o Payload").Output()
+		nasm, Err := exec.Command("sh", "-c", "cd core/NonASLR/ && nasm -f bin Stub.asm -o Payload").Output()
 		if Err != nil {
 			boldRed.Println("\n[!] ERROR: While assembling payload :(")
 			boldRed.Println(string(nasm))
@@ -50,7 +50,7 @@ func assemble() {
 			os.Exit(1)
 		}
 		progress()
-		nasm, Err := exec.Command("sh", "-c", "cd core/ASLR/ && nasm -f bin core.asm -o Payload").Output()
+		nasm, Err := exec.Command("sh", "-c", "cd core/ASLR/ && nasm -f bin Stub.asm -o Payload").Output()
 		if Err != nil {
 			boldRed.Println("\n[!] ERROR: While assembling payload :(")
 			boldRed.Println(string(nasm))
