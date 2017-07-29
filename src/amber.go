@@ -8,32 +8,26 @@ import "fmt"
 import "os"
 
 func main() {
-
 	runtime.GOMAXPROCS(runtime.NumCPU())
-
 	// Set the default values..
 	peid.keySize = 8
 	peid.staged = false
 	peid.resource = true
 	peid.verbose = false
 	peid.iat = false
-
 	ARGS := os.Args[1:]
-
 	if len(ARGS) == 0 || ARGS[0] == "--help" || ARGS[0] == "-h" {
 		Banner()
 		Help()
 		os.Exit(0)
 	}
-
 	Banner()
 	peid.fileName = ARGS[0]
-
 	for i := 0; i < len(ARGS); i++ {
 		if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
 			ks, Err := strconv.Atoi(ARGS[i+1])
 			if Err != nil {
-				boldRed.Println("\n[!] ERROR: Invalid key size.\n")
+				BoldRed.Println("\n[!] ERROR: Invalid key size.\n")
 				fmt.Println(Err)
 				os.Exit(1)
 			} else {
@@ -46,6 +40,9 @@ func main() {
 		if ARGS[i] == "--staged" {
 			peid.staged = true
 		}
+		if ARGS[i] == "--iat" {
+			peid.staged = true
+		}
 		if ARGS[i] == "--no-resource" {
 			peid.resource = false
 		}
@@ -53,67 +50,58 @@ func main() {
 			peid.verbose = true
 		}
 	}
-
-	boldYellow.Print("\n[*] File: ")
-	boldBlue.Println(peid.fileName)
-	boldYellow.Print("[*] Staged: ")
-	boldBlue.Println(peid.staged)
+	BoldYellow.Print("\n[*] File: ")
+	BoldBlue.Println(peid.fileName)
+	BoldYellow.Print("[*] Staged: ")
+	BoldBlue.Println(peid.staged)
 	if len(peid.key) != 0 {
-		boldYellow.Print("[*] Key: ")
-		boldBlue.Println(peid.key)
+		BoldYellow.Print("[*] Key: ")
+		BoldBlue.Println(peid.key)
 	} else {
-		boldYellow.Print("[*] Key Size: ")
-		boldBlue.Println(peid.keySize)
+		BoldYellow.Print("[*] Key Size: ")
+		BoldBlue.Println(peid.keySize)
 	}
-	boldYellow.Print("[*] IAT: ")
-	boldBlue.Println(peid.iat)
-	boldYellow.Print("[*] Verbose: ")
-	boldBlue.Println(peid.verbose, "\n")
-
+	BoldYellow.Print("[*] IAT: ")
+	BoldBlue.Println(peid.iat)
+	BoldYellow.Print("[*] Verbose: ")
+	BoldBlue.Println(peid.verbose, "\n")
 	createBar()
 	checkRequired() // 8 steps
-
 	file, fileErr := pe.Open(ARGS[0])
 	if fileErr != nil {
-		boldRed.Println("\n[!] ERROR: Can't open file.")
-		boldRed.Println(fileErr)
+		BoldRed.Println("\n[!] ERROR: Can't open file.")
+		BoldRed.Println(fileErr)
 		os.Exit(1)
 	}
 	progress()
-
 	analyze(file) // 9 steps
 	assemble()    // 8 steps
-
 	if peid.staged == true {
 		exec.Command("sh", "-c", string("mv Payload "+peid.fileName+".stage")).Run()
 	} else {
 		compile() // 10 steps
 	}
 	clean() // 8 steps
-
 	if peid.verbose == false {
 		progressBar.Finish()
 	}
 	var getSize string = string("wc -c " + peid.fileName + "|tr -d \"" + peid.fileName + "\"|tr -d \"\n\"")
-
 	if peid.staged == true {
 		getSize = string("wc -c " + peid.fileName + "|tr -d \"" + peid.fileName + ".stage\"|tr -d \"\n\"")
 	}
-
 	wc, wcErr := exec.Command("sh", "-c", getSize).Output()
 	if wcErr != nil {
-		boldRed.Println("\n[!] ERROR: While getting the file size")
-		boldRed.Println(string(wc))
+		BoldRed.Println("\n[!] ERROR: While getting the file size")
+		BoldRed.Println(string(wc))
 		fmt.Println(wcErr)
 		clean()
 		os.Exit(1)
 	}
-
-	boldYellow.Println("\n[*] Final Size: " + peid.fileSize + "-> " + string(wc) + "bytes")
+	BoldYellow.Println("\n[*] Final Size: " + peid.fileSize + "-> " + string(wc) + "bytes")
 	if peid.staged == true {
-		boldGreen.Println("[+] Stage generated !\n")
+		BoldGreen.Println("[+] Stage generated !\n")
 	} else {
-		boldGreen.Println("[+] File successfully crypted !\n")
+		BoldGreen.Println("[+] File successfully crypted !\n")
 	}
 
 }
@@ -128,13 +116,13 @@ func Banner() {
 //  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
 //  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
 //  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-//  POC Packer                                             
+//  POC Reflective PE Packer                                             
 `
-	boldRed.Print(BANNER)
-	boldBlue.Print("\n# Version: ")
-	boldGreen.Println(VERSION)
-	boldBlue.Print("# Source: ")
-	boldGreen.Println("github.com/EgeBalci/Amber")
+	BoldRed.Print(BANNER)
+	BoldBlue.Print("\n# Version: ")
+	BoldGreen.Println(VERSION)
+	BoldBlue.Print("# Source: ")
+	BoldGreen.Println("github.com/EgeBalci/Amber")
 
 }
 
@@ -150,6 +138,7 @@ OPTIONS:
   -k, --key       [string]        Custom cipher key
   -ks,--keysize   <length>        Size of the encryption key in bytes (Max:100/Min:4)
   --staged                        Generated a staged payload
+  --iat                           Uses import address table entries instead of hash api
   --no-resource                   Don't add any resource
   -v, --verbose                   Verbose output mode
   -h, --help                      Show this massage

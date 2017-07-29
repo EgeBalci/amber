@@ -7,7 +7,7 @@ import "os"
 func compile() {
 
   
-  verbose("[*] Ciphering payload...",boldYellow)
+  verbose("[*] Ciphering payload...",BoldYellow)
   crypt() // 4 steps
 
   xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > Stub/PAYLOAD.h")
@@ -24,7 +24,7 @@ func compile() {
 
   mingwObj, mingwObjErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub/Stub.cpp").Output()
   if mingwObjErr != nil {
-    boldRed.Println("\n[!] ERROR: While compiling the object file.")
+    BoldRed.Println("\n[!] ERROR: While compiling the object file.")
     red.Println(string(mingwObj))
     fmt.Println(mingwObjErr)
     clean()
@@ -45,7 +45,7 @@ func compile() {
 
   mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
   if mingwErr != nil {
-    boldRed.Println("\n[!] ERROR: While compiling to exe.")
+    BoldRed.Println("\n[!] ERROR: While compiling to exe.")
     red.Println(compileCommand)
     red.Println(string(mingw))
     fmt.Println(mingwErr)

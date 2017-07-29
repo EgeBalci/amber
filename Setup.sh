@@ -20,8 +20,6 @@ tput setaf 3;echo "[*] Installing dependencies..."
 tput setaf 7;
 
 sudo apt-get update
-sudo apt-get upgrade
-
 sudo apt-get install -y golang nasm wine mingw-w64-i686-dev mingw-w64-tools mingw-w64-x86-64-dev mingw-w64-common mingw-w64 mingw-ocaml gcc-multilib g++-multilib
 
 tput setaf 3;echo "[*] Cloning git tools..."

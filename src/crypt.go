@@ -9,12 +9,12 @@ import "os"
 
 func crypt() {
 
-  verbose("[*] Ciphering payload...",boldYellow)
+  verbose("[*] Ciphering payload...",BoldYellow)
 
   if len(peid.key) != 0 {
     payload, err := ioutil.ReadFile("Payload")
     if err != nil {
-      boldRed.Println("[!] ERROR: Can't open payload file.")
+      BoldRed.Println("[!] ERROR: Can't open payload file.")
       clean()
       os.Exit(1)
     }
@@ -22,14 +22,14 @@ func crypt() {
     payload = xor(payload,peid.key)
     payload_xor, err2 := os.Create("Payload.xor")
     if err2 != nil {
-      boldRed.Println("[!] ERROR: Can't create payload.xor file.")
+      BoldRed.Println("[!] ERROR: Can't create payload.xor file.")
       clean()
       os.Exit(1)
     }
     progress()
     payload_key, err3 := os.Create("Payload.key")
     if err3 != nil {
-      boldRed.Println("[!] ERROR: Can't create payload.xor file.")
+      BoldRed.Println("[!] ERROR: Can't create payload.xor file.")
       clean()
       os.Exit(1)
     }
@@ -44,7 +44,7 @@ func crypt() {
     progress()
     payload, err := ioutil.ReadFile("Payload")
     if err != nil {
-      boldRed.Println("[!] ERROR: Can't open payload file.")
+      BoldRed.Println("[!] ERROR: Can't open payload file.")
       clean()
       os.Exit(1)
     }
@@ -52,14 +52,14 @@ func crypt() {
     payload = xor(payload,key)
     payload_xor, err2 := os.Create("Payload.xor")
     if err2 != nil {
-      boldRed.Println("[!] ERROR: Can't create payload.xor file.")
+      BoldRed.Println("[!] ERROR: Can't create payload.xor file.")
       clean()
       os.Exit(1)
     }
     progress()
     payload_key, err3 := os.Create("Payload.key")
     if err3 != nil {
-      boldRed.Println("[!] ERROR: Can't create payload.xor file.")
+      BoldRed.Println("[!] ERROR: Can't create payload.xor file.")
       clean()
       os.Exit(1)
     }
@@ -72,8 +72,8 @@ func crypt() {
   progress()
 
   hex, _ := exec.Command("sh", "-c", "xxd -i Payload.key").Output()
-  verbose("[*] Payload ciphered with: ",boldYellow)
-  verbose(string(hex),boldBlue)
+  verbose("[*] Payload ciphered with: ",BoldYellow)
+  verbose(string(hex),BoldBlue)
 }
 
 
