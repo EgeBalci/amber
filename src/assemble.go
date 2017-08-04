@@ -1,18 +1,24 @@
 package main
 
 import "os/exec"
-import "strings"
 import "os"
 
 func assemble() {
 
-	MapPE, _ := exec.Command("sh", "-c", string("wine MapPE.exe "+peid.fileName)).Output()
-	if strings.Contains(string(MapPE), "[!]") {
-		BoldRed.Println("\n[!] ERROR: While mapping pe file :(")
-		BoldRed.Println(string(MapPE))
+	// Create a file mapping image (5 steps)
+	Map, MapErr:= CreateFileMapping(peid.fileName)
+	MapFile, MapFileErr := os.Create("Mem.map")
+	if MapFileErr != nil || MapErr != nil{
+		BoldRed.Println("\n[!] ERROR: While creating file mapping")
+		BoldRed.Println(MapFileErr)
+		BoldRed.Println(MapErr)
 		clean()
-		os.Exit(1)
+		os.Exit(1)		
 	}
+
+	MapFile.Write(Map.Bytes())
+	MapFile.Close()
+
 
 	progress()
 	if peid.aslr == false {
@@ -96,6 +102,5 @@ func assemble() {
 		}
 		progress()
 	}
-	_MapPE := strings.Split(string(MapPE), "github.com/egebalci/mappe")
-	verbose(string(_MapPE[1]), white)
+	verbose("[*] Assebly completed.", yellow)
 }

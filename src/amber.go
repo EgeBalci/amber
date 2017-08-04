@@ -9,12 +9,15 @@ import "os"
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	// Set the default values..
+	
+	// Set the default values...
+	peid.fileName = ARGS[0]
 	peid.keySize = 8
 	peid.staged = false
 	peid.resource = true
 	peid.verbose = false
 	peid.iat = false
+
 	ARGS := os.Args[1:]
 	if len(ARGS) == 0 || ARGS[0] == "--help" || ARGS[0] == "-h" {
 		Banner()
@@ -22,7 +25,8 @@ func main() {
 		os.Exit(0)
 	}
 	Banner()
-	peid.fileName = ARGS[0]
+	
+	// Parse the parameters...
 	for i := 0; i < len(ARGS); i++ {
 		if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
 			ks, Err := strconv.Atoi(ARGS[i+1])
@@ -50,6 +54,7 @@ func main() {
 			peid.verbose = true
 		}
 	}
+	// Show status
 	BoldYellow.Print("\n[*] File: ")
 	BoldBlue.Println(peid.fileName)
 	BoldYellow.Print("[*] Staged: ")
@@ -65,8 +70,11 @@ func main() {
 	BoldBlue.Println(peid.iat)
 	BoldYellow.Print("[*] Verbose: ")
 	BoldBlue.Println(peid.verbose, "\n")
+
+	// Create the process bar
 	createBar()
-	checkRequired() // 8 steps
+	checkRequired() // Check the required setup (6 steps)
+	// Open the input file
 	file, fileErr := pe.Open(ARGS[0])
 	if fileErr != nil {
 		BoldRed.Println("\n[!] ERROR: Can't open file.")
@@ -74,17 +82,22 @@ func main() {
 		os.Exit(1)
 	}
 	progress()
+	// Analyze the input file
 	analyze(file) // 9 steps
-	assemble()    // 8 steps
+	// Assemble the core amber payload
+	assemble()    // 12 steps
+
 	if peid.staged == true {
 		exec.Command("sh", "-c", string("mv Payload "+peid.fileName+".stage")).Run()
 	} else {
-		compile() // 10 steps
+		compile() // Compile the amber stub (10 steps)
 	}
+	//Clean the created files
 	clean() // 8 steps
 	if peid.verbose == false {
 		progressBar.Finish()
 	}
+	
 	var getSize string = string("wc -c " + peid.fileName + "|tr -d \"" + peid.fileName + "\"|tr -d \"\n\"")
 	if peid.staged == true {
 		getSize = string("wc -c " + peid.fileName + "|tr -d \"" + peid.fileName + ".stage\"|tr -d \"\n\"")

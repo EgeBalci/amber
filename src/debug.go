@@ -15,7 +15,7 @@ func progress() {
 
 func createBar() {
 
-	var full int = 43
+	var full int = 46
 
 	if peid.verbose == false {
 		if peid.staged == true {
@@ -57,21 +57,6 @@ func checkRequired() {
 	if !strings.Contains(string(CheckStrip), "Copyright") {
 		BoldRed.Println("\n\n[!] ERROR: strip is not installed.")
 		red.Println(string(CheckStrip))
-		os.Exit(1)
-	}
-	progress()
-	CheckWine, _ := exec.Command("sh", "-c", "wine --help").Output()
-	if !strings.Contains(string(CheckWine), "Usage:") {
-		BoldRed.Println("\n\n[!] ERROR: wine is not installed.")
-		red.Println(string(CheckWine))
-		os.Exit(1)
-	}
-	progress()
-	CheckMapPE, _ := exec.Command("sh", "-c", "ls MapPE.exe").Output()
-	if !strings.Contains(string(CheckMapPE), "MapPE.exe") {
-		BoldRed.Println("\n\n[!] ERROR: MapPE.exe is missing.")
-		red.Println(string(CheckMapPE))
-		red.Println(mingwErr)
 		os.Exit(1)
 	}
 	progress()

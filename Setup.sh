@@ -20,11 +20,9 @@ tput setaf 3;echo "[*] Installing dependencies..."
 tput setaf 7;
 
 sudo apt-get update
-sudo apt-get install -y golang nasm wine mingw-w64-i686-dev mingw-w64-tools mingw-w64-x86-64-dev mingw-w64-common mingw-w64 mingw-ocaml gcc-multilib g++-multilib
+sudo apt-get install -y golang nasm mingw-w64-i686-dev mingw-w64-tools mingw-w64-x86-64-dev mingw-w64-common mingw-w64 mingw-ocaml gcc-multilib g++-multilib
 
 tput setaf 3;echo "[*] Cloning git tools..."
-
-git clone https://github.com/EgeBalci/MapPE.git
 
 export AMBERPATH=$(pwd)
 cd lib
@@ -33,8 +31,6 @@ cd ..
 
 tput setaf 3;echo "[*] AMBERPATH=$AMBERPATH"
 tput setaf 3;echo "[*] GOPATH=$GOPATH"
-
-mv MapPE/MapPE.exe $AMBERPATH
 
 cd src
 go build -ldflags "-s -w" -o amber
