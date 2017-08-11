@@ -7,7 +7,7 @@ import "bytes"
 
 
 func CreateFileMapping(file string) (bytes.Buffer,error){
-	
+
 	// Open the file as a *pe.File
 	File, err := pe.Open(file)
 	if err != nil {
@@ -29,7 +29,7 @@ func CreateFileMapping(file string) (bytes.Buffer,error){
 	// Check if the PE file is 64 bit
 	if File.Machine == 0x8664 {
 		err := errors.New("[!] ERROR: 64 bit files not supported.")
-		return bytes.Buffer{},err		
+		return bytes.Buffer{},err
 	}
 
 	var Offset uint32 = OptionalHeader.ImageBase
@@ -64,7 +64,7 @@ func CreateFileMapping(file string) (bytes.Buffer,error){
 		for ;; {
 			if Offset < (File.Sections[i].VirtualAddress+File.Sections[i].VirtualSize+OptionalHeader.ImageBase) {
 				Map.WriteString(string(0x00))
-				Offset += 1				
+				Offset += 1
 			}else{
 				break
 			}
@@ -79,7 +79,7 @@ func CreateFileMapping(file string) (bytes.Buffer,error){
 
 	if int(OptionalHeader.SizeOfImage) != Map.Len() {
 		err := errors.New("[!] ERROR: Integrity check failed (Mapping size does not match the size of image header)")
-		return bytes.Buffer{},err	
+		return bytes.Buffer{},err
 	}
 /*
 
@@ -93,7 +93,7 @@ func CreateFileMapping(file string) (bytes.Buffer,error){
 		for j := 0; j < int(File.Sections[i].Size/10); j++ {
 
 			Buffer := Map.Bytes()
-			
+
 			if RawFile[int(int(File.Sections[i].Offset)+j)] != Buffer[int(int(File.Sections[i].VirtualAddress)+j)]{
 				err := errors.New("[!] ERROR: Integrity check failed (Broken section alignment)")
 				return bytes.Buffer{},err

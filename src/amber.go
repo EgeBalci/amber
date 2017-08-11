@@ -9,7 +9,7 @@ import "os"
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	
+
 	// Set the default values...
 	peid.fileName = ARGS[0]
 	peid.keySize = 8
@@ -25,7 +25,7 @@ func main() {
 		os.Exit(0)
 	}
 	Banner()
-	
+
 	// Parse the parameters...
 	for i := 0; i < len(ARGS); i++ {
 		if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
@@ -97,7 +97,7 @@ func main() {
 	if peid.verbose == false {
 		progressBar.Finish()
 	}
-	
+
 	var getSize string = string("wc -c " + peid.fileName + "|tr -d \"" + peid.fileName + "\"|tr -d \"\n\"")
 	if peid.staged == true {
 		getSize = string("wc -c " + peid.fileName + "|tr -d \"" + peid.fileName + ".stage\"|tr -d \"\n\"")

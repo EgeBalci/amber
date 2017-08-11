@@ -13,7 +13,7 @@ func assemble() {
 		BoldRed.Println(MapFileErr)
 		BoldRed.Println(MapErr)
 		clean()
-		os.Exit(1)		
+		os.Exit(1)
 	}
 
 	MapFile.Write(Map.Bytes())

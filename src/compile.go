@@ -6,7 +6,7 @@ import "os"
 
 func compile() {
 
-  
+ 
   verbose("[*] Ciphering payload...",BoldYellow)
   crypt() // 4 steps
 
