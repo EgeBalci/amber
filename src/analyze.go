@@ -2,7 +2,6 @@ package main
 
 import "debug/pe"
 import "os/exec"
-import "fmt"
 import "os"
 
 func analyze(file *pe.File) {
@@ -58,13 +57,7 @@ func analyze(file *pe.File) {
 	progress()
 
 	wc, wcErr := exec.Command("sh", "-c", string("wc -c "+peid.fileName+"|tr -d \""+peid.fileName+"\""+"|tr -d \"\n\"")).Output()
-	if wcErr != nil {
-		BoldRed.Println("\n[!] ERROR: While getting the file size")
-		BoldRed.Println(string(wc))
-		fmt.Println(wcErr)
-		clean()
-		os.Exit(1)
-	}
+	ParseError(wcErr,"\n[!] ERROR: While getting the file size",string(wc))
 
 	peid.fileSize = string(wc)
 	progress()

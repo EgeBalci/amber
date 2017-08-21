@@ -13,26 +13,16 @@ func crypt() {
 
   if len(peid.key) != 0 {
     payload, err := ioutil.ReadFile("Payload")
-    if err != nil {
-      BoldRed.Println("[!] ERROR: Can't open payload file.")
-      clean()
-      os.Exit(1)
-    }
+    ParseError(err,"[!] ERROR: Can't open payload file.","")
+
     progress()
     payload = xor(payload,peid.key)
     payload_xor, err2 := os.Create("Payload.xor")
-    if err2 != nil {
-      BoldRed.Println("[!] ERROR: Can't create payload.xor file.")
-      clean()
-      os.Exit(1)
-    }
+    ParseError(err2,"[!] ERROR: Can't create payload.xor file.","")
+
     progress()
     payload_key, err3 := os.Create("Payload.key")
-    if err3 != nil {
-      BoldRed.Println("[!] ERROR: Can't create payload.xor file.")
-      clean()
-      os.Exit(1)
-    }
+    ParseError(err3,"[!] ERROR: Can't create payload.xor file.","")
     payload_xor.Write(payload)
     payload_xor.Write(peid.key)
 
@@ -43,26 +33,14 @@ func crypt() {
     key := generateKey(peid.keySize)
     progress()
     payload, err := ioutil.ReadFile("Payload")
-    if err != nil {
-      BoldRed.Println("[!] ERROR: Can't open payload file.")
-      clean()
-      os.Exit(1)
-    }
+    ParseError(err,"[!] ERROR: Can't open payload file.","")
     progress()
     payload = xor(payload,key)
     payload_xor, err2 := os.Create("Payload.xor")
-    if err2 != nil {
-      BoldRed.Println("[!] ERROR: Can't create payload.xor file.")
-      clean()
-      os.Exit(1)
-    }
+    ParseError(err2,"[!] ERROR: Can't create payload.xor file.","")
     progress()
     payload_key, err3 := os.Create("Payload.key")
-    if err3 != nil {
-      BoldRed.Println("[!] ERROR: Can't create payload.xor file.")
-      clean()
-      os.Exit(1)
-    }
+    ParseError(err3,"[!] ERROR: Can't create payload.xor file.","")
     payload_xor.Write(payload)
     payload_key.Write(key)
 

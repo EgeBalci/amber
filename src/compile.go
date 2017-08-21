@@ -44,14 +44,7 @@ func compile() {
   progress()
 
   mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
-  if mingwErr != nil {
-    BoldRed.Println("\n[!] ERROR: While compiling to exe.")
-    red.Println(compileCommand)
-    red.Println(string(mingw))
-    fmt.Println(mingwErr)
-    clean()
-    os.Exit(1)
-  }
+  ParseError(mingwErr,"\n[!] ERROR: While compiling to exe.",string(mingw))
 
   progress()
 }

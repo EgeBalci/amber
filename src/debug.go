@@ -1,6 +1,7 @@
 package main
 
 import "os"
+import "fmt"
 import "os/exec"
 import "strings"
 import "github.com/fatih/color"
@@ -40,7 +41,7 @@ func checkRequired() {
 
 	CheckMingw, mingwErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 --version").Output()
 	if !strings.Contains(string(CheckMingw), "Copyright") {
-		BoldRed.Println("\n\n[!] ERROR: mingw is not installed.")
+		BoldRed.Println()
 		red.Println(string(CheckMingw))
 		red.Println(mingwErr)
 		os.Exit(1)
@@ -83,6 +84,21 @@ func checkRequired() {
 	progress()
 
 }
+
+
+func ParseError(Err error,ErrStatus string,Msg string){
+
+	if Err != nil {
+		BoldRed.Println(ErrStatus)
+		fmt.Println(Err)
+		if len(Msg) > 0 {
+			BoldRed.Println(Msg)
+		}
+		clean()
+		os.Exit(1)
+	}
+}
+
 
 func clean() {
 

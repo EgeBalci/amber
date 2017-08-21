@@ -4,7 +4,6 @@ import "debug/pe"
 import "strconv"
 import "os/exec"
 import "runtime"
-import "fmt"
 import "os"
 
 func main() {
@@ -31,9 +30,7 @@ func main() {
 		if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
 			ks, Err := strconv.Atoi(ARGS[i+1])
 			if Err != nil {
-				BoldRed.Println("\n[!] ERROR: Invalid key size.\n")
-				fmt.Println(Err)
-				os.Exit(1)
+				ParseError(Err,"\n[!] ERROR: Invalid key size.\n","")
 			} else {
 				peid.keySize = ks
 			}
@@ -76,11 +73,7 @@ func main() {
 	checkRequired() // Check the required setup (6 steps)
 	// Open the input file
 	file, fileErr := pe.Open(ARGS[0])
-	if fileErr != nil {
-		BoldRed.Println("\n[!] ERROR: Can't open file.")
-		BoldRed.Println(fileErr)
-		os.Exit(1)
-	}
+	ParseError(fileErr,"\n[!] ERROR: Can't open file.","")
 	progress()
 	// Analyze the input file
 	analyze(file) // 9 steps
@@ -103,13 +96,8 @@ func main() {
 		getSize = string("wc -c " + peid.fileName + "|tr -d \"" + peid.fileName + ".stage\"|tr -d \"\n\"")
 	}
 	wc, wcErr := exec.Command("sh", "-c", getSize).Output()
-	if wcErr != nil {
-		BoldRed.Println("\n[!] ERROR: While getting the file size")
-		BoldRed.Println(string(wc))
-		fmt.Println(wcErr)
-		clean()
-		os.Exit(1)
-	}
+	ParseError(wcErr,"\n[!] ERROR: While getting the file size",string(wc))
+
 	BoldYellow.Println("\n[*] Final Size: " + peid.fileSize + "-> " + string(wc) + "bytes")
 	if peid.staged == true {
 		BoldGreen.Println("[+] Stage generated !\n")
