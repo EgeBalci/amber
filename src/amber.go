@@ -10,14 +10,6 @@ import "os"
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	// Set the default values...
-	peid.fileName = ARGS[0]
-	peid.keySize = 8
-	peid.staged = false
-	peid.resource = true
-	peid.verbose = false
-	peid.iat = false
-
 	ARGS := os.Args[1:]
 	if len(ARGS) == 0 || ARGS[0] == "--help" || ARGS[0] == "-h" {
 		Banner()
@@ -25,6 +17,14 @@ func main() {
 		os.Exit(0)
 	}
 	Banner()
+
+	// Set the default values...
+	peid.fileName = ARGS[0]
+	peid.keySize = 7
+	peid.staged = false
+	peid.resource = true
+	peid.verbose = false
+	peid.iat = false
 
 	// Parse the parameters...
 	for i := 0; i < len(ARGS); i++ {
