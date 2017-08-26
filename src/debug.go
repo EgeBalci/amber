@@ -89,12 +89,16 @@ func checkRequired() {
 func ParseError(Err error,ErrStatus string,Msg string){
 
 	if Err != nil {
+		
+		progressBar.Finish()
+		fmt.Println("\n")
 		BoldRed.Println(ErrStatus)
 		fmt.Println(Err)
 		if len(Msg) > 0 {
 			BoldRed.Println(Msg)
 		}
 		clean()
+		fmt.Println("\n")
 		os.Exit(1)
 	}
 }

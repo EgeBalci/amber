@@ -74,6 +74,16 @@ func CreateFileMapping(file string) (bytes.Buffer,error){
 
 	progress()
 
+	for ;; {
+		if (Offset-OptionalHeader.ImageBase) < OptionalHeader.SizeOfImage {
+			Map.WriteString(string(0x00))
+			Offset += 1
+		}else{
+			break
+		}		
+	}
+	
+	progress()
 
 	// Perform integrity checks...
 

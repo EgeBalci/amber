@@ -38,6 +38,8 @@ cd ..
 mv src/amber ./
 go build -ldflags "-s -w" src/handler.go
 
+#sudo ln amber /usr/local/bin/amber
+
 echo "#!/bin/bash" > /tmp/amber
 echo "cd $AMBERPATH" >> /tmp/amber
 echo "./amber \$@" >> /tmp/amber
