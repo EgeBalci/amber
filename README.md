@@ -1,5 +1,5 @@
 # Amber [![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Go-1.6-blue.svg)](https://golang.org)	
-POC crypter for ReplaceProcess method.
+POC Reflective PE packer.
 
 ![](https://github.com/EgeBalci/Amber/raw/master/amber.ico)
 
