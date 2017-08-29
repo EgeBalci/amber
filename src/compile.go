@@ -1,7 +1,6 @@
 package main
 
 import "os/exec"
-import "fmt"
 import "os"
 
 func compile() {
@@ -23,13 +22,8 @@ func compile() {
   progress()
 
   mingwObj, mingwObjErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c Stub/Stub.cpp").Output()
-  if mingwObjErr != nil {
-    BoldRed.Println("\n[!] ERROR: While compiling the object file.")
-    red.Println(string(mingwObj))
-    fmt.Println(mingwObjErr)
-    clean()
-    os.Exit(1)
-  }
+  ParseError(mingwObjErr,"\n[!] ERROR: While compiling the object file.",string(mingwObj))
+  
   progress()
 
   var compileCommand string = "i686-w64-mingw32-g++-win32 Stub.o "

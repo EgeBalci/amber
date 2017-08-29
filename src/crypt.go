@@ -50,7 +50,7 @@ func crypt() {
   progress()
 
   hex, _ := exec.Command("sh", "-c", "xxd -i Payload.key").Output()
-  verbose("[*] Payload ciphered with: ",BoldYellow)
+  verbose("[*] Payload ciphered with: \n",BoldYellow)
   verbose(string(hex),BoldBlue)
 }
 

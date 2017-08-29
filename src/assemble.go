@@ -14,8 +14,8 @@ func assemble() {
 	MapFile.Write(Map.Bytes())
 	MapFile.Close()
 
-
 	progress()
+
 	if peid.aslr == false {
 		moveMapCommand := "mv Mem.map core/NonASLR/"
 		if peid.iat == true {

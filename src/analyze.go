@@ -2,21 +2,20 @@ package main
 
 import "debug/pe"
 import "os/exec"
-import "os"
+import "errors"
+
 
 func analyze(file *pe.File) {
 	//Do analysis on pe file...
 
 	if file.FileHeader.Machine != 0x14C {
-		BoldRed.Println("\n[!] ERROR: File is not a 32 bit PE.")
-		os.Exit(1)
+		ParseError(errors.New(""),"\n[!] ERROR: File is not a 32 bit PE.","")
 	}
 	progress()
 	var Opt *pe.OptionalHeader32 = file.OptionalHeader.(*pe.OptionalHeader32)
 	// PE32 = 0x10B
 	if Opt.Magic != 0x10B {
-		BoldRed.Println("\n[!] ERROR: File is not a valid PE.")
-		os.Exit(1)
+		ParseError(errors.New(""),"\n[!] ERROR: File is not a valid PE.","")
 	}
 	progress()
 	peid.imageBase = Opt.ImageBase
@@ -24,35 +23,37 @@ func analyze(file *pe.File) {
 	peid.subsystem = Opt.Subsystem
 	progress()
 
-	if (Opt.DataDirectory[5].Size) != 0x00 {
+
+	if (Opt.DataDirectory[5].Size) != 0x00 && peid.verbose == true {
 		peid.aslr = true
-		if peid.verbose == true {
-			BoldGreen.Println("[+] ASLR supported !")
-			BoldYellow.Println("[*] Using ASLR stub...")
-		}
-	} else {
+		BoldGreen.Println("[+] ASLR supported !")
+		BoldYellow.Println("[*] Using ASLR stub...")
+		
+	} else if (Opt.DataDirectory[5].Size) == 0x00 && peid.verbose == true {
 		peid.aslr = false
-		if peid.verbose == true {
-			BoldYellow.Println("[-] ASLR not supported :(")
-			BoldYellow.Println("[*] Using Non-ASLR stub...")
-		}
+		BoldRed.Println("[-] ASLR not supported :(")
+		BoldYellow.Println("[*] Using Non-ASLR stub...")
+		
 	}
 	progress()
 
 	if (Opt.DataDirectory[11].Size) != 0x00 {
-		BoldRed.Println("\n[!] ERROR: File has bounded imports.")
-		os.Exit(1)
+		ParseError(errors.New(""),"\n[!] ERROR: File has bounded imports.","")
 	}
 	progress()
+
+	if (Opt.DataDirectory[14].Size) != 0x00 {
+		ParseError(errors.New(""),"\n[!] ERROR: .NET binaries are not supported.","")
+	}
+	progress()
+
 	if (Opt.DataDirectory[13].Size) != 0x00 {
-		BoldRed.Println("\n[!] ERROR: File has delayed imports.")
-		os.Exit(1)
+		ParseError(errors.New(""),"\n[!] ERROR: File has delayed imports.","")
 	}
 	progress()
 
 	if (Opt.DataDirectory[1].Size) == 0x00 {
-		BoldRed.Println("\n[!] ERROR: File has empty import table.")
-		os.Exit(1)
+		ParseError(errors.New(""),"\n[!] ERROR: File has empty import table.","")
 	}
 	progress()
 
@@ -65,15 +66,15 @@ func analyze(file *pe.File) {
 	peid.Opt = Opt
 
 	if peid.verbose == true {
-		BoldYellow.Println("[*] File Size: " + peid.fileSize)
-		BoldYellow.Printf("[*] Machine: %X\n", file.FileHeader.Machine)
-		BoldYellow.Printf("[*] Magic: %X\n", Opt.Magic)
-		BoldYellow.Printf("[*] Subsystem: %X\n", Opt.Subsystem)
-		BoldYellow.Printf("[*] Image Base: %X\n", peid.imageBase)
-		BoldYellow.Printf("[*] Size Of Image: %X\n", Opt.SizeOfImage)
-		BoldYellow.Printf("[*] Export Table: %X\n", (Opt.DataDirectory[0].VirtualAddress + Opt.ImageBase))
-		BoldYellow.Printf("[*] Import Table: %X\n", (Opt.DataDirectory[1].VirtualAddress + Opt.ImageBase))
-		BoldYellow.Printf("[*] Base Relocation Table: %X\n", (Opt.DataDirectory[5].VirtualAddress + Opt.ImageBase))
-		BoldYellow.Printf("[*] Import Address Table: %X\n", (Opt.DataDirectory[12].VirtualAddress + Opt.ImageBase))
+		BoldYellow.Println("[*] File Size: " + peid.fileSize + " byte")
+		BoldYellow.Printf("[*] Machine: 0x%X\n", file.FileHeader.Machine)
+		BoldYellow.Printf("[*] Magic: 0x%X\n", Opt.Magic)
+		BoldYellow.Printf("[*] Subsystem: 0x%X\n", Opt.Subsystem)
+		BoldYellow.Printf("[*] Image Base: 0x%X\n", peid.imageBase)
+		BoldYellow.Printf("[*] Size Of Image: 0x%X\n", Opt.SizeOfImage)
+		BoldYellow.Printf("[*] Export Table: 0x%X\n", (Opt.DataDirectory[0].VirtualAddress + Opt.ImageBase))
+		BoldYellow.Printf("[*] Import Table: 0x%X\n", (Opt.DataDirectory[1].VirtualAddress + Opt.ImageBase))
+		BoldYellow.Printf("[*] Base Relocation Table: 0x%X\n", (Opt.DataDirectory[5].VirtualAddress + Opt.ImageBase))
+		BoldYellow.Printf("[*] Import Address Table: 0x%X\n", (Opt.DataDirectory[12].VirtualAddress + Opt.ImageBase))
 	}
 }

@@ -76,13 +76,17 @@ echo -e $Color_Off
 
 
 
-if [ $DIST == "Ubuntu" ] || [ $DIST == "Kali" ] || [ $DIST == "Mint" ]
+if [ $DIST == "Ubuntu" ] || [ $DIST == "Kali" ] || [ $DIST == "Mint" ] || [ $DIST == "Debian" ]
 then
 	sudo apt-get update
 	sudo apt-get install -y golang nasm mingw-w64-i686-dev mingw-w64-tools mingw-w64-x86-64-dev mingw-w64-common mingw-w64 mingw-ocaml gcc-multilib g++-multilib
 elif [ $DIST == "Arch" ] || [ $DIST == "Manjaro" ]
 then
-	packman -S -y golang nasm mingw-w64-i686-dev mingw-w64-tools mingw-w64-x86-64-dev mingw-w64-common mingw-w64 mingw-ocaml gcc-multilib g++-multilib
+	pacman -S --noconfirm go nasm mingw-w64-i686-dev mingw-w64-tools mingw-w64-x86-64-dev mingw-w64-common mingw-w64 mingw-ocaml gcc-multilib g++-multilib
+elif [ $DIST == "Unknown" ]
+then
+	echo -e -n $BRed
+	echo "[!] OS not supported :("
 fi
 
 echo -e $Yellow
