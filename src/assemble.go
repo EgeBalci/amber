@@ -17,14 +17,14 @@ func assemble() {
 	progress()
 
 	if peid.aslr == false {
-		moveMapCommand := "mv Mem.map core/NonASLR/"
+		moveMapCommand := "mv Mem.map core/Fixed/"
 		if peid.iat == true {
 			moveMapCommand += "iat/"
 		}
 		moveMap, moveMapErr := exec.Command("sh", "-c", moveMapCommand).Output()
 		ParseError(moveMapErr,"\n[!] ERROR: While moving the file map",string(moveMap))
 		progress()
-		nasmCommand := "cd core/NonASLR/"
+		nasmCommand := "cd core/Fixed/"
 		if peid.iat == true {
 			nasmCommand += "iat/"
 		}
@@ -33,9 +33,9 @@ func assemble() {
 		ParseError(Err,"\n[!] ERROR: While assembling payload :(",string(nasm))
 
 		progress()
-		movePayloadCommand := "mv core/NonASLR/Payload ./"
+		movePayloadCommand := "mv core/Fixed/Payload ./"
 		if peid.iat == true {
-			movePayloadCommand = "mv core/NonASLR/iat/Payload ./"
+			movePayloadCommand = "mv core/Fixed/iat/Payload ./"
 		}
 		movePayload, movePayErr := exec.Command("sh", "-c", movePayloadCommand).Output()
 		ParseError(movePayErr,"\n[!] ERROR: While moving the payload",string(movePayload))

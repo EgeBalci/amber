@@ -38,6 +38,17 @@ Stub:
 	call GetAOE					; Get image base and AOE
 	push ebx					; Store the image base to stack
 	add [esp],eax				; Add the AOE value
+FixSEH:
+	push dword 0x00
+	push 0x65E15F9D 			; hash( "KERNEL32.dll", "GetModuleHandle" )
+	call ebp
+	push 0x64616572				; "daer"
+	push 0x68547469				; "hTti"
+	push 0x78450000				; "xE",0x00 ("ExitThread")
+	push eax					; KERNEL32.dll handle
+	push 0x7802F749				; hash( "KERNEL32.dll", "GetProcAddress" )
+	call ebp
+	mov dword [fs:0x00],eax
 Memcpy:	
 	mov al,[esi] 				; Move 1 byte of PE image to AL register
 	mov [ebx],al 				; Move 1 byte of PE image to image base
