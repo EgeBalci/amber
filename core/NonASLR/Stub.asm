@@ -47,14 +47,6 @@ Memcpy:
 	cmp ecx,ImageSize 			; Check if ECX is 0
 	jnz Memcpy 					; If not loop
 	mov dword eax,[esp]			; Copy the AOEP to eax
-SEH:							; # Here we will fix the SEH record on PEB for preventing lethal crashes caused by exceptions
-	call FixSEH					; Get the infinite loop label address to stack
-ILoop:
-	nop							; mov eax,eax ;)
-	jmp ILoop					; Again !
-FixSEH:
-	pop eax						; Get the loop label address to eax
-	mov dword [fs:0x00],eax		; Replace the SEH record with the infinite loop label address
 	ret							; Return to the AOEP
 Fail:
 	ret							; VirtualProtect failed :(
