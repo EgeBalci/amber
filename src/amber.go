@@ -76,14 +76,14 @@ func main() {
 	ParseError(fileErr,"\n[!] ERROR: Can't open file.","")
 	progress()
 	// Analyze the input file
-	analyze(file) // 9 steps
+	analyze(file) // 10 steps
 	// Assemble the core amber payload
-	assemble()    // 12 steps
+	assemble()    // 10 steps
 
 	if peid.staged == true {
 		exec.Command("sh", "-c", string("mv Payload "+peid.fileName+".stage")).Run()
 	} else {
-		compile() // Compile the amber stub (10 steps)
+		compile() // Compile the amber stub (9 steps)
 	}
 	//Clean the created files
 	clean() // 8 steps
@@ -102,7 +102,7 @@ func main() {
 	if peid.staged == true {
 		BoldGreen.Println("[+] Stage generated !\n")
 	} else {
-		BoldGreen.Println("[+] File successfully crypted !\n")
+		BoldGreen.Println("[+] File successfully packed !\n")
 	}
 
 }
@@ -123,7 +123,7 @@ func Banner() {
 	BoldBlue.Print("\n# Version: ")
 	BoldGreen.Println(VERSION)
 	BoldBlue.Print("# Source: ")
-	BoldGreen.Println("github.com/EgeBalci/Amber")
+	BoldGreen.Println("github.com/egebalci/Amber")
 
 }
 

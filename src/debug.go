@@ -16,11 +16,11 @@ func progress() {
 
 func createBar() {
 
-	var full int = 46
+	var full int = 43
 
 	if peid.verbose == false {
 		if peid.staged == true {
-			full -= 10
+			full -= 9
 		}
 
 		progressBar = pb.New(full)

@@ -5,7 +5,7 @@ import "os"
 
 func assemble() {
 
-	// Create a file mapping image (5 steps)
+	// Create a file mapping image (6 steps)
 	Map, MapErr:= CreateFileMapping(peid.fileName)
 	ParseError(MapErr,"\n[!] ERROR: While creating file mapping","")
 	MapFile, MapFileErr := os.Create("Mem.map")
