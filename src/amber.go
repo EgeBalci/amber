@@ -83,7 +83,7 @@ func main() {
 	if peid.staged == true {
 		exec.Command("sh", "-c", string("mv Payload "+peid.fileName+".stage")).Run()
 	} else {
-		compile() // Compile the amber stub (9 steps)
+		compile() // Compile the amber stub (10 steps)
 	}
 	//Clean the created files
 	clean() // 8 steps

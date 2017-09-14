@@ -16,11 +16,11 @@ func progress() {
 
 func createBar() {
 
-	var full int = 43
+	var full int = 44
 
 	if peid.verbose == false {
 		if peid.staged == true {
-			full -= 9
+			full -= 10
 		}
 
 		progressBar = pb.New(full)
@@ -90,7 +90,7 @@ func ParseError(Err error,ErrStatus string,Msg string){
 
 	if Err != nil {
 		
-		progressBar.Finish()
+		//progressBar.Finish()
 		fmt.Println("\n")
 		BoldRed.Println(ErrStatus)
 		fmt.Println(Err)

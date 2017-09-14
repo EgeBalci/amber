@@ -41,4 +41,9 @@ func compile() {
   ParseError(mingwErr,"\n[!] ERROR: While compiling to exe.",string(mingw))
 
   progress()
+
+  strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.fileName)).Output()
+  ParseError(stripErr,"\n[!] ERROR: While compiling to exe.",string(strip))
+
+  progress()
 }
