@@ -5,7 +5,7 @@
 [BITS 32]
 [ORG 0]
 
-%include "IAT.asm"
+%include "../../IAT.asm"
 
 GetAOE:
 	mov eax,[esi+0x3C]			; Get the offset of "PE" to eax

@@ -13,7 +13,7 @@
 [BITS 32]
 [ORG 0]
 
-%include "IAT.asm"
+%include "../../IAT.asm"
 
 	pushad					; Save all registers to stack
 	pushfd					; Save all flags to stack
