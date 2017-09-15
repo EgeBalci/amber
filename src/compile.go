@@ -4,7 +4,6 @@ import "os/exec"
 import "os"
 
 func compile() {
-
  
   verbose("[*] Ciphering payload...",BoldYellow)
   crypt() // 4 steps
@@ -37,13 +36,14 @@ func compile() {
   }
   progress()
 
+  verbose("[*] Compiling to EXE...",BoldYellow)
   mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
   ParseError(mingwErr,"\n[!] ERROR: While compiling to exe.",string(mingw))
 
   progress()
 
   strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.fileName)).Output()
-  ParseError(stripErr,"\n[!] ERROR: While compiling to exe.",string(strip))
+  ParseError(stripErr,"\n[!] ERROR: While striping the exe.",string(strip))
 
   progress()
 }

@@ -69,11 +69,12 @@ func main() {
 	BoldBlue.Println(peid.verbose, "\n")
 
 	// Create the process bar
-	createBar()
-	checkRequired() // Check the required setup (6 steps)
+	CreateProgressBar()
+	CheckRequirements() // Check the required setup (6 steps)
 	// Open the input file
+	verbose("[*] Opening input file...",BoldYellow)
 	file, fileErr := pe.Open(ARGS[0])
-	ParseError(fileErr,"\n[!] ERROR: Can't open file.","")
+	ParseError(fileErr,"\n[!] ERROR: Can not open input file.","")
 	progress()
 	// Analyze the input file
 	analyze(file) // 10 steps
@@ -85,7 +86,7 @@ func main() {
 	} else {
 		compile() // Compile the amber stub (10 steps)
 	}
-	//Clean the created files
+	// Clean the created files
 	clean() // 8 steps
 	if peid.verbose == false {
 		progressBar.Finish()
@@ -93,7 +94,7 @@ func main() {
 
 	var getSize string = string("wc -c " + peid.fileName + "|tr -d \"" + peid.fileName + "\"|tr -d \"\n\"")
 	if peid.staged == true {
-		getSize = string("wc -c " + peid.fileName + "|tr -d \"" + peid.fileName + ".stage\"|tr -d \"\n\"")
+		getSize = string("wc -c " + peid.fileName+ ".stage" + "|tr -d \"" + peid.fileName + ".stage\"|tr -d \"\n\"")
 	}
 	wc, wcErr := exec.Command("sh", "-c", getSize).Output()
 	ParseError(wcErr,"\n[!] ERROR: While getting the file size",string(wc))

@@ -14,7 +14,7 @@ func progress() {
 	}
 }
 
-func createBar() {
+func CreateProgressBar() {
 
 	var full int = 44
 
@@ -34,10 +34,11 @@ func verbose(str string, col *color.Color) {
 	if peid.verbose == true {
 		col.Println(str)
 	}
-
 }
 
-func checkRequired() {
+func CheckRequirements() {
+
+	verbose("[*] Checking requirments...",BoldYellow)
 
 	CheckMingw, mingwErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 --version").Output()
 	if !strings.Contains(string(CheckMingw), "Copyright") {

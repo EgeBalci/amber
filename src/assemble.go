@@ -5,6 +5,8 @@ import "os"
 
 func assemble() {
 
+	verbose("[*] Assembling reflective payload...",BoldYellow)
+
 	// Create a file mapping image (6 steps)
 	Map, MapErr:= CreateFileMapping(peid.fileName)
 	ParseError(MapErr,"\n[!] ERROR: While creating file mapping","")
