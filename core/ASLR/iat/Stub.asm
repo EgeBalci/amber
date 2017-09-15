@@ -15,8 +15,6 @@
 
 %include "../../IAT.asm"
 
-	pushad					; Save all registers to stack
-	pushfd					; Save all flags to stack
 	call Stub				; ...
 PE:
 	incbin "Mem.map"		; PE file image
@@ -65,6 +63,5 @@ GetAOE:
 	mov eax,[eax+esi+0x28]	; Get the address of entry point to eax
 	ret						; <-
 OpEnd:
-	popfd					; Put back all saved flags
-	popad					; Put back all saved registers
-	ret						; Continue the execution
+	nop						; Chill ;)
+	jmp OpEnd				; To infinity and beyond !
