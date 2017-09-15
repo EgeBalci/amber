@@ -87,7 +87,7 @@ func main() {
 		compile() // Compile the amber stub (10 steps)
 	}
 	// Clean the created files
-	clean() // 8 steps
+	clean() // 10 steps
 	if peid.verbose == false {
 		progressBar.Finish()
 	}

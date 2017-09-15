@@ -8,13 +8,13 @@ func compile() {
   verbose("[*] Ciphering payload...",BoldYellow)
   crypt() // 4 steps
 
-  xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > stub/PAYLOAD.h")
+  xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > stub/payload.h")
   xxd.Stdout = os.Stdout
   xxd.Stderr = os.Stderr
   xxd.Run()
   progress()
 
-  _xxd := exec.Command("sh", "-c", "xxd -i Payload.key > stub/KEY.h")
+  _xxd := exec.Command("sh", "-c", "xxd -i Payload.key > stub/key.h")
   _xxd.Stdout = os.Stdout
   _xxd.Stderr = os.Stderr
   _xxd.Run()

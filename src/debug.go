@@ -16,7 +16,7 @@ func progress() {
 
 func CreateProgressBar() {
 
-	var full int = 44
+	var full int = 46
 
 	if peid.verbose == false {
 		if peid.staged == true {
@@ -107,19 +107,23 @@ func ParseError(Err error,ErrStatus string,Msg string){
 
 func clean() {
 
-	exec.Command("sh", "-c", "rm core/Mem.map").Run()
+	exec.Command("sh", "-c", "rm core/ASLR/Mem.map").Run()
 	progress()
-	exec.Command("sh", "-c", "rm core/iat/Mem.map").Run()
+	exec.Command("sh", "-c", "rm core/ASLR/iat/Mem.map").Run()
 	progress()
-	exec.Command("sh", "-c", "rm Stub.o").Run()
+	exec.Command("sh", "-c", "rm core/Fixed/Mem.map").Run()
+	progress()
+	exec.Command("sh", "-c", "rm core/Fixed/iat/Mem.map").Run()
+	progress()
+	exec.Command("sh", "-c", "rm stub.o").Run()
 	progress()
 	exec.Command("sh", "-c", "rm Payload").Run()
 	progress()
 	exec.Command("sh", "-c", "rm Payload.key").Run()
 	progress()
-	exec.Command("sh", "-c", "echo   > Stub/PAYLOAD.h").Run()
+	exec.Command("sh", "-c", "echo   > stub/payload.h").Run()
 	progress()
-	exec.Command("sh", "-c", "echo   > Stub/KEY.h").Run()
+	exec.Command("sh", "-c", "echo   > stub/key.h").Run()
 	progress()
 
 }

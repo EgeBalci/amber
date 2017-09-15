@@ -1,7 +1,12 @@
-# Amber [![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Go-1.6-blue.svg)](https://golang.org)	
+# Amber [![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org)	
 POC Reflective PE packer.
 
 ![](https://github.com/EgeBalci/Amber/raw/master/amber.ico)
+
+# REFLECTIVE PE PACKING WITH AMBER
+
+//PENTEST.BLOG
+
 
 # INSTALLATION
 
@@ -13,7 +18,7 @@ SUPPORTED PLATFORMS:
     </tr>
     <tr>
         <td>Ubuntu</td>
-        <td> * </td>
+        <td> 16.04\16.10\17.04 </td>
     </tr>
     <tr>
         <td>Kali linux</td>

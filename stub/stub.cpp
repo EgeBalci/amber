@@ -1,7 +1,7 @@
 #include <windows.h>
 #include "AntiSandbox.h"
-#include "PAYLOAD.h"
-#include "KEY.h"
+#include "payload.h"
+#include "key.h"
 
 
 void ExecutePayload();

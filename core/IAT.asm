@@ -4,4 +4,5 @@
 %define LLA 0x00000000
 %define GPA 0x00000000
 %define VA 0x00000000
+%define VP 0x00000000
 %define CT 0x00000000

@@ -7,13 +7,6 @@
 
 %include "../../IAT.asm"
 
-GetAOE:
-	mov eax,[esi+0x3C]			; Get the offset of "PE" to eax
-	mov ebx,[eax+esi+0x34]		; Get the image base address to ebx
-	mov eax,[eax+esi+0x28]		; Get the address of entry point to eax
-	ret							; <-
-Start:
-	pop ebp
 	call Stub
 PE:
 	incbin "Mem.map"			; PE file image
@@ -44,5 +37,10 @@ Memcpy:
 	jnz Memcpy 					; If not loop
 	mov dword eax,[esp]			; Copy the AOEP to eax
 	ret							; Return to the AOEP
+GetAOE:
+	mov eax,[esi+0x3C]			; Get the offset of "PE" to eax
+	mov ebx,[eax+esi+0x34]		; Get the image base address to ebx
+	mov eax,[eax+esi+0x28]		; Get the address of entry point to eax
+	ret							; <-
 Fail:
 	ret							; VirtualProtect failed :(
