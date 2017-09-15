@@ -42,7 +42,7 @@ func main() {
 			peid.staged = true
 		}
 		if ARGS[i] == "--iat" {
-			peid.staged = true
+			peid.iat = true
 		}
 		if ARGS[i] == "--no-resource" {
 			peid.resource = false

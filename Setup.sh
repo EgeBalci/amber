@@ -100,11 +100,9 @@ cd ..
 echo "[*] AMBERPATH=$AMBERPATH"
 echo "[*] GOPATH=$GOPATH"
 echo -e -n $Color_Off
-cd src
-go build -ldflags "-s -w" -o amber
-cd ..
-mv src/amber ./
 go build -ldflags "-s -w" handler.go
+cd src
+go build -ldflags "-s -w" -o ../amber
 
 #sudo ln amber /usr/local/bin/amber
 

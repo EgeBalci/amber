@@ -2,8 +2,8 @@
 ;
 ; #########################################
 ; #  EBX -> Original image base           #
-; #  ESI -> Address of PE image		  #
-; #  EBP -> &hash_api			  #  				
+; #  ESI -> Address of PE image		  	  #
+; #  EBP -> &hash_api			  		  #  				
 ; #########################################
 ; 
 ; Author: Ege Balcı <egebalci[at]protonmail[dot]com> 
