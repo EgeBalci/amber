@@ -41,7 +41,7 @@ func analyze(file *pe.File) {
 	}
 	progress()
 	if (Opt.DataDirectory[13].Size) != 0x00 {
-		ParseError(errors.New(""),"\n[!] ERROR: File has delayed imports.","")
+		verbose("[!] WARNING: File has delayed imports. (This could be a problem :/ )",BoldYellow)
 	}
 	progress()
 	if (Opt.DataDirectory[1].Size) == 0x00 {
