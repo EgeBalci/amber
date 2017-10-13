@@ -3,7 +3,7 @@
 [![Banner](https://github.com/EgeBalci/Amber/raw/master/Banner.png)](https://github.com/egebalci/Amber)
 
 
-Amber is a proof of concept parker, it can pack regularly compiled PE files into reflective PE files that can be used as multi stage infection payloads. If you want to learn the packing methodology used inside the Amber check out below. 
+Amber is a proof of concept packer, it can pack regularly compiled PE files into reflective PE files that can be used as multi stage infection payloads. If you want to learn the packing methodology used inside the Amber check out below. 
 
 PS: This is not a complete tool some things may break so take it easy on the issues :sweat_smile: and feel free to contribute.
 
@@ -84,6 +84,11 @@ SUPPORTED PLATFORMS:
 		EXAMPLE:
 		  (Default settings if no option parameter passed)
 		  amber file.exe -ks 8
+
+# DETECTION
+
+
+
 
 # TODO
 
