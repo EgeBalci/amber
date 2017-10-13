@@ -1,7 +1,7 @@
 # AMBER [![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org)	
 POC Reflective PE packer.
 
-![](https://github.com/EgeBalci/Amber/raw/master/Banner.png)	![](https://github.com/EgeBalci/Amber/raw/master/amber.ico)
+![](https://github.com/EgeBalci/Amber/raw/master/Banner.png)
 
 # REFLECTIVE PE PACKING WITH AMBER
 
