@@ -1,11 +1,11 @@
-# AMBER [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)	
+# AMBER [![Version](https://img.shields.io/badge/version-1.0-brightgreen.svg)] [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)	
 
 [![Banner](https://github.com/EgeBalci/Amber/raw/master/Banner.png)](https://github.com/egebalci/Amber)
 
 
 Amber is a proof of concept parker, it can pack regularly compiled PE files into reflective PE files that can be used as multi stage infection payloads. If you want to learn the packing methodology used inside the Amber check out below. 
 
-		PS: This is not a complete tool some things may break so take it easy on the issues :sweat_smile: and feel free to contribute.
+PS: This is not a complete tool some things may break so take it easy on the issues :sweat_smile: and feel free to contribute.
 
 # REFLECTIVE PE PACKING WITH AMBER
 
