@@ -97,3 +97,4 @@ SUPPORTED PLATFORMS:
 - [ ] Add yara rules to repo
 - [ ] Write a unpacker for Amber payloads
 - [ ] Automate IAT index address finding on --iat option
+- [ ] Add assembly encoder & anti debug features

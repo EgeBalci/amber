@@ -38,7 +38,7 @@ func compile() {
 
   verbose("[*] Compiling to EXE...",BoldYellow)
   mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
-  ParseError(mingwErr,"\n[!] ERROR: While compiling to exe.",string(mingw))
+  ParseError(mingwErr,"\n[!] ERROR: While compiling to exe. (This might caused by a permission issue)",string(mingw))
 
   progress()
 
