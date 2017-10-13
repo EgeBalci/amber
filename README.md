@@ -1,4 +1,4 @@
-# AMBER [![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org)	
+# AMBER [![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)	
 POC Reflective PE packer.
 
 ![](https://github.com/EgeBalci/Amber/raw/master/Banner.png)
@@ -37,7 +37,7 @@ SUPPORTED PLATFORMS:
         <td> * </td>
     </tr>
     <tr>
-        <td>Parrot OS</td>
+        <td>Debian</td>
         <td> * </td>
     </tr>
 </table>
@@ -54,10 +54,10 @@ SUPPORTED PLATFORMS:
 		//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
 		//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
 		//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-		//  POC Crypter For ReplaceProcess                                             
+		//  POC Reflective PE Packer                                             
 
 		# Version: 1.0.0
-		# Source: github.com/EgeBalci/Amber
+		# Source: github.com/egebalci/Amber
 
 
 		USAGE: 
@@ -68,9 +68,13 @@ SUPPORTED PLATFORMS:
 		  
 		  -k, --key       [string]        Custom cipher key
 		  -ks,--keysize   <length>        Size of the encryption key in bytes (Max:100/Min:4)
+		  --staged                        Generated a staged payload
+		  --iat                           Uses import address table entries instead of hash api
+		  --no-resource                   Don't add any resource
 		  -v, --verbose                   Verbose output mode
 		  -h, --help                      Show this massage
 
 		EXAMPLE:
 		  (Default settings if no option parameter passed)
-		  amber file.exe -ks 8 -o crypted.exe
+		  amber file.exe -ks 8
+
