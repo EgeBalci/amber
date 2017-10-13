@@ -99,7 +99,7 @@ func main() {
 	wc, wcErr := exec.Command("sh", "-c", getSize).Output()
 	ParseError(wcErr,"\n[!] ERROR: While getting the file size",string(wc))
 
-	BoldYellow.Println("\n[*] Final Size: " + peid.fileSize + "-> " + string(wc) + "bytes")
+	BoldYellow.Println("\n[*] Final Size: " + peid.fileSize + " -> " + string(wc) + " bytes")
 	if peid.staged == true {
 		BoldGreen.Println("[+] Stage generated !\n")
 	} else {

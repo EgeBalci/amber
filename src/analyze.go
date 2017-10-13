@@ -56,7 +56,7 @@ func analyze(file *pe.File) {
 	peid.Opt = Opt
 
 	if peid.verbose == true {
-		BoldYellow.Println("[*] File Size: " + peid.fileSize + "byte")
+		BoldYellow.Println("[*] File Size: " + peid.fileSize + " byte")
 		BoldYellow.Printf("[*] Machine: 0x%X\n", file.FileHeader.Machine)
 		BoldYellow.Printf("[*] Magic: 0x%X\n", Opt.Magic)
 		BoldYellow.Printf("[*] Subsystem: 0x%X\n", Opt.Subsystem)
