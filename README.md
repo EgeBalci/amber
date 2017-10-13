@@ -9,6 +9,7 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 
 # REFLECTIVE PE PACKING WITH AMBER
 
+Blog Post												Paper
 [![pentest.blog](https://pbs.twimg.com/profile_images/806107797528215552/kP454LpJ_reasonably_small.jpg)](https://pentest.blog/packing-reflective-pe-files-with-amber)
 
 
