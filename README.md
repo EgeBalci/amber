@@ -80,8 +80,8 @@ SUPPORTED PLATFORMS:
 
 # TODO
 
-- [] .NET file support
-- [] Add a IAT parser shellcode to stub
-- [] Add yara rules to repo
-- [] Write a unpacker for Amber payloads
-- [] Automate IAT index address finding on --iat option
+- [ ] .NET file support
+- [ ] Add a IAT parser shellcode to stub
+- [ ] Add yara rules to repo
+- [ ] Write a unpacker for Amber payloads
+- [ ] Automate IAT index address finding on --iat option
