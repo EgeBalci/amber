@@ -92,9 +92,9 @@ func main() {
 		progressBar.Finish()
 	}
 
-	var getSize string = string("wc -c " + peid.fileName + "|awk {print $1}|tr -d '\n'")
+	var getSize string = string("wc -c " + peid.fileName + "|awk '{print $1}'|tr -d '\n'")
 	if peid.staged == true {
-		getSize = string("wc -c " + peid.fileName+ ".stage" + "|awk {print $1}|tr -d '\n'")
+		getSize = string("wc -c " + peid.fileName+ ".stage" + "|awk '{print $1}'|tr -d '\n'")
 	}
 	wc, wcErr := exec.Command("sh", "-c", getSize).Output()
 	ParseError(wcErr,"\n[!] ERROR: While getting the file size",string(wc))
