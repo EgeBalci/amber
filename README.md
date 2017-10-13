@@ -1,4 +1,4 @@
-# AMBER [![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)	
+# AMBER [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)	
 POC Reflective PE packer.
 
 ![](https://github.com/EgeBalci/Amber/raw/master/Banner.png)
@@ -78,3 +78,10 @@ SUPPORTED PLATFORMS:
 		  (Default settings if no option parameter passed)
 		  amber file.exe -ks 8
 
+# TODO
+
+- [] .NET file support
+- [] Add a IAT parser shellcode to stub
+- [] Add yara rules to repo
+- [] Write a unpacker for Amber payloads
+- [] Automate IAT index address finding on --iat option
