@@ -5,7 +5,7 @@ import "os"
 
 func assemble() {
 
-	verbose("[*] Assembling reflective payload...",BoldYellow)
+	verbose("Assembling reflective payload...","*")
 
 	// Create a file mapping image (6 steps)
 	Map, MapErr:= CreateFileMapping(peid.fileName)
@@ -68,5 +68,5 @@ func assemble() {
 		ParseError(movePayErr,"\n[!] ERROR: While moving the payload",string(movePayload))
 		progress()
 	}
-	verbose("[*] Assebly completed.", yellow)
+	verbose("Assebly completed.", "*")
 }

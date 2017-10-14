@@ -8,7 +8,7 @@ import "bytes"
 
 func CreateFileMapping(file string) (bytes.Buffer,error){
 
-	verbose("[*] Mapping PE file...",BoldYellow)
+	verbose("Mapping PE file...","*")
 
 	// Open the file as a *pe.File
 	File, err := pe.Open(file)
@@ -89,14 +89,14 @@ func CreateFileMapping(file string) (bytes.Buffer,error){
 
 	// Perform integrity checks...
 
-	verbose("\n[#] Performing integrity checks  on file mapping...\n|",BoldYellow)
+	verbose("\n[#] Performing integrity checks  on file mapping...\n|","Y")
 
 	if int(OptionalHeader.SizeOfImage) != Map.Len() {
 		err := errors.New("[!] ERROR: Integrity check failed (Mapping size does not match the size of image header)")
 		return bytes.Buffer{},err
 	}
 
-	verbose("[Image Size]------------> OK",BoldYellow)
+	verbose("[Image Size]------------> OK","Y")
 /*
 
 	if Offset != ((File.Sections[len(File.Sections)-1].SectionHeader.VirtualAddress)+(File.Sections[len(File.Sections)-1].SectionHeader.VirtualSize)){
@@ -117,7 +117,7 @@ func CreateFileMapping(file string) (bytes.Buffer,error){
 		}
 	}
 
-	verbose("[Section Alignment]-----> OK\n",BoldYellow)
+	verbose("[Section Alignment]-----> OK\n","Y")
 
 	// Add data directory intervals check !
 

@@ -72,7 +72,7 @@ func main() {
 	CreateProgressBar()
 	CheckRequirements() // Check the required setup (6 steps)
 	// Open the input file
-	verbose("[*] Opening input file...",BoldYellow)
+	verbose("Opening input file...","*")
 	file, fileErr := pe.Open(ARGS[0])
 	ParseError(fileErr,"\n[!] ERROR: Can not open input file.","")
 	progress()
@@ -99,7 +99,8 @@ func main() {
 	wc, wcErr := exec.Command("sh", "-c", getSize).Output()
 	ParseError(wcErr,"\n[!] ERROR: While getting the file size",string(wc))
 
-	BoldYellow.Println("\n[*] Final Size: " + peid.fileSize + " -> " + string(wc) + " bytes")
+	BoldYellow.Print("\n[*] ")
+	white.Println("Final Size: " + peid.fileSize + " -> " + string(wc) + " bytes")
 	if peid.staged == true {
 		BoldGreen.Println("[+] Stage generated !\n")
 	} else {

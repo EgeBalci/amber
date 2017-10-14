@@ -5,7 +5,7 @@ import "os"
 
 func compile() {
  
-  verbose("[*] Ciphering payload...",BoldYellow)
+  verbose("Ciphering payload...","*")
   crypt() // 4 steps
 
   xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > stub/payload.h")
@@ -36,7 +36,7 @@ func compile() {
   }
   progress()
 
-  verbose("[*] Compiling to EXE...",BoldYellow)
+  verbose("Compiling to EXE...","*")
   mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
   ParseError(mingwErr,"\n[!] ERROR: While compiling to exe. (This might caused by a permission issue)",string(mingw))
 

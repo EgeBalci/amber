@@ -7,7 +7,7 @@ import "errors"
 
 func analyze(file *pe.File) {
 	//Do analysis on pe file...
-	verbose("[*] Analyzing PE file...",BoldYellow)
+	verbose("Analyzing PE file...","*")
 	if file.FileHeader.Machine != 0x14C {
 		ParseError(errors.New(""),"\n[!] ERROR: File is not a 32 bit PE.","")
 	}
@@ -25,11 +25,11 @@ func analyze(file *pe.File) {
 	if (Opt.DataDirectory[5].Size) != 0x00 && peid.verbose == true {
 		peid.aslr = true
 		BoldGreen.Println("[+] ASLR supported !")
-		BoldYellow.Println("[*] Using ASLR stub...")
+		BoldYellow.Println("[x] Using ASLR stub...")
 	} else if (Opt.DataDirectory[5].Size) == 0x00 && peid.verbose == true {
 		peid.aslr = false
 		BoldRed.Println("[-] ASLR not supported :(")
-		BoldYellow.Println("[*] Using Fixed stub...")
+		BoldYellow.Println("[x] Using Fixed stub...")
 	}
 	progress()
 	if (Opt.DataDirectory[11].Size) != 0x00 {
@@ -41,7 +41,7 @@ func analyze(file *pe.File) {
 	}
 	progress()
 	if (Opt.DataDirectory[13].Size) != 0x00 {
-		verbose("[!] WARNING: File has delayed imports. (This could be a problem :/ )",BoldYellow)
+		verbose("WARNING: File has delayed imports. (This could be a problem :/ )","!")
 	}
 	progress()
 	if (Opt.DataDirectory[1].Size) == 0x00 {
@@ -55,16 +55,16 @@ func analyze(file *pe.File) {
 
 	peid.Opt = Opt
 
-	if peid.verbose == true {
-		BoldYellow.Println("[*] File Size: " + peid.fileSize + " byte")
-		BoldYellow.Printf("[*] Machine: 0x%X\n", file.FileHeader.Machine)
-		BoldYellow.Printf("[*] Magic: 0x%X\n", Opt.Magic)
-		BoldYellow.Printf("[*] Subsystem: 0x%X\n", Opt.Subsystem)
-		BoldYellow.Printf("[*] Image Base: 0x%X\n", peid.imageBase)
-		BoldYellow.Printf("[*] Size Of Image: 0x%X\n", Opt.SizeOfImage)
-		BoldYellow.Printf("[*] Export Table: 0x%X\n", (Opt.DataDirectory[0].VirtualAddress + Opt.ImageBase))
-		BoldYellow.Printf("[*] Import Table: 0x%X\n", (Opt.DataDirectory[1].VirtualAddress + Opt.ImageBase))
-		BoldYellow.Printf("[*] Base Relocation Table: 0x%X\n", (Opt.DataDirectory[5].VirtualAddress + Opt.ImageBase))
-		BoldYellow.Printf("[*] Import Address Table: 0x%X\n", (Opt.DataDirectory[12].VirtualAddress + Opt.ImageBase))
-	}
+
+	verbose(string("File Size: " + peid.fileSize + " byte"),"*")
+	_verbose("Machine:", int32(file.FileHeader.Machine))
+	_verbose("Magic:", int32(Opt.Magic))
+	_verbose("Subsystem:", int32(Opt.Subsystem))
+	_verbose("Image Base:", int32(peid.imageBase))
+	_verbose("Size Of Image:", int32(Opt.SizeOfImage))
+	_verbose("Export Table:", int32(Opt.DataDirectory[0].VirtualAddress + Opt.ImageBase))
+	_verbose("Import Table:", int32(Opt.DataDirectory[1].VirtualAddress + Opt.ImageBase))
+	_verbose("Base Relocation Table:", int32(Opt.DataDirectory[5].VirtualAddress + Opt.ImageBase))
+	_verbose("Import Address Table:", int32(Opt.DataDirectory[12].VirtualAddress + Opt.ImageBase))
+		
 }

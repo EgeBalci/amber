@@ -4,7 +4,7 @@ import "os"
 import "fmt"
 import "os/exec"
 import "strings"
-import "github.com/fatih/color"
+//import "github.com/fatih/color"
 import "gopkg.in/cheggaaa/pb.v1"
 
 
@@ -29,16 +29,41 @@ func CreateProgressBar() {
 	}
 }
 
-func verbose(str string, col *color.Color) {
+func verbose(str string, status string) {
 
 	if peid.verbose == true {
-		col.Println(str)
+		if status == "*" {
+			BoldYellow.Print("[*] ")
+			white.Println(str)	
+		}else if status == "+" {
+			BoldGreen.Print("[+] ")
+			white.Println(str)	
+		}else if status == "-" {
+			BoldRed.Print("[-] ")
+			white.Println(str)
+		}else if status == "!"{
+			BoldRed.Print("[!] ")
+			white.Println(str)
+		}else if status == "Y" {
+			BoldYellow.Println(str)
+		}else if status == "B" {
+			BoldBlue.Println(str)
+		}
 	}
 }
 
+func _verbose(str string, value int32) {
+
+	if peid.verbose == true {
+		BoldYellow.Print("[*] ")
+		white.Printf(str+" 0x%X\n",value)
+	}
+}
+
+
 func CheckRequirements() {
 
-	verbose("[*] Checking requirments...",BoldYellow)
+	verbose("Checking requirments...","*")
 
 	CheckMingw, mingwErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 --version").Output()
 	if !strings.Contains(string(CheckMingw), "Copyright") {

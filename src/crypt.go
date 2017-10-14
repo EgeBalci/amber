@@ -9,7 +9,7 @@ import "os"
 
 func crypt() {
 
-  verbose("[*] Ciphering payload...",BoldYellow)
+  verbose("Ciphering payload...","*")
 
   if len(peid.key) != 0 {
     payload, err := ioutil.ReadFile("Payload")
@@ -50,8 +50,8 @@ func crypt() {
   progress()
 
   hex, _ := exec.Command("sh", "-c", "xxd -i Payload.key").Output()
-  verbose("[*] Payload ciphered with: \n",BoldYellow)
-  verbose(string(hex),BoldBlue)
+  verbose("Payload ciphered with: \n","*")
+  verbose(string(hex),"B")
 }
 
 
