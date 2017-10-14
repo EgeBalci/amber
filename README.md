@@ -15,7 +15,7 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 </a>
 
 <a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
-	<img src="https://imgur.com/download/v8qpHtI" />
+	<img align="right" src="https://imgur.com/download/v8qpHtI" />
 	<strong>PAPER</strong>
 </a>
 
