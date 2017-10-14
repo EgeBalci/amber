@@ -56,11 +56,9 @@ SUPPORTED PLATFORMS:
 
 <div align="center">
 	<a href="http://www.youtube.com/watch?feature=player_embedded&v=ZeauXofZw-g" target="_blank">
-		<img src="http://img.youtube.com/vi/ZeauXofZw-g/0.jpg" alt="DEMO1" width="240" height="180" border="10" />
+		<img src="http://img.youtube.com/vi/ZeauXofZw-g/0.jpg" alt="DEMO1" width="600" height="500" border="10" />
 	</a>
 </div>
-
-[![DEMO1](https://img.youtube.com/vi/ZeauXofZw-g/0.jpg)](https://www.youtube.com/watch?v=ZeauXofZw-g)
 
 
 
