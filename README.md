@@ -8,12 +8,18 @@ Amber is a proof of concept packer, it can pack regularly compiled PE files into
 PS: This is not a complete tool some things may break so take it easy on the issues :sweat_smile: and feel free to contribute.
 
 # REFLECTIVE PE PACKING WITH AMBER
+<div align="right" >
+	<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
+		<img src="https://imgur.com/download/f81DnlN" />
+		<p align="left">BLOG POST</p>
+	</a>
+</div>
+
 
 <a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
-	<img align="right" src="https://imgur.com/download/f81DnlN" />
-	<p align="left">BLOG POST</p>
+	<img src="https://imgur.com/download/v8qpHtI" />
+	<strong>PAPER</strong>
 </a>
-
 
 
 
