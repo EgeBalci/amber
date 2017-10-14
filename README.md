@@ -13,14 +13,10 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 		<img src="https://imgur.com/download/f81DnlN" />
 		<p align="left">BLOG POST</p>
 	</a>
+	<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
+		<p align="left">PAPER</p>
+	</a>
 </div>
-
-
-<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
-	<img src="https://imgur.com/download/v8qpHtI" />
-	<strong>PAPER</strong>
-</a>
-
 
 
 # INSTALLATION
