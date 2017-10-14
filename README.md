@@ -9,7 +9,10 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 
 # REFLECTIVE PE PACKING WITH AMBER
 
-[![pentest.blog](https://imgur.com/download/v8qpHtI)](https://pentest.blog/packing-reflective-pe-files-with-amber)[![PAPER](https://imgur.com/download/aL8Vsfh)](https://raw.githubusercontent.com/EgeBalci/Amber/master/AMBER_Reflective_PE_Packer.pdf)
+
+<div align="center"><img src="" /></div>
+
+[![pentest.blog](https://imgur.com/download/v8qpHtI)](https://pentest.blog/packing-reflective-pe-files-with-amber)
 
 
 # INSTALLATION
@@ -50,6 +53,12 @@ SUPPORTED PLATFORMS:
 		sudo chmod +x Setup.sh
 		sudo ./Setup.sh
 # USAGE
+
+<div align="center">
+	<a href="http://www.youtube.com/watch?feature=player_embedded&v=ZeauXofZw-g" target="_blank">
+		<img src="http://img.youtube.com/vi/ZeauXofZw-g/0.jpg" alt="DEMO1" width="240" height="180" border="10" />
+	</a>
+</div>
 
 [![DEMO1](https://img.youtube.com/vi/ZeauXofZw-g/0.jpg)](https://www.youtube.com/watch?v=ZeauXofZw-g)
 
