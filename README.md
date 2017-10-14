@@ -9,21 +9,15 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 
 # REFLECTIVE PE PACKING WITH AMBER
 
-<div>
+<div align="left">
 	<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
-		<img  align="left" src="https://imgur.com/download/f81DnlN" />
+		<img src="https://imgur.com/download/f81DnlN" />
 	</a>
-
-
-	<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
-		<img align="right" src="https://imgur.com/download/v8qpHtI" />
-	</a>
-
 </div>
 
-<div >
+<div align="right">
 	<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
-		<img align="right" src="https://imgur.com/download/v8qpHtI" />
+		<img src="https://imgur.com/download/v8qpHtI" />
 	</a>
 </div>
 
@@ -31,7 +25,7 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 # INSTALLATION
 
 SUPPORTED PLATFORMS:
-<table >
+<table>
     <tr>
         <th>Operative system</th>
         <th> Version </th>
