@@ -12,8 +12,12 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 <div align="left">
 	<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
 		<img src="https://imgur.com/download/f81DnlN" />
+
+		<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
+			<img src="https://imgur.com/download/v8qpHtI" />
+		</a>
+
 	</a>
-	<p align="right"> READ THE BLOG POST</p>
 	<div align="right">
 		<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
 			<img src="https://imgur.com/download/v8qpHtI" />
