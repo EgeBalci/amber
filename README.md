@@ -9,10 +9,7 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 
 # REFLECTIVE PE PACKING WITH AMBER
 
-Blog Post
-
-
-[![pentest.blog](https://pbs.twimg.com/profile_images/806107797528215552/kP454LpJ_reasonably_small.jpg)](https://pentest.blog/packing-reflective-pe-files-with-amber)
+[![pentest.blog](https://imgur.com/download/v8qpHtI)](https://pentest.blog/packing-reflective-pe-files-with-amber) [![PAPER](https://imgur.com/download/KvpAsE0)](https://raw.githubusercontent.com/EgeBalci/Amber/master/AMBER_Reflective_PE_Packer.pdf)
 
 
 # INSTALLATION
