@@ -51,6 +51,9 @@ SUPPORTED PLATFORMS:
 		sudo ./Setup.sh
 # USAGE
 
+[![DEMO1](https://img.youtube.com/vi/ZeauXofZw-g/0.jpg)](https://www.youtube.com/watch?v=ZeauXofZw-g)
+
+
 
 		//   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ 
 		//  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗
@@ -95,3 +98,4 @@ SUPPORTED PLATFORMS:
 - [ ] Write a unpacker for Amber payloads
 - [ ] Automate IAT index address finding on --iat option
 - [ ] Add assembly encoder & anti debug features
+- [ ] Add more integrity checks to the file mapping function
