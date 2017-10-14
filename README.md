@@ -10,14 +10,12 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 # REFLECTIVE PE PACKING WITH AMBER
 
 <div align="left">
-	<strong>BLOG POST</strong>
 	<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
 		<img src="https://imgur.com/download/v8qpHtI" />
 	</a>
 </div>
 
-<div align="wright">
-	<strong>PAPER</strong>
+<div align="right">
 	<a href="https://pentest.blog/packing-reflective-pe-files-with-amber">
 		<img src="https://imgur.com/download/v8qpHtI" />
 	</a>
