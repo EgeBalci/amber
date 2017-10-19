@@ -101,10 +101,12 @@ When no extra parameters passed (only the file name) packer generates a multi st
 [![VirusTotal](https://preview.ibb.co/dDfmmR/Virus_Total.png)](https://www.virustotal.com/#/file/3330d02404c56c1793f19f5d18fd5865cadfc4bd015af2e38ed0671f5e737d8a/detection)
 
 <strong>VirusCheckmate</strong>
+
 [![VirusCheckmate](https://preview.ibb.co/jimnt6/Virus_Checkmate.png)](http://viruscheckmate.com/id/1ikb99sNVrOM
 )
 
 <strong>NoDistribute</strong>
+
 [![NoDistribute](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png
 )](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png
 )
