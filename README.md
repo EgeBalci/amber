@@ -92,7 +92,18 @@ SUPPORTED PLATFORMS:
 
 
 # DETECTION
+Current detection rate (19.10.2017) of the POC packer is pretty satisfying but since this is going to be a public project current detection score will rise inevitably :)
 
+When no extra parameters passed (only the file name) packer generates a multi stage payload and performs an basic XOR cipher with a multi byte random key then compiles it into a EXE file with adding few extra anti detection functions. Generated EXE file executes the stage payload like a regular shellcode after deciphering the payload and making the required environmental checks. This particular sample is the mimikats.exe (sha256 - 9369b34df04a2795de083401dda4201a2da2784d1384a6ada2d773b3a81f8dad) file packed with a 12 byte XOR key (./amber mimikats.exe -ks 12).  The detection rate of the mimikats.exe file before packing is 51/66 on VirusTotal. In this particular example packer uses the default way to find the windows API addresses witch is using the hash API, avoiding the usage of hash API will decrease the detection rate. Currently packer supports the usage of fixed addresses of  IAT offsets also next versions will include IAT parser shellcodes for more alternative API address finding methods.
+
+[[VirusTotal](https://ibb.co/fkFK6R)](https://www.virustotal.com/#/file/3330d02404c56c1793f19f5d18fd5865cadfc4bd015af2e38ed0671f5e737d8a/detection)
+
+[[VirusCheckmate](https://ibb.co/nfEwmR)](http://viruscheckmate.com/id/1ikb99sNVrOM
+)
+
+[[NoDistribute](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png
+)](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png
+)
 
 
 
