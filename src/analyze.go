@@ -22,14 +22,18 @@ func analyze(file *pe.File) {
 	progress()
 	peid.subsystem = Opt.Subsystem
 	progress()
-	if (Opt.DataDirectory[5].Size) != 0x00 && peid.verbose == true {
+	if (Opt.DataDirectory[5].Size) != 0x00 {
 		peid.aslr = true
-		BoldGreen.Println("[+] ASLR supported !")
-		BoldYellow.Println("[x] Using ASLR stub...")
-	} else if (Opt.DataDirectory[5].Size) == 0x00 && peid.verbose == true {
+		if peid.verbose == true {
+			BoldGreen.Println("[+] ASLR supported !")
+			BoldYellow.Println("[x] Using ASLR stub...")
+		}
+	} else if (Opt.DataDirectory[5].Size) == 0x00 {
 		peid.aslr = false
-		BoldRed.Println("[-] ASLR not supported :(")
-		BoldYellow.Println("[x] Using Fixed stub...")
+		if peid.verbose == true {
+			BoldRed.Println("[-] ASLR not supported :(")
+			BoldYellow.Println("[x] Using Fixed stub...")
+		}
 	}
 	progress()
 	if (Opt.DataDirectory[11].Size) != 0x00 {

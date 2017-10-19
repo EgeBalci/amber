@@ -98,6 +98,7 @@ SUPPORTED PLATFORMS:
 
 # TODO
 
+- [ ] Add x64 support
 - [ ] .NET file support
 - [ ] Add a IAT parser shellcode to stub
 - [ ] Add yara rules to repo
