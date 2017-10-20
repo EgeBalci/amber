@@ -11,7 +11,7 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 
 [BLOG POST](https://pentest.blog/packing-reflective-pe-files-with-amber)
 <br>
-[![PENTESTBLOG](https://image.ibb.co/fBnQVm/pentest_blog3.jp)](https://pentest.blog/packing-reflective-pe-files-with-amber)
+[![PENTESTBLOG](https://image.ibb.co/fBnQVm/pentest_blog3.jpg)](https://pentest.blog/packing-reflective-pe-files-with-amber)
 <br>
 [PAPER](https://raw.githubusercontent.com/EgeBalci/Amber/master/PAPER.pdf)
 <br>
