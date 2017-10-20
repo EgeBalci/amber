@@ -11,7 +11,11 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 
 [BLOG POST](https://pentest.blog/packing-reflective-pe-files-with-amber)
 <br>
+[![PENTESTBLOG](https://image.ibb.co/fBnQVm/pentest_blog3.jp)](https://pentest.blog/packing-reflective-pe-files-with-amber)
+<br>
 [PAPER](https://raw.githubusercontent.com/EgeBalci/Amber/master/PAPER.pdf)
+<br>
+[![PAPER](https://image.ibb.co/mC4pqm/PDF.png)](https://github.com/EgeBalci/Amber/raw/master/PAPER.pdf)
 
 # INSTALLATION
 
@@ -92,7 +96,7 @@ SUPPORTED PLATFORMS:
 	</a>
 </div>
 
-<strong>Multi Stage EXE deployment with metasploit loaders</strong>
+<strong>Multi Stage EXE deployment with metasploit stagers</strong>
 
 <div align="center">
 	<a href="http://www.youtube.com/watch?feature=player_embedded&v=ZeauXofZw-g" target="_blank">
@@ -106,16 +110,16 @@ Current detection rate (19.10.2017) of the POC packer is pretty satisfying but s
 
 When no extra parameters passed (only the file name) packer generates a multi stage payload and performs an basic XOR cipher with a multi byte random key then compiles it into a EXE file with adding few extra anti detection functions. Generated EXE file executes the stage payload like a regular shellcode after deciphering the payload and making the required environmental checks. This particular sample is the mimikats.exe (sha256 - 9369b34df04a2795de083401dda4201a2da2784d1384a6ada2d773b3a81f8dad) file packed with a 12 byte XOR key (./amber mimikats.exe -ks 12).  The detection rate of the mimikats.exe file before packing is 51/66 on VirusTotal. In this particular example packer uses the default way to find the windows API addresses witch is using the hash API, avoiding the usage of hash API will decrease the detection rate. Currently packer supports the usage of fixed addresses of  IAT offsets also next versions will include IAT parser shellcodes for more alternative API address finding methods.
 
-<strong>VirusTotal</strong>
+<strong>VirusTotal</strong> (5/65)
 
 [![VirusTotal](https://preview.ibb.co/dDfmmR/Virus_Total.png)](https://www.virustotal.com/#/file/3330d02404c56c1793f19f5d18fd5865cadfc4bd015af2e38ed0671f5e737d8a/detection)
 
-<strong>VirusCheckmate</strong>
+<strong>VirusCheckmate</strong> (0/36)
 
 [![VirusCheckmate](https://preview.ibb.co/jimnt6/Virus_Checkmate.png)](http://viruscheckmate.com/id/1ikb99sNVrOM
 )
 
-<strong>NoDistribute</strong>
+<strong>NoDistribute</strong> (0/36)
 
 [![NoDistribute](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png
 )](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png
