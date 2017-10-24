@@ -11,11 +11,11 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 
 [BLOG POST](https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer/)
 <br>
-[![PENTESTBLOG](https://image.ibb.co/fBnQVm/pentest_blog3.jpg)](https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer/)
+[![PENTESTBLOG](https://pentest.blog/wp-content/uploads/68747470733a2f2f696d6167652e6962622e636f2f66426e51566d2f70656e746573745f626c6f67332e6a7067.jpeg)](https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer/)
 <br>
 [PAPER](https://raw.githubusercontent.com/EgeBalci/Amber/master/PAPER.pdf)
 <br>
-[![PAPER](https://image.ibb.co/mC4pqm/PDF.png)](https://github.com/EgeBalci/Amber/raw/master/PAPER.pdf)
+[![PAPER](https://pentest.blog/wp-content/uploads/pdf2.png)](https://github.com/EgeBalci/Amber/raw/master/PAPER.pdf)
 
 # INSTALLATION
 
@@ -112,11 +112,11 @@ When no extra parameters passed (only the file name) packer generates a multi st
 
 <strong>VirusTotal</strong> (5/65)
 
-[![VirusTotal](https://preview.ibb.co/dDfmmR/Virus_Total.png)](https://www.virustotal.com/#/file/3330d02404c56c1793f19f5d18fd5865cadfc4bd015af2e38ed0671f5e737d8a/detection)
+[![VirusTotal](https://pentest.blog/wp-content/uploads/VirusTotal-1.png)](https://www.virustotal.com/#/file/3330d02404c56c1793f19f5d18fd5865cadfc4bd015af2e38ed0671f5e737d8a/detection)
 
 <strong>VirusCheckmate</strong> (0/36)
 
-[![VirusCheckmate](https://preview.ibb.co/jimnt6/Virus_Checkmate.png)](http://viruscheckmate.com/id/1ikb99sNVrOM
+[![VirusCheckmate](https://pentest.blog/wp-content/uploads/VirusCheckmate.png)](http://viruscheckmate.com/id/1ikb99sNVrOM
 )
 
 <strong>NoDistribute</strong> (0/36)
