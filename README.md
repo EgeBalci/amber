@@ -8,11 +8,9 @@ Amber is a proof of concept packer, it can pack regularly compiled PE files into
 PS: This is not a complete tool some things may break so take it easy on the issues :sweat_smile: and feel free to contribute.
 
 
-[INVICTUS EUROPE](https://invictuseurope.com)
+Developped By Ege Balcı
 
-<br>
-
-[PRODAFT](https://prodaft.com)
+Open source [PRODAFT](https://prodaft.com)/[INVICTUS EUROPE](https://invictuseurope.com) project.
 
 # REFLECTIVE PE PACKING WITH AMBER
 
