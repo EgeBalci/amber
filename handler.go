@@ -1,3 +1,13 @@
+/*
+
+	This is just a simple payload delivery system similar to metasploits reverse TCP handler.
+	It first sends the size of the payload in a 4 byte packet then sends the actual payload.
+
+
+*/
+
+
+
 package main
 
 

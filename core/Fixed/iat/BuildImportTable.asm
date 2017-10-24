@@ -6,7 +6,7 @@
 ; #  EBP -> &hash_api			  #  				
 ; #########################################
 ; 
-; Author: Ege Balcı <egebalci[at]protonmail[dot]com> 
+; Author: Ege Balcı <ege.balci@invictuseurope.com>
 ; Version: 1.0
 ;
 ;######## FUNCTION USAGE #######

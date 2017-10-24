@@ -7,7 +7,7 @@ import "runtime"
 import "os"
 
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
+	runtime.GOMAXPROCS(runtime.NumCPU()) // Run faster !
 
 	ARGS := os.Args[1:]
 	if len(ARGS) == 0 || ARGS[0] == "--help" || ARGS[0] == "-h" {
