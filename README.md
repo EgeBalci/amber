@@ -9,9 +9,9 @@ PS: This is not a complete tool some things may break so take it easy on the iss
 
 # REFLECTIVE PE PACKING WITH AMBER
 
-[BLOG POST](https://pentest.blog/packing-reflective-pe-files-with-amber)
+[BLOG POST](https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer/)
 <br>
-[![PENTESTBLOG](https://image.ibb.co/fBnQVm/pentest_blog3.jpg)](https://pentest.blog/packing-reflective-pe-files-with-amber)
+[![PENTESTBLOG](https://image.ibb.co/fBnQVm/pentest_blog3.jpg)](https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer/)
 <br>
 [PAPER](https://raw.githubusercontent.com/EgeBalci/Amber/master/PAPER.pdf)
 <br>
@@ -91,16 +91,16 @@ SUPPORTED PLATFORMS:
 <strong>Fileless ransomware deployment with powershell</strong>
 
 <div align="center">
-	<a href="http://www.youtube.com/watch?feature=player_embedded&v=ZeauXofZw-g" target="_blank">
-		<img src="http://img.youtube.com/vi/ZeauXofZw-g/0.jpg" alt="DEMO1" width="500" height="400" border="10" />
+	<a href="https://www.youtube.com/watch?v=JVv_spX6D4U" target="_blank">
+		<img src="http://img.youtube.com/vi/JVv_spX6D4U-g/0.jpg" alt="DEMO1" width="500" height="400" border="10" />
 	</a>
 </div>
 
 <strong>Multi Stage EXE deployment with metasploit stagers</strong>
 
 <div align="center">
-	<a href="http://www.youtube.com/watch?feature=player_embedded&v=ZeauXofZw-g" target="_blank">
-		<img src="http://img.youtube.com/vi/ZeauXofZw-g/0.jpg" alt="DEMO1" width="500" height="400" border="10" />
+	<a href="https://www.youtube.com/watch?v=JVv_spX6D4U" target="_blank">
+		<img src="http://img.youtube.com/vi/JVv_spX6D4U/0.jpg" alt="DEMO1" width="500" height="400" border="10" />
 	</a>
 </div>
 
