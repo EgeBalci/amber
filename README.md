@@ -100,7 +100,7 @@ SUPPORTED PLATFORMS:
 
 <div align="center">
 	<a href="https://www.youtube.com/watch?v=3en0ftnjEpE" target="_blank">
-		<img src="http://img.youtube.com/vi/3en0ftnjEpE/1.jpg" alt="DEMO1" width="500" height="400" border="10" />
+		<img src="http://img.youtube.com/vi/3en0ftnjEpE/0.jpg" alt="DEMO1" width="500" height="400" border="10" />
 	</a>
 </div>
 
