@@ -32,7 +32,7 @@ Stub:
 	push 0xC38AE110				; hash( "kernel32.dll", "VirtualProtect" )
 	call ebp					; VirtualProtect( ImageBase, ImageSize, PAGE_EXECUTE_READWRITE, lpflOldProtect)
 	test eax,eax				; Check success 
-	jz Fail						; If VirtualProtect fails don't bother :/
+	jz Fail						; If VirtualProtect fails we are FUCKED !
 	%include "BuildImportTable.asm"	; Call the module responsible for building the import address table
 	xor ecx,ecx 				; Zero out the ECX
 	call GetAOE					; Get image base and AOE

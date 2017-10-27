@@ -133,10 +133,12 @@ When no extra parameters passed (only the file name) packer generates a multi st
 # TODO
 
 - [ ] Add x64 support
-- [ ] .NET file support
+- [ ] Add MacOS support
+- [ ] Add.NET file support
 - [ ] Add a IAT parser shellcode to stub
 - [ ] Add yara rules to repo
 - [ ] Write a unpacker for Amber payloads
 - [ ] Automate IAT index address finding on --iat option
 - [ ] Add assembly encoder & anti debug features
 - [ ] Add more integrity checks to the file mapping function
+- [ ] Better installation mechanism
