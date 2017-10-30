@@ -102,9 +102,9 @@ func main() {
 	BoldYellow.Print("\n[*] ")
 	white.Println("Final Size: " + peid.fileSize + " -> " + string(wc) + " bytes")
 	if peid.staged == true {
-		BoldGreen.Println("[+] Stage generated !\n")
+		BoldGreen.Println("[✔] Stage generated !\n")
 	} else {
-		BoldGreen.Println("[+] File successfully packed !\n")
+		BoldGreen.Println("[✔] File successfully packed !\n")
 	}
 
 }
@@ -119,7 +119,7 @@ func Banner() {
 //  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
 //  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
 //  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-//  POC Reflective PE Packer                                             
+//  POC Reflective PE Packer ☣                                           
 `
 	BoldRed.Print(BANNER)
 	BoldBlue.Print("\n# Version: ")
