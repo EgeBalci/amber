@@ -102,7 +102,7 @@ then
 	sudo apt-get install -y golang nasm mingw-w64-i686-dev mingw-w64-tools mingw-w64-x86-64-dev mingw-w64-common mingw-w64 mingw-ocaml gcc-multilib g++-multilib
 elif [ $DIST == "Arch" ] || [ $DIST == "Manjaro" ]
 then
-	pacman -S --noconfirm go nasm mingw-w64-i686-dev mingw-w64-tools mingw-w64-x86-64-dev mingw-w64-common mingw-w64 mingw-ocaml gcc-multilib g++-multilib
+	pacman -S --noconfirm go nasm mingw-w64-binutils mingw-w64-crt mingw-w64-gcc mingw-w64-headers mingw-w64-headers-bootstrap mingw-w64-winpthreads gcc-multilib
 elif [ $DIST == "Unknown" ]
 then
 	echo -e -n $BRed
