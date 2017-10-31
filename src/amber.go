@@ -4,6 +4,7 @@ import "debug/pe"
 import "strconv"
 import "os/exec"
 import "runtime"
+import "strings"
 import "os"
 
 func main() {
@@ -121,13 +122,35 @@ func Banner() {
 //  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
 //  POC Reflective PE Packer ☣                                           
 `
-	BoldRed.Print(BANNER)
+
+	var ArchBanner string = `
+
+
+//    _____      _____ _______________________________ 
+//   /  _  \    /     \\______   \_   _____/\______   \
+//  /  /_\  \  /  \ /  \|    |  _/|    __)_  |       _/
+// /    |    \/    Y    \    |   \|        \ |    |   \
+// \____|__  /\____|__  /______  /_______  / |____|_  /
+//         \/         \/       \/        \/         \/ 
+// POC Reflective PE Packer
+`
+
+
+	DIST, _ := exec.Command("lsb_release", "-a").Output()
+
+	if strings.Contains(string(DIST), "Arch") {
+		BoldRed.Print(ArchBanner)
+	}else{
+		BoldRed.Print(BANNER)
+	}
+	
 	BoldBlue.Print("\n# Version: ")
 	BoldGreen.Println(VERSION)
 	BoldBlue.Print("# Source: ")
 	BoldGreen.Println("github.com/egebalci/Amber")
 
 }
+
 
 func Help() {
 	var Help string = `
@@ -144,6 +167,7 @@ OPTIONS:
   --iat                           Uses import address table entries instead of hash api
   --no-resource                   Don't add any resource
   -v, --verbose                   Verbose output mode
+  --no-unicode					  Alternative banner for terminals that does not support unicode
   -h, --help                      Show this massage
 
 EXAMPLE:

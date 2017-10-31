@@ -40,22 +40,6 @@ On_Green='\033[42m'       # Green
 On_Yellow='\033[43m'      # Yellow
 
 
-#tput setaf 1;
-echo -e -n $BRed
-echo "//   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ "
-echo "//  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗"
-echo "//  ███████║██╔████╔██║██████╔╝█████╗  ██████╔╝"
-echo "//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗"
-echo "//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║"
-echo "//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝"
-echo "//  POC Reflective PE Packer  ☣          "     
-#echo -e " "$Color_Off
-
-echo -e  $Blue
-echo "Author: Ege Balcı"
-echo -e -n $Green
-echo "Source: github.com/egebalci/Amber"
-
 
 ### Getting OS Information
 if [ -f /etc/lsb-release ]; then
@@ -66,6 +50,42 @@ else
 	DIST="Unknown"
 	DIST_VER="Unknown"
 fi
+
+
+if [[ $DIST == "Arch" ] || [ $DIST == "Manjaro" ]]; then
+
+	echo -e -n $BRed
+	echo '//    _____      _____ _______________________________ '
+	echo '//   /  _  \    /     \\______   \_   _____/\______   \'
+	echo '//  /  /_\  \  /  \ /  \|    |  _/|    __)_  |       _/'
+	echo '// /    |    \/    Y    \    |   \|        \ |    |   \'
+	echo '// \____|__  /\____|__  /______  /_______  / |____|_  /'
+	echo '//         \/         \/       \/        \/         \/ '
+	echo '// POC Reflective PE Packer'
+else; then
+
+	#tput setaf 1;
+	echo -e -n $BRed
+	echo "//   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ "
+	echo "//  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗"
+	echo "//  ███████║██╔████╔██║██████╔╝█████╗  ██████╔╝"
+	echo "//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗"
+	echo "//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║"
+	echo "//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝"
+	echo "//  POC Reflective PE Packer  ☣          "     
+	#echo -e " "$Color_Off
+fi
+
+
+
+
+echo -e  $Blue
+echo "Author: Ege Balcı"
+echo -e -n $Green
+echo "Source: github.com/egebalci/Amber"
+
+
+
 
 echo -e $BYellow
 echo "[*] OS Distro: "$DIST
@@ -106,12 +126,14 @@ go build -ldflags "-s -w" -o ../amber
 
 #sudo ln amber /usr/local/bin/amber
 
+
 echo "#!/bin/bash" > /tmp/amber
 echo "cd $AMBERPATH" >> /tmp/amber
 echo "./amber \$@" >> /tmp/amber
 sudo mv /tmp/amber /usr/local/bin/
-sudo chmod 777 /usr/local/bin/amber
+chmod +x /usr/local/bin/amber
 
 echo -e $BGreen
 echo "[✔] Setup completed !"
+
 
