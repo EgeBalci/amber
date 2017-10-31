@@ -65,36 +65,66 @@ func CheckRequirements() {
 
 	verbose("Checking requirments...","*")
 
-	CheckMingw, mingwErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 --version").Output()
-	if !strings.Contains(string(CheckMingw), "Copyright") {
-		ParseError(mingwErr,"\n\n[!] ERROR: MingW is not installed.",string(CheckMingw))
+	if PACKET_MANAGER == "pacman" {
+		progress()
+		CheckMingw, mingwErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++ --version").Output()
+		if !strings.Contains(string(CheckMingw), "Copyright") {
+			ParseError(mingwErr,"\n\n[!] ERROR: MingW is not installed.",string(CheckMingw))
+		}
+		progress()
+		CheckNasm, _ := exec.Command("sh", "-c", "nasm -h").Output()
+		if !strings.Contains(string(CheckNasm), "usage:") {
+			ParseError(nil,"\n\n[!] ERROR: nasm is not installed.",string(CheckNasm))
+		}
+		progress()
+		CheckStrip, _ := exec.Command("sh", "-c", "strip -V").Output()
+		if !strings.Contains(string(CheckStrip), "Copyright") {
+			ParseError(nil,"\n\n[!] ERROR: strip is not installed.",string(CheckStrip))
+		}
+		progress()
+		CheckXXD, _ := exec.Command("sh", "-c", "echo Amber|xxd").Output()
+		if !strings.Contains(string(CheckXXD), "Amber") {
+			ParseError(nil,"\n\n[!] ERROR: xxd is not installed.",string(CheckMingw))
+		}
+		progress()
+		CheckMultiLib, _ := exec.Command("sh", "-c", "pacman -Qs gcc-multilib").Output()
+		if strings.Contains(string(CheckMultiLib), "The GNU Compiler") {
+			ParseError(nil,"\n\n[!] ERROR: gcc-multilib is not installed.",string(CheckMultiLib))
+		}
+		progress()
+	}else{
+		CheckMingw, mingwErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 --version").Output()
+		if !strings.Contains(string(CheckMingw), "Copyright") {
+			ParseError(mingwErr,"\n\n[!] ERROR: MingW is not installed.",string(CheckMingw))
+		}
+		progress()
+		CheckNasm, _ := exec.Command("sh", "-c", "nasm -h").Output()
+		if !strings.Contains(string(CheckNasm), "usage:") {
+			ParseError(nil,"\n\n[!] ERROR: nasm is not installed.",string(CheckNasm))
+		}
+		progress()
+		CheckStrip, _ := exec.Command("sh", "-c", "strip -V").Output()
+		if !strings.Contains(string(CheckStrip), "Copyright") {
+			ParseError(nil,"\n\n[!] ERROR: strip is not installed.",string(CheckStrip))
+		}
+		progress()
+		CheckXXD, _ := exec.Command("sh", "-c", "echo Amber|xxd").Output()
+		if !strings.Contains(string(CheckXXD), "Amber") {
+			ParseError(nil,"\n\n[!] ERROR: xxd is not installed.",string(CheckMingw))
+		}
+		progress()
+		CheckMultiLib, _ := exec.Command("sh", "-c", "apt-cache policy gcc-multilib").Output()
+		if strings.Contains(string(CheckMultiLib), "(none)") {
+			ParseError(nil,"\n\n[!] ERROR: gcc-multilib is not installed.",string(CheckMultiLib))
+		}
+		progress()
+		CheckMultiLibPlus, _ := exec.Command("sh", "-c", "apt-cache policy g++-multilib").Output()
+		if strings.Contains(string(CheckMultiLibPlus), "(none)") {
+			ParseError(nil,"\n\n[!] ERROR: g++-multilib is not installed.",string(CheckMultiLibPlus))
+		}
+		progress()
+		
 	}
-	progress()
-	CheckNasm, _ := exec.Command("sh", "-c", "nasm -h").Output()
-	if !strings.Contains(string(CheckNasm), "usage:") {
-		ParseError(nil,"\n\n[!] ERROR: nasm is not installed.",string(CheckNasm))
-	}
-	progress()
-	CheckStrip, _ := exec.Command("sh", "-c", "strip -V").Output()
-	if !strings.Contains(string(CheckStrip), "Copyright") {
-		ParseError(nil,"\n\n[!] ERROR: strip is not installed.",string(CheckStrip))
-	}
-	progress()
-	CheckXXD, _ := exec.Command("sh", "-c", "echo Amber|xxd").Output()
-	if !strings.Contains(string(CheckXXD), "Amber") {
-		ParseError(nil,"\n\n[!] ERROR: xxd is not installed.",string(CheckMingw))
-	}
-	progress()
-	CheckMultiLib, _ := exec.Command("sh", "-c", "apt-cache policy gcc-multilib").Output()
-	if strings.Contains(string(CheckMultiLib), "(none)") {
-		ParseError(nil,"\n\n[!] ERROR: gcc-multilib is not installed.",string(CheckMultiLib))
-	}
-	progress()
-	CheckMultiLibPlus, _ := exec.Command("sh", "-c", "apt-cache policy g++-multilib").Output()
-	if strings.Contains(string(CheckMultiLibPlus), "(none)") {
-		ParseError(nil,"\n\n[!] ERROR: g++-multilib is not installed.",string(CheckMultiLibPlus))
-	}
-	progress()
 
 }
 

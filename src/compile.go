@@ -20,12 +20,23 @@ func compile() {
   _xxd.Run()
   progress()
 
+  var compileCommand string = "i686-w64-mingw32-g++-win32 -c stub/stub.cpp"
+  if PACKET_MANAGER == "pacman" {
+  	compileCommand = "i686-w64-mingw32-g++ -c stub/stub.cpp"
+  }
+
+
   mingwObj, mingwObjErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c stub/stub.cpp").Output()
   ParseError(mingwObjErr,"\n[!] ERROR: While compiling the object file.",string(mingwObj))
   
   progress()
 
-  var compileCommand string = "i686-w64-mingw32-g++-win32 stub.o "
+  compileCommand = "i686-w64-mingw32-g++-win32 stub.o "
+  if PACKET_MANAGER == "pacman" {
+  	compileCommand = "i686-w64-mingw32-g++ stub.o "
+  }
+
+
   if peid.resource == true {
     compileCommand += "stub/Resource.o "
   }

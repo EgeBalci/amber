@@ -137,8 +137,8 @@ func Banner() {
 
 
 	DIST, _ := exec.Command("lsb_release", "-a").Output()
-
 	if strings.Contains(string(DIST), "Arch") {
+		PACKET_MANAGER = "pacman"
 		BoldRed.Print(ArchBanner)
 	}else{
 		BoldRed.Print(BANNER)

@@ -6,6 +6,8 @@ import "debug/pe"
 
 const VERSION string = "1.0.0"
 
+var PACKET_MANAGER string = "apt"
+
 type peID struct {
 
 	// Parameters...
