@@ -26,7 +26,7 @@ func compile() {
   }
 
 
-  mingwObj, mingwObjErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 -c stub/stub.cpp").Output()
+  mingwObj, mingwObjErr := exec.Command("sh", "-c", compileCommand).Output()
   ParseError(mingwObjErr,"\n[!] ERROR: While compiling the object file.",string(mingwObj))
   
   progress()
