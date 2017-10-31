@@ -52,7 +52,7 @@ else
 fi
 
 
-if [[ $DIST == "Arch" ] || [ $DIST == "Manjaro" ]]; then
+if [ $DIST == "Arch" ] || [ $DIST == "Manjaro" ]; then
 
 	echo -e -n $BRed
 	echo '//    _____      _____ _______________________________ '
@@ -62,7 +62,7 @@ if [[ $DIST == "Arch" ] || [ $DIST == "Manjaro" ]]; then
 	echo '// \____|__  /\____|__  /______  /_______  / |____|_  /'
 	echo '//         \/         \/       \/        \/         \/ '
 	echo '// POC Reflective PE Packer'
-else; then
+else 
 
 	#tput setaf 1;
 	echo -e -n $BRed
