@@ -84,6 +84,7 @@ SUPPORTED PLATFORMS:
 		  --iat                           Uses import address table entries instead of hash api
 		  --no-resource                   Don't add any resource
 		  -v, --verbose                   Verbose output mode
+		  --no-unicode					  Alternative banner for terminals that does not support unicode
 		  -h, --help                      Show this massage
 
 		EXAMPLE:
