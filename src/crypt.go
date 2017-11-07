@@ -1,6 +1,7 @@
 package main
 
 
+import "crypto/rc4"
 import "math/rand"
 import "io/ioutil"
 import "os/exec"
@@ -13,16 +14,16 @@ func crypt() {
 
   if len(peid.key) != 0 {
     payload, err := ioutil.ReadFile("Payload")
-    ParseError(err,"[!] ERROR: Can't open payload file.","")
+    ParseError(err,"Can't open payload file.","")
 
     progress()
     payload = xor(payload,peid.key)
     payload_xor, err2 := os.Create("Payload.xor")
-    ParseError(err2,"[!] ERROR: Can't create payload.xor file.","")
+    ParseError(err2,"Can't create payload.xor file.","")
 
     progress()
     payload_key, err3 := os.Create("Payload.key")
-    ParseError(err3,"[!] ERROR: Can't create payload.xor file.","")
+    ParseError(err3,"Can't create payload.xor file.","")
     payload_xor.Write(payload)
     payload_xor.Write(peid.key)
 
@@ -33,14 +34,14 @@ func crypt() {
     key := generateKey(peid.keySize)
     progress()
     payload, err := ioutil.ReadFile("Payload")
-    ParseError(err,"[!] ERROR: Can't open payload file.","")
+    ParseError(err,"Can't open payload file.","")
     progress()
     payload = xor(payload,key)
     payload_xor, err2 := os.Create("Payload.xor")
-    ParseError(err2,"[!] ERROR: Can't create payload.xor file.","")
+    ParseError(err2,"Can't create payload.xor file.","")
     progress()
     payload_key, err3 := os.Create("Payload.key")
-    ParseError(err3,"[!] ERROR: Can't create payload.xor file.","")
+    ParseError(err3,"Can't create payload.xor file.","")
     payload_xor.Write(payload)
     payload_key.Write(key)
 
@@ -60,6 +61,14 @@ func xor(Data []byte, Key []byte) ([]byte){
     Data[i] = (Data[i] ^ (Key[(i%len(Key))]))
   }
   return Data
+}
+
+func RC4(data []byte, Key []byte) ([]byte){
+	c,e := rc4.NewCipher(Key)
+	ParseError(e,"While RC4 encryption !","")
+	dst := make([]byte, len(data))
+	c.XORKeyStream(dst, data)
+	return dst
 }
 
 

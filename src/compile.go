@@ -27,7 +27,7 @@ func compile() {
 
 
   mingwObj, mingwObjErr := exec.Command("sh", "-c", compileCommand).Output()
-  ParseError(mingwObjErr,"\n[!] ERROR: While compiling the object file.",string(mingwObj))
+  ParseError(mingwObjErr,"While compiling the object file.",string(mingwObj))
   
   progress()
 
@@ -49,12 +49,12 @@ func compile() {
 
   verbose("Compiling to EXE...","*")
   mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
-  ParseError(mingwErr,"\n[!] ERROR: While compiling to exe. (This might caused by a permission issue)",string(mingw))
+  ParseError(mingwErr,"While compiling to exe. (This might caused by a permission issue)",string(mingw))
 
   progress()
 
   strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.fileName)).Output()
-  ParseError(stripErr,"\n[!] ERROR: While striping the exe.",string(strip))
+  ParseError(stripErr,"While striping the exe.",string(strip))
 
   progress()
 }

@@ -137,6 +137,7 @@ When no extra parameters passed (only the file name) packer generates a multi st
 - [ ] Add MacOS support
 - [ ] Add.NET file support
 - [ ] Add a IAT parser shellcode to stub
+- [ ] Add optional RC4 encryption to staged payloads
 - [ ] Add yara rules to repo
 - [ ] Write a unpacker for Amber payloads
 - [ ] Automate IAT index address finding on --iat option

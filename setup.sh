@@ -42,13 +42,19 @@ On_Yellow='\033[43m'      # Yellow
 
 
 ### Getting OS Information
-if [ -f /etc/lsb-release ]; then
-	. /etc/lsb-release
-	DIST=$DISTRIB_ID
-	DIST_VER=$DISTRIB_RELEASE
+
+if [[ $(uname) == "Darwin" ]]; then
+	DIST="MacOS"
+	DIST_VER=$(uname -r)
 else
-	DIST="Unknown"
-	DIST_VER="Unknown"
+	if [ -f /etc/lsb-release ]; then
+		. /etc/lsb-release
+		DIST=$DISTRIB_ID
+		DIST_VER=$DISTRIB_RELEASE
+	else
+		DIST="Unknown"
+		DIST_VER="Unknown"
+	fi	
 fi
 
 
@@ -77,14 +83,10 @@ else
 fi
 
 
-
-
 echo -e  $Blue
 echo "Author: Ege Balcı"
 echo -e -n $Green
 echo "Source: github.com/egebalci/Amber"
-
-
 
 
 echo -e $BYellow
@@ -103,10 +105,19 @@ then
 elif [ $DIST == "Arch" ] || [ $DIST == "Manjaro" ]
 then
 	pacman -S --noconfirm go nasm mingw-w64-binutils mingw-w64-crt mingw-w64-gcc mingw-w64-headers mingw-w64-headers-bootstrap mingw-w64-winpthreads gcc-multilib
+elif [ $DIST == "MacOS" ]
+then
+	#MacOS install...
+	brew install mingw-w64
+	brew install mingw-w64-binutils
+	brew install go
+	brew install gcc-multilib
+
 elif [ $DIST == "Unknown" ]
 then
 	echo -e -n $BRed
 	echo "[!] OS not supported :("
+	return 1	
 fi
 
 echo -e $Yellow

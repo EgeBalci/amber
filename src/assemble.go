@@ -9,9 +9,9 @@ func assemble() {
 
 	// Create a file mapping image (6 steps)
 	Map, MapErr:= CreateFileMapping(peid.fileName)
-	ParseError(MapErr,"\n[!] ERROR: While creating file mapping","")
+	ParseError(MapErr,"While creating file mapping","")
 	MapFile, MapFileErr := os.Create("Mem.map")
-	ParseError(MapFileErr,"\n[!] ERROR: While getting the file size","")
+	ParseError(MapFileErr,"While getting the file size","")
 
 	MapFile.Write(Map.Bytes())
 	MapFile.Close()
@@ -24,7 +24,7 @@ func assemble() {
 			moveMapCommand += "iat/"
 		}
 		moveMap, moveMapErr := exec.Command("sh", "-c", moveMapCommand).Output()
-		ParseError(moveMapErr,"\n[!] ERROR: While moving the file map",string(moveMap))
+		ParseError(moveMapErr,"While moving the file map",string(moveMap))
 		progress()
 		nasmCommand := "cd core/Fixed/"
 		if peid.iat == true {
@@ -32,7 +32,7 @@ func assemble() {
 		}
 		nasmCommand += " && nasm -f bin Stub.asm -o Payload"
 		nasm, Err := exec.Command("sh", "-c", nasmCommand).Output()
-		ParseError(Err,"\n[!] ERROR: While assembling payload :(",string(nasm))
+		ParseError(Err,"While assembling payload :(",string(nasm))
 
 		progress()
 		movePayloadCommand := "mv core/Fixed/Payload ./"
@@ -40,7 +40,7 @@ func assemble() {
 			movePayloadCommand = "mv core/Fixed/iat/Payload ./"
 		}
 		movePayload, movePayErr := exec.Command("sh", "-c", movePayloadCommand).Output()
-		ParseError(movePayErr,"\n[!] ERROR: While moving the payload",string(movePayload))
+		ParseError(movePayErr,"While moving the payload",string(movePayload))
 
 		progress()
 	} else {
@@ -49,7 +49,7 @@ func assemble() {
 			moveMapCommand += "iat/"
 		}
 		moveMap, moveMapErr := exec.Command("sh", "-c", moveMapCommand).Output()
-		ParseError(moveMapErr,"\n[!] ERROR: While moving the file map",string(moveMap))
+		ParseError(moveMapErr,"While moving the file map",string(moveMap))
 		progress()
 		nasmCommand := "cd core/ASLR/"
 		if peid.iat == true {
@@ -57,7 +57,7 @@ func assemble() {
 		}
 		nasmCommand += " && nasm -f bin Stub.asm -o Payload"
 		nasm, Err := exec.Command("sh", "-c", nasmCommand).Output()
-		ParseError(Err,"\n[!] ERROR: While assembling payload :(",string(nasm))
+		ParseError(Err,"While assembling payload :(",string(nasm))
 
 		progress()
 		movePayloadCommand := "mv core/ASLR/Payload ./"
@@ -65,7 +65,7 @@ func assemble() {
 			movePayloadCommand = "mv core/ASLR/iat/Payload ./"
 		}
 		movePayload, movePayErr := exec.Command("sh", "-c", movePayloadCommand).Output()
-		ParseError(movePayErr,"\n[!] ERROR: While moving the payload",string(movePayload))
+		ParseError(movePayErr,"While moving the payload",string(movePayload))
 		progress()
 	}
 	verbose("Assebly completed.", "*")

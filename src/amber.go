@@ -31,7 +31,7 @@ func main() {
 		if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
 			ks, Err := strconv.Atoi(ARGS[i+1])
 			if Err != nil {
-				ParseError(Err,"\n[!] ERROR: Invalid key size.\n","")
+				ParseError(Err,"Invalid key size.\n","")
 			} else {
 				peid.keySize = ks
 			}
@@ -75,7 +75,7 @@ func main() {
 	// Open the input file
 	verbose("Opening input file...","*")
 	file, fileErr := pe.Open(ARGS[0])
-	ParseError(fileErr,"\n[!] ERROR: Can not open input file.","")
+	ParseError(fileErr,"Can not open input file.","")
 	progress()
 	// Analyze the input file
 	analyze(file) // 10 steps
@@ -98,7 +98,7 @@ func main() {
 		getSize = string("wc -c " + peid.fileName+ ".stage" + "|awk '{print $1}'|tr -d '\n'")
 	}
 	wc, wcErr := exec.Command("sh", "-c", getSize).Output()
-	ParseError(wcErr,"\n[!] ERROR: While getting the file size",string(wc))
+	ParseError(wcErr,"While getting the file size",string(wc))
 
 	BoldYellow.Print("\n[*] ")
 	white.Println("Final Size: " + peid.fileSize + " -> " + string(wc) + " bytes")
