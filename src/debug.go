@@ -16,7 +16,7 @@ func progress() {
 
 func CreateProgressBar() {
 
-	var full int = 46
+	var full int = 47
 
 	if peid.verbose == false {
 		if peid.staged == true {

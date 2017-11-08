@@ -1,5 +1,6 @@
 package main
 
+import "path/filepath"
 import "debug/pe"
 import "strconv"
 import "os/exec"
@@ -19,7 +20,6 @@ func main() {
 	Banner()
 
 	// Set the default values...
-	peid.fileName = ARGS[0]
 	peid.keySize = 7
 	peid.staged = false
 	peid.resource = true
@@ -52,6 +52,11 @@ func main() {
 			peid.verbose = true
 		}
 	}
+	// Get the absolute path of the file
+	abs,abs_err := filepath.Abs(ARGS[0])
+	ParseError(abs_err,"Can not open input file.","")
+	peid.fileName = abs
+
 	// Show status
 	BoldYellow.Print("\n[*] File: ")
 	BoldBlue.Println(peid.fileName)
@@ -72,10 +77,13 @@ func main() {
 	// Create the process bar
 	CreateProgressBar()
 	CheckRequirements() // Check the required setup (6 steps)
+	chdir_err := os.Chdir("/usr/share/Amber")
+	ParseError(chdir_err,"Can't find amber directory.","")
+	progress()
 	// Open the input file
 	verbose("Opening input file...","*")
-	file, fileErr := pe.Open(ARGS[0])
-	ParseError(fileErr,"Can not open input file.","")
+	file, FileErr := pe.Open(peid.fileName)
+	ParseError(FileErr,"Can not open input file.","")
 	progress()
 	// Analyze the input file
 	analyze(file) // 10 steps
