@@ -131,13 +131,13 @@ When no extra parameters passed (only the file name) packer generates a multi st
 <a href="https://www.virustotal.com/#/file/3330d02404c56c1793f19f5d18fd5865cadfc4bd015af2e38ed0671f5e737d8a/detection" target="_blank">
 	<img align="center" src="https://pentest.blog/wp-content/uploads/VirusTotal-1.png" alt="VirusTotal" />
 </a>
-
+<br>
 <strong>VirusCheckmate</strong> (0/36)
 
 <a href="http://viruscheckmate.com/id/1ikb99sNVrOM" target="_blank">
 	<img align="center" src="https://pentest.blog/wp-content/uploads/VirusCheckmate.png" alt="VirusCheckmate" />
 </a>
-
+<br>
 <strong>NoDistribute</strong> (0/36)
 
 <a href="https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png" target="_blank">
