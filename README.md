@@ -12,13 +12,25 @@ Developed By Ege Balcı from [INVICTUS](https://invictuseurope.com)/[PRODAFT](ht
 
 # REFLECTIVE PE PACKING WITH AMBER
 
-[BLOG POST](https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer/)
 <br>
-[![PENTESTBLOG](https://pentest.blog/wp-content/uploads/68747470733a2f2f696d6167652e6962622e636f2f66426e51566d2f70656e746573745f626c6f67332e6a7067.jpeg)](https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer/)
+
+<a href="https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer" target="_blank">
+		<img height="250" align="left" src="https://pentest.blog/wp-content/uploads/68747470733a2f2f696d6167652e6962622e636f2f66426e51566d2f70656e746573745f626c6f67332e6a7067.jpeg" alt="DEMO1"  />
+</a>
+<a href="https://raw.githubusercontent.com/EgeBalci/Amber/master/PAPER.pdf"></a>
+<a href="https://github.com/EgeBalci/Amber/raw/master/PAPER.pdf">
+	<img align="right" src="https://pentest.blog/wp-content/uploads/pdf2.png"/>
+</a>
+
 <br>
-[PAPER](https://raw.githubusercontent.com/EgeBalci/Amber/master/PAPER.pdf)
 <br>
-[![PAPER](https://pentest.blog/wp-content/uploads/pdf2.png)](https://github.com/EgeBalci/Amber/raw/master/PAPER.pdf)
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
 
 # INSTALLATION
 
@@ -96,7 +108,7 @@ SUPPORTED PLATFORMS:
 
 <div align="center">
 	<a href="https://www.youtube.com/watch?v=JVv_spX6D4U" target="_blank">
-		<img src="http://img.youtube.com/vi/JVv_spX6D4U/0.jpg" alt="DEMO1" width="500" height="400" border="10" />
+		<img src="http://img.youtube.com/vi/JVv_spX6D4U/0.jpg" alt="DEMO1" width="500" height="400"/>
 	</a>
 </div>
 
@@ -104,15 +116,15 @@ SUPPORTED PLATFORMS:
 
 <div align="center">
 	<a href="https://www.youtube.com/watch?v=3en0ftnjEpE" target="_blank">
-		<img src="http://img.youtube.com/vi/3en0ftnjEpE/0.jpg" alt="DEMO1" width="500" height="400" border="10" />
+		<img src="http://img.youtube.com/vi/3en0ftnjEpE/0.jpg" alt="DEMO1" width="500" height="400"/>
 	</a>
 </div>
 
 
 # DETECTION
-Current detection rate (19.10.2017) of the POC packer is pretty satisfying but since this is going to be a public project current detection score will rise inevitably :)
+Current detection rate (19.10.2017) of the POC packer is pretty satisfying but since this is going to be a public project current detection score will rise inevitably :)
 
-When no extra parameters passed (only the file name) packer generates a multi stage payload and performs an basic XOR cipher with a multi byte random key then compiles it into a EXE file with adding few extra anti detection functions. Generated EXE file executes the stage payload like a regular shellcode after deciphering the payload and making the required environmental checks. This particular sample is the mimikats.exe (sha256 - 9369b34df04a2795de083401dda4201a2da2784d1384a6ada2d773b3a81f8dad) file packed with a 12 byte XOR key (./amber mimikats.exe -ks 12).  The detection rate of the mimikats.exe file before packing is 51/66 on VirusTotal. In this particular example packer uses the default way to find the windows API addresses witch is using the hash API, avoiding the usage of hash API will decrease the detection rate. Currently packer supports the usage of fixed addresses of  IAT offsets also next versions will include IAT parser shellcodes for more alternative API address finding methods.
+When no extra parameters passed (only the file name) packer generates a multi stage payload and performs an basic XOR cipher with a multi byte random key then compiles it into a EXE file with adding few extra anti detection functions. Generated EXE file executes the stage payload like a regular shellcode after deciphering the payload and making the required environmental checks. This particular sample is the mimikats.exe (sha256 - 9369b34df04a2795de083401dda4201a2da2784d1384a6ada2d773b3a81f8dad) file packed with a 12 byte XOR key (./amber mimikats.exe -ks 12).  The detection rate of the mimikats.exe file before packing is 51/66 on VirusTotal. In this particular example packer uses the default way to find the windows API addresses witch is using the hash API, avoiding the usage of hash API will decrease the detection rate. Currently packer supports the usage of fixed addresses of  IAT offsets also next versions will include IAT parser shellcodes for more alternative API address finding methods.
 
 <strong>VirusTotal</strong> (5/65)
 
@@ -120,14 +132,11 @@ When no extra parameters passed (only the file name) packer generates a multi st
 
 <strong>VirusCheckmate</strong> (0/36)
 
-[![VirusCheckmate](https://pentest.blog/wp-content/uploads/VirusCheckmate.png)](http://viruscheckmate.com/id/1ikb99sNVrOM
-)
+[![VirusCheckmate](https://pentest.blog/wp-content/uploads/VirusCheckmate.png)](http://viruscheckmate.com/id/1ikb99sNVrOM)
 
 <strong>NoDistribute</strong> (0/36)
 
-[![NoDistribute](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png
-)](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png
-)
+[![NoDistribute](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png)](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png)
 
 
 
@@ -137,10 +146,10 @@ When no extra parameters passed (only the file name) packer generates a multi st
 - [ ] Add MacOS support
 - [ ] Add.NET file support
 - [ ] Add a IAT parser shellcode to stub
-- [ ] Add optional RC4 encryption to staged payloads
 - [ ] Add yara rules to repo
 - [ ] Write a unpacker for Amber payloads
+- [ ] Add optional RC4 encryption to staged payloads
 - [ ] Automate IAT index address finding on --iat option
 - [ ] Add assembly encoder & anti debug features
 - [ ] Add more integrity checks to the file mapping function
-- [ ] Better installation mechanism
+- [x] Better installation mechanism
