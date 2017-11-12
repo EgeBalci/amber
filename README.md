@@ -12,13 +12,25 @@ Developed By Ege Balcı from [INVICTUS](https://invictuseurope.com)/[PRODAFT](ht
 
 # REFLECTIVE PE PACKING WITH AMBER
 
-[BLOG POST](https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer/)
 <br>
-[![PENTESTBLOG](https://pentest.blog/wp-content/uploads/68747470733a2f2f696d6167652e6962622e636f2f66426e51566d2f70656e746573745f626c6f67332e6a7067.jpeg)](https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer/)
+
+<a href="https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer" target="_blank">
+		<img height="250" align="left" src="https://pentest.blog/wp-content/uploads/68747470733a2f2f696d6167652e6962622e636f2f66426e51566d2f70656e746573745f626c6f67332e6a7067.jpeg" alt="DEMO1"  />
+</a>
+<a href="https://raw.githubusercontent.com/EgeBalci/Amber/master/PAPER.pdf"></a>
+<a href="https://github.com/EgeBalci/Amber/raw/master/PAPER.pdf">
+	<img align="right" src="https://pentest.blog/wp-content/uploads/pdf2.png"/>
+</a>
+
 <br>
-[PAPER](https://raw.githubusercontent.com/EgeBalci/Amber/master/PAPER.pdf)
 <br>
-[![PAPER](https://pentest.blog/wp-content/uploads/pdf2.png)](https://github.com/EgeBalci/Amber/raw/master/PAPER.pdf)
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
 
 # INSTALLATION
 
