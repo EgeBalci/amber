@@ -8,16 +8,16 @@ func compile() {
   verbose("Ciphering payload...","*")
   crypt() // 4 steps
 
-  xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > stub/payload.h")
-  xxd.Stdout = os.Stdout
-  xxd.Stderr = os.Stderr
-  xxd.Run()
+  xxd_err := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > stub/payload.h").Run()
+  if xxd_err != nil {
+    ParseError(xdd_err,"While extracting payload hex stream.","")
+  }
   progress()
 
-  _xxd := exec.Command("sh", "-c", "xxd -i Payload.key > stub/key.h")
-  _xxd.Stdout = os.Stdout
-  _xxd.Stderr = os.Stderr
-  _xxd.Run()
+  _xxd_err := exec.Command("sh", "-c", "xxd -i Payload.key > stub/key.h").Run()
+  if _xxd_err != nil {
+    ParseError(_xxd_err,"While extracting key hex stream.","")
+  }
   progress()
 
   var compileCommand string = "i686-w64-mingw32-g++-win32 -c stub/stub.cpp"
