@@ -135,9 +135,11 @@ func ParseError(Err error,ErrStatus string,Msg string){
 		//progressBar.Finish()
 		fmt.Println("\n")
 		BoldRed.Println("\n[!] ERROR: "+ErrStatus)
-		fmt.Println(Err)
+		fmt.Println("ERROR{\n",Err)
 		if len(Msg) > 0 {
-			BoldRed.Println(Msg)
+			fmt.Println(Msg+"\n}")
+		}else{
+			fmt.Println("\n}")
 		}
 		clean()
 		fmt.Println("\n")
