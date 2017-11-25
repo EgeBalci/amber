@@ -20,7 +20,7 @@ func main() {
 	Banner()
 
 	// Set the default values...
-	peid.keySize = 7
+	peid.KeySize = 7
 	peid.staged = false
 	peid.resource = true
 	peid.verbose = false
@@ -33,7 +33,7 @@ func main() {
 			if Err != nil {
 				ParseError(Err,"Invalid key size.\n","")
 			} else {
-				peid.keySize = ks
+				peid.KeySize = ks
 			}
 		}
 		if ARGS[i] == "-k" || ARGS[i] == "--key" {
@@ -55,11 +55,11 @@ func main() {
 	// Get the absolute path of the file
 	abs,abs_err := filepath.Abs(ARGS[0])
 	ParseError(abs_err,"Can not open input file.","")
-	peid.fileName = abs
+	peid.FileName = abs
 
 	// Show status
 	BoldYellow.Print("\n[*] File: ")
-	BoldBlue.Println(peid.fileName)
+	BoldBlue.Println(peid.FileName)
 	BoldYellow.Print("[*] Staged: ")
 	BoldBlue.Println(peid.staged)
 	if len(peid.key) != 0 {
@@ -67,7 +67,7 @@ func main() {
 		BoldBlue.Println(peid.key)
 	} else {
 		BoldYellow.Print("[*] Key Size: ")
-		BoldBlue.Println(peid.keySize)
+		BoldBlue.Println(peid.KeySize)
 	}
 	BoldYellow.Print("[*] IAT: ")
 	BoldBlue.Println(peid.iat)
@@ -82,7 +82,7 @@ func main() {
 	progress()
 	// Open the input file
 	verbose("Opening input file...","*")
-	file, FileErr := pe.Open(peid.fileName)
+	file, FileErr := pe.Open(peid.FileName)
 	ParseError(FileErr,"Can not open input file.","")
 	progress()
 	// Analyze the input file
@@ -91,7 +91,8 @@ func main() {
 	assemble()    // 10 steps
 
 	if peid.staged == true {
-		exec.Command("sh", "-c", string("mv Payload "+peid.fileName+".stage")).Run()
+		//if peid.KeySize != 0
+		exec.Command("sh", "-c", string("mv Payload "+peid.FileName+".stage")).Run()
 	} else {
 		compile() // Compile the amber stub (10 steps)
 	}
@@ -101,9 +102,9 @@ func main() {
 		progressBar.Finish()
 	}
 
-	var getSize string = string("wc -c " + peid.fileName + "|awk '{print $1}'|tr -d '\n'")
+	var getSize string = string("wc -c " + peid.FileName + "|awk '{print $1}'|tr -d '\n'")
 	if peid.staged == true {
-		getSize = string("wc -c " + peid.fileName+ ".stage" + "|awk '{print $1}'|tr -d '\n'")
+		getSize = string("wc -c " + peid.FileName+ ".stage" + "|awk '{print $1}'|tr -d '\n'")
 	}
 	wc, wcErr := exec.Command("sh", "-c", getSize).Output()
 	ParseError(wcErr,"While getting the file size",string(wc))
@@ -151,6 +152,9 @@ func Banner() {
 	}else{
 		BoldRed.Print(BANNER)
 	}
+
+
+	//BoldRed.Print(BANNER)
 	
 	BoldBlue.Print("\n# Version: ")
 	BoldGreen.Println(VERSION)
@@ -170,17 +174,16 @@ USAGE:
 OPTIONS:
   
   -k, --key       [string]        Custom cipher key
-  -ks,--keysize   <length>        Size of the encryption key in bytes (Max:100/Min:4)
+  -ks,--keysize   <length>        Size of the encryption key in bytes (Max:255/Min:5)
   --staged                        Generated a staged payload
   --iat                           Uses import address table entries instead of hash api
   --no-resource                   Don't add any resource
   -v, --verbose                   Verbose output mode
-  --no-unicode					  Alternative banner for terminals that does not support unicode
   -h, --help                      Show this massage
 
 EXAMPLE:
   (Default settings if no option parameter passed)
-  amber file.exe -ks 8
+  amber file.exe -ks 40
 `
 	green.Println(Help)
 

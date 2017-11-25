@@ -8,7 +8,7 @@ func assemble() {
 	verbose("Assembling reflective payload...","*")
 
 	// Create a file mapping image (6 steps)
-	Map, MapErr:= CreateFileMapping(peid.fileName)
+	Map, MapErr:= CreateFileMapping(peid.FileName)
 	ParseError(MapErr,"While creating file mapping","")
 	MapFile, MapFileErr := os.Create("Mem.map")
 	ParseError(MapFileErr,"While getting the file size","")

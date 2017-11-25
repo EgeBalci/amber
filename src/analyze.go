@@ -52,7 +52,7 @@ func analyze(file *pe.File) {
 		ParseError(errors.New(""),"File has empty import table.","")
 	}
 	progress()
-	wc, wcErr := exec.Command("sh", "-c", string("wc -c "+peid.fileName+"|awk '{print $1}'|tr -d '\n'")).Output()
+	wc, wcErr := exec.Command("sh", "-c", string("wc -c "+peid.FileName+"|awk '{print $1}'|tr -d '\n'")).Output()
 	ParseError(wcErr,"While getting the file size",string(wc))
 	peid.fileSize = string(wc)
 	progress()

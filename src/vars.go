@@ -11,8 +11,8 @@ var PACKET_MANAGER string = "apt"
 type peID struct {
 
 	// Parameters...
-	fileName string
-	keySize  int
+	FileName string
+	KeySize  int
 	key      []byte
 	staged   bool
 	iat      bool

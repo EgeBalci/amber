@@ -12,7 +12,7 @@ func crypt() {
 
   verbose("Ciphering payload...","*")
 
-  if len(peid.key) != 0 {
+  if peid.KeySize != 0 {
     payload, err := ioutil.ReadFile("Payload")
     ParseError(err,"Can't open payload file.","")
 
@@ -31,7 +31,7 @@ func crypt() {
     payload_key.Close()
     progress()
   }else{
-    key := generateKey(peid.keySize)
+    key := generateKey(peid.KeySize)
     progress()
     payload, err := ioutil.ReadFile("Payload")
     ParseError(err,"Can't open payload file.","")

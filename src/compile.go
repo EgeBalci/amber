@@ -1,7 +1,7 @@
 package main
 
 import "os/exec"
-import "os"
+//import "os"
 
 func compile() {
  
@@ -10,7 +10,7 @@ func compile() {
 
   xxd_err := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > stub/payload.h").Run()
   if xxd_err != nil {
-    ParseError(xdd_err,"While extracting payload hex stream.","")
+    ParseError(xxd_err,"While extracting payload hex stream.","")
   }
   progress()
 
@@ -41,9 +41,9 @@ func compile() {
     compileCommand += "stub/Resource.o "
   }
   if peid.subsystem == 2 { // GUI
-    compileCommand += string("-mwindows -o "+peid.fileName)
+    compileCommand += string("-mwindows -o "+peid.FileName)
   }else{
-    compileCommand += string("-o "+peid.fileName)
+    compileCommand += string("-o "+peid.FileName)
   }
   progress()
 
@@ -53,7 +53,7 @@ func compile() {
 
   progress()
 
-  strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.fileName)).Output()
+  strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.FileName)).Output()
   ParseError(stripErr,"While striping the exe.",string(strip))
 
   progress()
