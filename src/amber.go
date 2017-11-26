@@ -20,7 +20,7 @@ func main() {
 	Banner()
 
 	// Set the default values...
-	peid.KeySize = 7
+	peid.KeySize = 8
 	peid.staged = false
 	peid.resource = true
 	peid.verbose = false
@@ -77,8 +77,7 @@ func main() {
 	// Create the process bar
 	CreateProgressBar()
 	CheckRequirements() // Check the required setup (6 steps)
-	chdir_err := os.Chdir("/usr/share/Amber")
-	ParseError(chdir_err,"Can't find amber directory.","")
+	Cdir("/usr/share/Amber")
 	progress()
 	// Open the input file
 	verbose("Opening input file...","*")
@@ -91,8 +90,8 @@ func main() {
 	assemble()    // 10 steps
 
 	if peid.staged == true {
-		//if peid.KeySize != 0
-		exec.Command("sh", "-c", string("mv Payload "+peid.FileName+".stage")).Run()
+		//exec.Command("sh", "-c", string("mv Payload "+peid.FileName+".stage")).Run()
+		move("Payload",string(peid.FileName+".stage"))
 	} else {
 		compile() // Compile the amber stub (10 steps)
 	}

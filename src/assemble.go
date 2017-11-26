@@ -19,54 +19,38 @@ func assemble() {
 	progress()
 
 	if peid.aslr == false {
-		moveMapCommand := "mv Mem.map core/Fixed/"
 		if peid.iat == true {
-			moveMapCommand += "iat/"
+			move("/usr/share/Amber/Mem.map","/usr/share/Amber/core/Fixed/iat/Mem.map")
+		}else{
+			move("/usr/share/Amber/Mem.map","/usr/share/Amber/core/Fixed/Mem.map")
 		}
-		moveMap, moveMapErr := exec.Command("sh", "-c", moveMapCommand).Output()
-		ParseError(moveMapErr,"While moving the file map",string(moveMap))
 		progress()
-		nasmCommand := "cd core/Fixed/"
+		Cdir("/usr/share/Amber/core/Fixed")
 		if peid.iat == true {
-			nasmCommand += "iat/"
+			Cdir("/usr/share/Amber/core/Fixed/iat")		
 		}
-		nasmCommand += " && nasm -f bin Stub.asm -o Payload"
-		nasm, Err := exec.Command("sh", "-c", nasmCommand).Output()
+		progress()
+		nasm, Err := exec.Command("nasm","-f","bin","Stub.asm","-o","/usr/share/Amber/Payload").Output()
 		ParseError(Err,"While assembling payload :(",string(nasm))
-
-		progress()
-		movePayloadCommand := "mv core/Fixed/Payload ./"
-		if peid.iat == true {
-			movePayloadCommand = "mv core/Fixed/iat/Payload ./"
-		}
-		movePayload, movePayErr := exec.Command("sh", "-c", movePayloadCommand).Output()
-		ParseError(movePayErr,"While moving the payload",string(movePayload))
-
 		progress()
 	} else {
-		moveMapCommand := "mv Mem.map core/ASLR/"
 		if peid.iat == true {
-			moveMapCommand += "iat/"
+			move("/usr/share/Amber/Mem.map","/usr/share/Amber/core/ASLR/iat/Mem.map")
+		}else{
+			move("/usr/share/Amber/Mem.map","/usr/share/Amber/core/ASLR/Mem.map")
 		}
-		moveMap, moveMapErr := exec.Command("sh", "-c", moveMapCommand).Output()
-		ParseError(moveMapErr,"While moving the file map",string(moveMap))
 		progress()
-		nasmCommand := "cd core/ASLR/"
+		Cdir("/usr/share/Amber/core/ASLR")		
 		if peid.iat == true {
-			nasmCommand += "iat/"
+			Cdir("/usr/share/Amber/core/Fixed/iat/")
 		}
-		nasmCommand += " && nasm -f bin Stub.asm -o Payload"
-		nasm, Err := exec.Command("sh", "-c", nasmCommand).Output()
+		progress()
+		nasm, Err := exec.Command("nasm","-f","bin","Stub.asm","-o","/usr/share/Amber/Payload").Output()
 		ParseError(Err,"While assembling payload :(",string(nasm))
-
-		progress()
-		movePayloadCommand := "mv core/ASLR/Payload ./"
-		if peid.iat == true {
-			movePayloadCommand = "mv core/ASLR/iat/Payload ./"
-		}
-		movePayload, movePayErr := exec.Command("sh", "-c", movePayloadCommand).Output()
-		ParseError(movePayErr,"While moving the payload",string(movePayload))
 		progress()
 	}
+
+	Cdir("/usr/share/Amber")
+
 	verbose("Assebly completed.", "*")
 }

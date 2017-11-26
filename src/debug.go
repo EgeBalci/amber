@@ -140,29 +140,46 @@ func ParseError(Err error,ErrStatus string,Msg string){
 			fmt.Println(Msg+"\n}")
 		}else{
 			fmt.Println("\n}")
-		}
+		} 
 		clean()
 		fmt.Println("\n")
 		os.Exit(1)
 	}
 }
 
+func Cdir(dir string) {
+	err := os.Chdir(dir)
+	ParseError(err,"While changing directory.","")
+}
+
+
+func move(Old, New string) {
+	err := os.Rename(Old,New)
+	if err != nil {
+		ParseError(err,"While moving a file.","")
+	}
+}
+
+func remove(file string) {
+	exec.Command("rm", file).Run()
+}
+
 
 func clean() {
 
-	exec.Command("sh", "-c", "rm core/ASLR/Mem.map").Run()
+	remove("core/ASLR/Mem.map")
 	progress()
-	exec.Command("sh", "-c", "rm core/ASLR/iat/Mem.map").Run()
+	remove("core/ASLR/iat/Mem.map")
 	progress()
-	exec.Command("sh", "-c", "rm core/Fixed/Mem.map").Run()
+	remove("core/Fixed/Mem.map")
 	progress()
-	exec.Command("sh", "-c", "rm core/Fixed/iat/Mem.map").Run()
+	remove("core/Fixed/iat/Mem.map")
 	progress()
-	exec.Command("sh", "-c", "rm stub.o").Run()
+	remove("stub.o")
 	progress()
-	exec.Command("sh", "-c", "rm Payload").Run()
+	remove("Payload")
 	progress()
-	exec.Command("sh", "-c", "rm Payload.key").Run()
+	remove("Payload.key")
 	progress()
 	exec.Command("sh", "-c", "echo   > stub/payload.h").Run()
 	progress()

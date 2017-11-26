@@ -12,7 +12,7 @@ func crypt() {
 
   verbose("Ciphering payload...","*")
 
-  if peid.KeySize != 0 {
+  if len(peid.key) != 0 {
     payload, err := ioutil.ReadFile("Payload")
     ParseError(err,"Can't open payload file.","")
 
@@ -31,7 +31,7 @@ func crypt() {
     payload_key.Close()
     progress()
   }else{
-    key := generateKey(peid.KeySize)
+    key := GenerateKey(peid.KeySize)
     progress()
     payload, err := ioutil.ReadFile("Payload")
     ParseError(err,"Can't open payload file.","")
@@ -72,7 +72,7 @@ func RC4(data []byte, Key []byte) ([]byte){
 }
 
 
-func generateKey(Size int) ([]byte){
+func GenerateKey(Size int) ([]byte){
   Key := make([]byte, Size)
   rand.Seed(time.Now().UTC().UnixNano())
   for i := 0; i < Size; i++{

@@ -6,22 +6,25 @@
 
 ; Input: EBP - Data to decode
 ;        ESI - Key
+;		 ECX - Data size
+; 		 EDI - Scratch place for S-box
 ; Direction flag has to be cleared
 ; Output: None. Data is decoded in place.
 ; Clobbers: EAX, EBX, ECX, EDX, EBP
 
 	cld
-	call start
-payload:
-  	incbin "Payload"
+  	call start
+Payload:
+	incbin "Payload"
 PSize: equ $-Payload
-key:
-	incbin "Key"
-KSize: equ $-key
+Key:
+	incbin "Payload.key"
+KSize: equ $-Key
   ; Initialize S-box
 start:
 	pop ebp                 ; Pop out the address of payload to ebp
 	lea esi,[ebp+PSize]		; Load the address of key to esi
+	mov ecx,PSize			; Move the size of the amber payload to ecx
 	mov edi,esp            	; Set the address of stack as scratch box  
 	xor eax, eax           	; Start with 0
 init:
@@ -32,28 +35,27 @@ init:
 	; Permute S-box according to key
 	xor ebx, ebx           	; Clear EBX (EAX is already cleared)
 permute:
-  	add bl, [edi+eax]		; BL += S[AL] + KEY[AL % 16]
+  	add bl, [edi+eax]		; BL += S[AL] + KEY[AL % sizeof(Key)]
   	mov edx, eax			; 
-  	and dl, KSize			; dl & sizeof(Key)
+  	and dl, KSize-1			; dl & sizeof(Key)
   	add bl, [esi+edx]		; Move next byte of key to bl 
   	mov dl, [edi+eax]      	; swap S[AL] and S[BL]
   	xchg dl, [edi+ebx]		; ..
   	mov [edi+eax], dl		; ..
-  	inc al                 	; AL += 1 until we wrap around
+  	inc al                	; AL += 1 until we wrap around
   	jnz permute				;
 	; Decryption loop
   	xor ebx, ebx           	; Clear EBX (EAX is already cleared)
-	mov ecx,PSize			; Move the size of the amber payload to ecx
 decrypt:
   	inc al                 	; AL += 1
-  	add bl,[edi+eax]      	; BL += S[AL]
-  	mov dl,[edi+eax]      	; swap S[AL] and S[BL]
-  	xchg dl,[edi+ebx]		;
-  	mov [edi+eax],dl		;
-  	add dl,[edi+ebx]      	; DL = S[AL]+S[BL]
-  	mov dl,[edi+edx]      	; DL = S[DL]
-  	xor [ebp],dl          	; [EBP] ^= DL
+  	add bl, [edi+eax]      	; BL += S[AL]
+  	mov dl, [edi+eax]      	; swap S[AL] and S[BL]
+  	xchg dl, [edi+ebx]		;
+  	mov [edi+eax], dl		;
+  	add dl, [edi+ebx]      	; DL = S[AL]+S[BL]
+  	mov dl, [edi+edx]      	; DL = S[DL]
+  	xor [ebp], dl          	; [EBP] ^= DL
   	inc ebp                	; Advance data pointer
   	dec ecx                	; Reduce counter
   	jnz decrypt            	; Until finished
-    jmp payload
+    jmp Payload
