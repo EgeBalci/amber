@@ -4,7 +4,7 @@ import "gopkg.in/cheggaaa/pb.v1"
 import "github.com/fatih/color"
 import "debug/pe"
 
-const VERSION string = "1.0.0"
+const VERSION string = "1.0.1"
 
 var PACKET_MANAGER string = "apt"
 
@@ -18,6 +18,7 @@ type peID struct {
 	iat      bool
 	resource bool
 	verbose  bool
+	debug	 bool
 
 	//Analysis...
 	fileSize  string

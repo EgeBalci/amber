@@ -1,5 +1,6 @@
 package main
 
+
 import "path/filepath"
 import "debug/pe"
 import "strconv"
@@ -17,7 +18,7 @@ func main() {
 		Help()
 		os.Exit(0)
 	}
-	Banner()
+		Banner()
 
 	// Set the default values...
 	peid.KeySize = 8
@@ -38,6 +39,7 @@ func main() {
 		}
 		if ARGS[i] == "-k" || ARGS[i] == "--key" {
 			peid.key = []byte(ARGS[i+1])
+			peid.KeySize = len([]byte(ARGS[i+1]))
 		}
 		if ARGS[i] == "--staged" {
 			peid.staged = true
@@ -51,7 +53,12 @@ func main() {
 		if ARGS[i] == "-v" || ARGS[i] == "--verbose" {
 			peid.verbose = true
 		}
+		if ARGS[i] == "--debug" {
+			peid.debug = true
+		}
 	}
+
+
 	// Get the absolute path of the file
 	abs,abs_err := filepath.Abs(ARGS[0])
 	ParseError(abs_err,"Can not open input file.","")
@@ -90,9 +97,13 @@ func main() {
 	assemble()    // 10 steps
 
 	if peid.staged == true {
-		//exec.Command("sh", "-c", string("mv Payload "+peid.FileName+".stage")).Run()
-		move("Payload",string(peid.FileName+".stage"))
+		crypt() // 4 steps
+		Cdir("/usr/share/Amber/core")
+		nasm, Err := exec.Command("nasm","-f","bin","RC4.asm","-o","/usr/share/Amber/Payload").Output()
+		ParseError(Err,"While assembling the RC4 decipher header.",string(nasm))
+		move("/usr/share/Amber/Payload",string(peid.FileName+".stage"))
 	} else {
+		crypt() // 4 steps
 		compile() // Compile the amber stub (10 steps)
 	}
 	// Clean the created files
@@ -169,20 +180,19 @@ func Help() {
 USAGE: 
   amber file.exe [options]
 
-
 OPTIONS:
   
-  -k, --key       [string]        Custom cipher key
-  -ks,--keysize   <length>        Size of the encryption key in bytes (Max:255/Min:5)
-  --staged                        Generated a staged payload
-  --iat                           Uses import address table entries instead of hash api
-  --no-resource                   Don't add any resource
-  -v, --verbose                   Verbose output mode
-  -h, --help                      Show this massage
+  -k, --key               Custom cipher key
+  -ks,--keysize           Size of the encryption key in bytes (Max:255/Min:8)
+  --staged                Generated a staged payload
+  --iat                   Uses import address table entries instead of hash api
+  --no-resource           Don't add any resource data
+  -v, --verbose           Verbose output mode
+  -h, --help              Show this massage
 
 EXAMPLE:
   (Default settings if no option parameter passed)
-  amber file.exe -ks 40
+  amber file.exe -ks 8
 `
 	green.Println(Help)
 
