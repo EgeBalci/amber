@@ -7,6 +7,7 @@ import "strconv"
 import "os/exec"
 import "runtime"
 import "strings"
+import "errors"
 import "os"
 
 func main() {
@@ -21,24 +22,28 @@ func main() {
 		Banner()
 
 	// Set the default values...
-	peid.KeySize = 8
+	peid.KeySize = 0
 	peid.staged = false
 	peid.resource = true
 	peid.verbose = false
 	peid.iat = false
+	peid.debug = false
 
 	// Parse the parameters...
 	for i := 0; i < len(ARGS); i++ {
 		if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
 			ks, Err := strconv.Atoi(ARGS[i+1])
 			if Err != nil {
-				ParseError(Err,"Invalid key size.\n","")
+				ParseError(Err,"Invalid key size.\n"," ")
 			} else {
 				peid.KeySize = ks
 			}
 		}
 		if ARGS[i] == "-k" || ARGS[i] == "--key" {
 			peid.key = []byte(ARGS[i+1])
+			if len([]byte(ARGS[i+1])) < 8 {
+				ParseError(errors.New("Invalid key size !"),"Key size can't be smaller than 8 byte.\n"," ")
+			}
 			peid.KeySize = len([]byte(ARGS[i+1]))
 		}
 		if ARGS[i] == "--staged" {
@@ -58,11 +63,9 @@ func main() {
 		}
 	}
 
-
-	// Get the absolute path of the file
-	abs,abs_err := filepath.Abs(ARGS[0])
-	ParseError(abs_err,"Can not open input file.","")
-	peid.FileName = abs
+	if peid.KeySize == 0 && peid.staged == false {
+		peid.KeySize = 8
+	}
 
 	// Show status
 	BoldYellow.Print("\n[*] File: ")
@@ -71,7 +74,7 @@ func main() {
 	BoldBlue.Println(peid.staged)
 	if len(peid.key) != 0 {
 		BoldYellow.Print("[*] Key: ")
-		BoldBlue.Println(peid.key)
+		BoldBlue.Println(string(peid.key))
 	} else {
 		BoldYellow.Print("[*] Key Size: ")
 		BoldBlue.Println(peid.KeySize)
@@ -84,6 +87,12 @@ func main() {
 	// Create the process bar
 	CreateProgressBar()
 	CheckRequirements() // Check the required setup (6 steps)
+
+	// Get the absolute path of the file
+	abs,abs_err := filepath.Abs(ARGS[(len(ARGS)-1)])
+	ParseError(abs_err,"Can not open input file.","")
+	peid.FileName = abs
+	progress()
 	Cdir("/usr/share/Amber")
 	progress()
 	// Open the input file
@@ -97,10 +106,12 @@ func main() {
 	assemble()    // 10 steps
 
 	if peid.staged == true {
-		crypt() // 4 steps
-		Cdir("/usr/share/Amber/core")
-		nasm, Err := exec.Command("nasm","-f","bin","RC4.asm","-o","/usr/share/Amber/Payload").Output()
-		ParseError(Err,"While assembling the RC4 decipher header.",string(nasm))
+		if peid.KeySize != 0 {
+			crypt() // 4 steps
+			Cdir("/usr/share/Amber/core")
+			nasm, Err := exec.Command("nasm","-f","bin","RC4.asm","-o","/usr/share/Amber/Payload").Output()
+			ParseError(Err,"While assembling the RC4 decipher header.",string(nasm))		
+		}
 		move("/usr/share/Amber/Payload",string(peid.FileName+".stage"))
 	} else {
 		crypt() // 4 steps
@@ -139,7 +150,7 @@ func Banner() {
 //  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
 //  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
 //  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-//  POC Reflective PE Packer ☣                                           
+//  POC Reflective PE Packer ☣                                          
 `
 
 	var ArchBanner string = `
@@ -168,8 +179,11 @@ func Banner() {
 	
 	BoldBlue.Print("\n# Version: ")
 	BoldGreen.Println(VERSION)
+	BoldBlue.Print("# Author: ")
+	BoldGreen.Println("Ege Balcı")
 	BoldBlue.Print("# Source: ")
 	BoldGreen.Println("github.com/egebalci/Amber")
+
 
 }
 
@@ -178,7 +192,7 @@ func Help() {
 	var Help string = `
 
 USAGE: 
-  amber file.exe [options]
+  amber [options] file.exe
 
 OPTIONS:
   
@@ -192,7 +206,7 @@ OPTIONS:
 
 EXAMPLE:
   (Default settings if no option parameter passed)
-  amber file.exe -ks 8
+  amber -ks 8 file.exe
 `
 	green.Println(Help)
 

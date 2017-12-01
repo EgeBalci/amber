@@ -15,7 +15,7 @@ func progress() {
 
 func CreateProgressBar() {
 
-	var full int = 47
+	var full int = 48
 
 	if peid.verbose == false {
 		if peid.staged == true {
@@ -136,11 +136,13 @@ func ParseError(Err error,ErrStatus string,Msg string){
 		BoldRed.Println("\n[!] ERROR: "+ErrStatus)
 		fmt.Println("\nERROR{\n",Err)
 		if len(Msg) > 0 {
-			fmt.Println(Msg+"\n}")
+			fmt.Println(Msg+"\n}\n")
 		}else{
-			fmt.Println("\n}")
+			fmt.Println("\n}\n")
 		} 
-		clean()
+		if Msg != " " {
+			clean()
+		}
 		fmt.Println("\n")
 		os.Exit(1)
 	}
@@ -185,11 +187,5 @@ func clean() {
 		progress()
 		exec.Command("sh", "-c", "echo   > stub/key.h").Run()
 		progress()
-	}else{
-		for i := 0; i < 9; i++ {
-			progress()
-		}
 	}
-
-
 }

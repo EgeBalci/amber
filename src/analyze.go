@@ -9,13 +9,13 @@ func analyze(file *pe.File) {
 	//Do analysis on pe file...
 	verbose("Analyzing PE file...","*")
 	if file.FileHeader.Machine != 0x14C {
-		ParseError(errors.New(""),"File is not a 32 bit PE.","")
+		ParseError(errors.New("False machine value !"),"File is not a 32 bit PE.","")
 	}
 	progress()
 	var Opt *pe.OptionalHeader32 = file.OptionalHeader.(*pe.OptionalHeader32)
 	// PE32 = 0x10B
 	if Opt.Magic != 0x10B {
-		ParseError(errors.New(""),"File is not a valid PE.","")
+		ParseError(errors.New("False magic value !"),"File is not a valid PE.","")
 	}
 	progress()
 	peid.imageBase = Opt.ImageBase
@@ -37,11 +37,11 @@ func analyze(file *pe.File) {
 	}
 	progress()
 	if (Opt.DataDirectory[11].Size) != 0x00 {
-		ParseError(errors.New(""),"File has bounded imports.","")
+		ParseError(errors.New("File has bounded imports."),"EXE files with bounded imports not supported.","")
 	}
 	progress()
 	if (Opt.DataDirectory[14].Size) != 0x00 {
-		ParseError(errors.New(""),".NET binaries are not supported.","")
+		ParseError(errors.New("Unempty CLR section !"),".NET binaries are not supported.","")
 	}
 	progress()
 	if (Opt.DataDirectory[13].Size) != 0x00 {

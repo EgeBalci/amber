@@ -61,7 +61,7 @@ if [ $DIST == "Arch" ] || [ $DIST == "Manjaro" ]; then
 	echo '// /    |    \/    Y    \    |   \|        \ |    |   \'
 	echo '// \____|__  /\____|__  /______  /_______  / |____|_  /'
 	echo '//         \/         \/       \/        \/         \/ '
-	echo '// POC Reflective PE Packer'
+	echo '// POC Reflective PE Packer                      v1.0.1'
 else 
 
 	#tput setaf 1;
@@ -72,7 +72,7 @@ else
 	echo "//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗"
 	echo "//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║"
 	echo "//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝"
-	echo "//  POC Reflective PE Packer  ☣          "     
+	echo "//  POC Reflective PE Packer  ☣          v1.0.1"     
 	#echo -e " "$Color_Off
 fi
 

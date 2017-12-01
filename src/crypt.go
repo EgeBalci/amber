@@ -16,21 +16,23 @@ func crypt() {
   if len(peid.key) != 0 {
     payload, err := ioutil.ReadFile("Payload")
     ParseError(err,"Can't open payload file.","")
-
+    progress()
+    if (len(peid.key)%8) != 0 && peid.staged == true {
+    	//tmp := make([]byte,(len(peid.key)+(8-len(peid.key)%8)))
+    	peid.key = append(peid.key,GenerateKey(8-(len(peid.key)%8))...)
+    	verbose(string("Key size rounded to "+strconv.Itoa(len(peid.key))),"*")
+    }
     progress()
     payload = RC4(payload,peid.key)
     payload_rc4, err2 := os.Create("Payload.rc4")
     ParseError(err2,"Can't create payload.rc4 file.","")
-
     progress()
     payload_key, err3 := os.Create("Payload.key")
     ParseError(err3,"Can't create payload.rc4 file.","")
     payload_rc4.Write(payload)
     payload_rc4.Write(peid.key)
-
     payload_rc4.Close()
     payload_key.Close()
-    progress()
   }else{
     key := GenerateKey(peid.KeySize)
     if peid.KeySize != len(key) {
@@ -48,7 +50,6 @@ func crypt() {
     ParseError(err3,"Can't create payload.rc4 file.","")
     payload_rc4.Write(payload)
     payload_key.Write(key)
-
     payload_rc4.Close()
     payload_key.Close()
   }
@@ -80,7 +81,7 @@ func RC4(data []byte, Key []byte) ([]byte){
 
 func GenerateKey(Size int) ([]byte){
 
-	if peid.staged == true && (Size%8) != 0{
+	if peid.staged == true && (Size%8) != 0 && Size >= 8{
 		Size += (8-(Size%8))
 	}
 
