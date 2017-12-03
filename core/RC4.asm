@@ -1,6 +1,6 @@
 ;-----------------------------------------------------------------------------;
-; Author: Michael Schierl (schierlm[at]gmx[dot]de)
-; Version: 1.0 (29 December 2012)
+; Authors: Michael Schierl, Ege Balcı
+; Version: 2.0 (02 December 2017)
 ;-----------------------------------------------------------------------------;
 [BITS 32]
 
@@ -35,12 +35,12 @@ init:
 	; Permute S-box according to key
 	xor ebx, ebx           	; Clear EBX (EAX is already cleared)
 permute:
-  	add bl, [edi+eax]		; BL += S[AL] + KEY[AL % sizeof(Key)]
-  	mov edx, eax			; 
-  	and dl, KSize-1			; dl & sizeof(Key)
-  	add bl, [esi+edx]		; Move next byte of key to bl 
-  	mov dl, [edi+eax]      	; swap S[AL] and S[BL]
-  	xchg dl, [edi+ebx]		; ..
+  	add bl,[edi+eax]		; BL += S[AL] + KEY[AL % sizeof(Key)]
+  	mov edx,eax				; 
+  	and dl,KSize-1			; dl & sizeof(Key)
+  	add bl,[esi+edx]		; Move next byte of key to bl 
+  	mov dl,[edi+eax]      	; swap S[AL] and S[BL]
+  	xchg dl,[edi+ebx]		; ..
   	mov [edi+eax], dl		; ..
   	inc al                	; AL += 1 until we wrap around
   	jnz permute				;
@@ -48,13 +48,13 @@ permute:
   	xor ebx, ebx           	; Clear EBX (EAX is already cleared)
 decrypt:
   	inc al                 	; AL += 1
-  	add bl, [edi+eax]      	; BL += S[AL]
-  	mov dl, [edi+eax]      	; swap S[AL] and S[BL]
-  	xchg dl, [edi+ebx]		;
+  	add bl,[edi+eax]      	; BL += S[AL]
+  	mov dl,[edi+eax]      	; swap S[AL] and S[BL]
+  	xchg dl,[edi+ebx]		;
   	mov [edi+eax], dl		;
-  	add dl, [edi+ebx]      	; DL = S[AL]+S[BL]
-  	mov dl, [edi+edx]      	; DL = S[DL]
-  	xor [ebp], dl          	; [EBP] ^= DL
+  	add dl,[edi+ebx]      	; DL = S[AL]+S[BL]
+  	mov dl,[edi+edx]      	; DL = S[DL]
+  	xor [ebp],dl          	; [EBP] ^= DL
   	inc ebp                	; Advance data pointer
   	dec ecx                	; Reduce counter
   	jnz decrypt            	; Until finished

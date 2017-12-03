@@ -4,35 +4,34 @@
 // XOR 
 //
 
-void rc4_init(unsigned char *s, unsigned char *key, unsigned long Len)
-{
-    int i =0, j = 0;
-    char k[256] = {0};
-    unsigned char tmp = 0;
-    for (i=0;i<256;i++) {
-        s[i] = i;
-        k[i] = key[i%Len];
-    }
-    for (i=0; i<256; i++) {
-        j=(j+s[i]+k[i])%256;
-        tmp = s[i];
-        s[i] = s[j];
-        s[j] = tmp;
-    }
- }
 
-void rc4_decrypt(unsigned char *s, unsigned char *Data, unsigned long Len)
-{
-    int i = 0, j = 0, t = 0;
-    unsigned long k = 0;
-    unsigned char tmp;
-    for(k=0;k<Len;k++) {
-        i=(i+1)%256;
-        j=(j+s[i])%256;
-        tmp = s[i];
-        s[i] = s[j];
-        s[j] = tmp;
-        t=(s[i]+s[j])%256;
-        Data[k] ^= s[t];
-     }
-}   
+#define N 256   // 2^8
+
+void swap(unsigned char *a, unsigned char *b) {
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+void KSA(unsigned char *key,int len,unsigned char *S) {
+    int j = 0;
+    for(int i = 0; i < N; i++)
+        S[i] = i;
+    for(int i = 0; i < N; i++) {
+        j = (j + S[i] + key[i % len]) % N;
+        swap(&S[i], &S[j]);
+    }
+}
+
+void PRGA(unsigned char *S,unsigned char *plain,int len,unsigned char *cipher) {
+    int i = 0;
+    int j = 0;
+
+    for(size_t n = 0; n < len; n++) {
+        i = (i + 1) % N;
+        j = (j + S[i]) % N;
+        swap(&S[i], &S[j]);
+        int rnd = S[(S[i] + S[j]) % N];
+        cipher[n] = rnd ^ plain[n];
+    }
+}
