@@ -123,15 +123,16 @@ echo -e -n $Color_Off
 go build -ldflags "-s -w" handler.go
 cd src
 go build -ldflags "-s -w" -o ../amber
+cd ..
+echo "[*] Creating Amber directory..."
+sudo mkdir /usr/share/Amber
+sudo chown $(whoami):$(whoami) /usr/share/Amber
+cp -r * /usr/share/Amber/
 
-#sudo ln amber /usr/local/bin/amber
-
-
-echo "#!/bin/bash" > /tmp/amber
-echo "cd $AMBERPATH" >> /tmp/amber
-echo "./amber \$@" >> /tmp/amber
-sudo mv /tmp/amber /usr/local/bin/
-chmod +x /usr/local/bin/amber
+sudo ln -s /usr/share/Amber/amber /usr/local/bin/amber
+sudo chown $(whoami):$(whoami) /usr/local/bin/amber
+sudo ln -s /usr/share/Amber/handler /usr/local/bin/amber_handler
+sudo chown $(whoami):$(whoami) /usr/local/bin/amber_handler
 
 echo -e $BGreen
 echo "[✔] Setup completed !"
