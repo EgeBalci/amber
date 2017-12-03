@@ -82,7 +82,7 @@ SUPPORTED PLATFORMS:
 		//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
 		//  POC Reflective PE Packer                                             
 
-		# Version: 1.0.0
+		# Version: 1.1.0
 		# Source: github.com/egebalci/Amber
 
 
