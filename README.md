@@ -1,6 +1,8 @@
-# AMBER ![Version](https://img.shields.io/badge/version-1.0-brightgreen.svg) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)	
+
 
 [![Banner](https://github.com/EgeBalci/Amber/raw/master/Banner.png)](https://github.com/egebalci/Amber)
+
+[![Version](https://img.shields.io/badge/version-1.1.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
 
 
 Amber is a proof of concept packer, it can pack regularly compiled PE files into reflective PE files that can be used as multi stage infection payloads. If you want to learn the packing methodology used inside the Amber check out below. 
@@ -80,28 +82,27 @@ SUPPORTED PLATFORMS:
 		//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
 		//  POC Reflective PE Packer                                             
 
-		# Version: 1.0.0
+		# Version: 1.1.0
 		# Source: github.com/egebalci/Amber
 
 
 		USAGE: 
-		  amber file.exe [options]
+		  amber [options] file.exe
 
 
 		OPTIONS:
 		  
 		  -k, --key       [string]        Custom cipher key
-		  -ks,--keysize   <length>        Size of the encryption key in bytes (Max:100/Min:4)
+		  -ks,--keysize   <length>        Size of the encryption key in bytes (Max:255/Min:8)
 		  --staged                        Generated a staged payload
 		  --iat                           Uses import address table entries instead of hash api
 		  --no-resource                   Don't add any resource
 		  -v, --verbose                   Verbose output mode
-		  --no-unicode                    Alternative banner for terminals that does not support unicode
 		  -h, --help                      Show this massage
 
 		EXAMPLE:
 		  (Default settings if no option parameter passed)
-		  amber file.exe -ks 8
+		  amber -ks 8 file.exe
 
 
 <strong>Fileless ransomware deployment with powershell</strong>
@@ -146,9 +147,9 @@ When no extra parameters passed (only the file name) packer generates a multi st
 - [ ] Add MacOS support
 - [ ] Add.NET file support
 - [ ] Add a IAT parser shellcode to stub
-- [ ] Add yara rules to repo
+- [x] Add yara rules to repo
 - [ ] Write a unpacker for Amber payloads
+- [x] Add RC4 encryption to payloads
 - [ ] Automate IAT index address finding on --iat option
-- [ ] Add assembly encoder & anti debug features
 - [ ] Add more integrity checks to the file mapping function
-- [ ] Better installation mechanism
+- [x] Better installation mechanism

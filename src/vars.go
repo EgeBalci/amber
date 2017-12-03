@@ -4,20 +4,21 @@ import "gopkg.in/cheggaaa/pb.v1"
 import "github.com/fatih/color"
 import "debug/pe"
 
-const VERSION string = "1.0.0"
+const VERSION string = "1.1.0"
 
 var PACKET_MANAGER string = "apt"
 
 type peID struct {
 
 	// Parameters...
-	fileName string
-	keySize  int
+	FileName string
+	KeySize  int
 	key      []byte
 	staged   bool
 	iat      bool
 	resource bool
 	verbose  bool
+	debug	 bool
 
 	//Analysis...
 	fileSize  string

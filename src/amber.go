@@ -1,10 +1,13 @@
 package main
 
+
+import "path/filepath"
 import "debug/pe"
 import "strconv"
 import "os/exec"
 import "runtime"
 import "strings"
+import "errors"
 import "os"
 
 func main() {
@@ -16,28 +19,32 @@ func main() {
 		Help()
 		os.Exit(0)
 	}
-	Banner()
+		Banner()
 
 	// Set the default values...
-	peid.fileName = ARGS[0]
-	peid.keySize = 7
+	peid.KeySize = 0
 	peid.staged = false
 	peid.resource = true
 	peid.verbose = false
 	peid.iat = false
+	peid.debug = false
 
 	// Parse the parameters...
 	for i := 0; i < len(ARGS); i++ {
 		if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
 			ks, Err := strconv.Atoi(ARGS[i+1])
 			if Err != nil {
-				ParseError(Err,"\n[!] ERROR: Invalid key size.\n","")
+				ParseError(Err,"Invalid key size.\n"," ")
 			} else {
-				peid.keySize = ks
+				peid.KeySize = ks
 			}
 		}
 		if ARGS[i] == "-k" || ARGS[i] == "--key" {
 			peid.key = []byte(ARGS[i+1])
+			if len([]byte(ARGS[i+1])) < 8 {
+				ParseError(errors.New("Invalid key size !"),"Key size can't be smaller than 8 byte.\n"," ")
+			}
+			peid.KeySize = len([]byte(ARGS[i+1]))
 		}
 		if ARGS[i] == "--staged" {
 			peid.staged = true
@@ -51,18 +58,26 @@ func main() {
 		if ARGS[i] == "-v" || ARGS[i] == "--verbose" {
 			peid.verbose = true
 		}
+		if ARGS[i] == "--debug" {
+			peid.debug = true
+		}
 	}
+
+	if peid.KeySize == 0 && peid.staged == false {
+		peid.KeySize = 8
+	}
+
 	// Show status
 	BoldYellow.Print("\n[*] File: ")
-	BoldBlue.Println(peid.fileName)
+	BoldBlue.Println(peid.FileName)
 	BoldYellow.Print("[*] Staged: ")
 	BoldBlue.Println(peid.staged)
 	if len(peid.key) != 0 {
 		BoldYellow.Print("[*] Key: ")
-		BoldBlue.Println(peid.key)
+		BoldBlue.Println(string(peid.key))
 	} else {
 		BoldYellow.Print("[*] Key Size: ")
-		BoldBlue.Println(peid.keySize)
+		BoldBlue.Println(peid.KeySize)
 	}
 	BoldYellow.Print("[*] IAT: ")
 	BoldBlue.Println(peid.iat)
@@ -72,10 +87,18 @@ func main() {
 	// Create the process bar
 	CreateProgressBar()
 	CheckRequirements() // Check the required setup (6 steps)
+
+	// Get the absolute path of the file
+	abs,abs_err := filepath.Abs(ARGS[(len(ARGS)-1)])
+	ParseError(abs_err,"Can not open input file.","")
+	peid.FileName = abs
+	progress()
+	Cdir("/usr/share/Amber")
+	progress()
 	// Open the input file
 	verbose("Opening input file...","*")
-	file, fileErr := pe.Open(ARGS[0])
-	ParseError(fileErr,"\n[!] ERROR: Can not open input file.","")
+	file, FileErr := pe.Open(peid.FileName)
+	ParseError(FileErr,"Can not open input file.","")
 	progress()
 	// Analyze the input file
 	analyze(file) // 10 steps
@@ -83,8 +106,15 @@ func main() {
 	assemble()    // 10 steps
 
 	if peid.staged == true {
-		exec.Command("sh", "-c", string("mv Payload "+peid.fileName+".stage")).Run()
+		if peid.KeySize != 0 {
+			crypt() // 4 steps
+			Cdir("/usr/share/Amber/core")
+			nasm, Err := exec.Command("nasm","-f","bin","RC4.asm","-o","/usr/share/Amber/Payload").Output()
+			ParseError(Err,"While assembling the RC4 decipher header.",string(nasm))		
+		}
+		move("/usr/share/Amber/Payload",string(peid.FileName+".stage"))
 	} else {
+		crypt() // 4 steps
 		compile() // Compile the amber stub (10 steps)
 	}
 	// Clean the created files
@@ -93,12 +123,12 @@ func main() {
 		progressBar.Finish()
 	}
 
-	var getSize string = string("wc -c " + peid.fileName + "|awk '{print $1}'|tr -d '\n'")
+	var getSize string = string("wc -c " + peid.FileName + "|awk '{print $1}'|tr -d '\n'")
 	if peid.staged == true {
-		getSize = string("wc -c " + peid.fileName+ ".stage" + "|awk '{print $1}'|tr -d '\n'")
+		getSize = string("wc -c " + peid.FileName+ ".stage" + "|awk '{print $1}'|tr -d '\n'")
 	}
 	wc, wcErr := exec.Command("sh", "-c", getSize).Output()
-	ParseError(wcErr,"\n[!] ERROR: While getting the file size",string(wc))
+	ParseError(wcErr,"While getting the file size",string(wc))
 
 	BoldYellow.Print("\n[*] ")
 	white.Println("Final Size: " + peid.fileSize + " -> " + string(wc) + " bytes")
@@ -120,7 +150,7 @@ func Banner() {
 //  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
 //  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
 //  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-//  POC Reflective PE Packer ☣                                           
+//  POC Reflective PE Packer ☣                                          
 `
 
 	var ArchBanner string = `
@@ -143,11 +173,17 @@ func Banner() {
 	}else{
 		BoldRed.Print(BANNER)
 	}
+
+
+	//BoldRed.Print(BANNER)
 	
 	BoldBlue.Print("\n# Version: ")
 	BoldGreen.Println(VERSION)
+	BoldBlue.Print("# Author: ")
+	BoldGreen.Println("Ege Balcı")
 	BoldBlue.Print("# Source: ")
 	BoldGreen.Println("github.com/egebalci/Amber")
+
 
 }
 
@@ -156,23 +192,21 @@ func Help() {
 	var Help string = `
 
 USAGE: 
-  amber file.exe [options]
-
+  amber [options] file.exe
 
 OPTIONS:
   
-  -k, --key       [string]        Custom cipher key
-  -ks,--keysize   <length>        Size of the encryption key in bytes (Max:100/Min:4)
-  --staged                        Generated a staged payload
-  --iat                           Uses import address table entries instead of hash api
-  --no-resource                   Don't add any resource
-  -v, --verbose                   Verbose output mode
-  --no-unicode					  Alternative banner for terminals that does not support unicode
-  -h, --help                      Show this massage
+  -k, --key               Custom cipher key
+  -ks,--keysize           Size of the encryption key in bytes (Max:255/Min:8)
+  --staged                Generated a staged payload
+  --iat                   Uses import address table entries instead of hash api
+  --no-resource           Don't add any resource data
+  -v, --verbose           Verbose output mode
+  -h, --help              Show this massage
 
 EXAMPLE:
   (Default settings if no option parameter passed)
-  amber file.exe -ks 8
+  amber -ks 8 file.exe
 `
 	green.Println(Help)
 
