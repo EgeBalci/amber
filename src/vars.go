@@ -4,7 +4,7 @@ import "gopkg.in/cheggaaa/pb.v1"
 import "github.com/fatih/color"
 import "debug/pe"
 
-const VERSION string = "1.0.1"
+const VERSION string = "1.1.0"
 
 var PACKET_MANAGER string = "apt"
 
