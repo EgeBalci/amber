@@ -6,7 +6,6 @@ import "debug/pe"
 import "strconv"
 import "os/exec"
 import "runtime"
-import "strings"
 import "errors"
 import "os"
 
@@ -16,7 +15,7 @@ func main() {
 	ARGS := os.Args[1:]
 	if len(ARGS) == 0 || ARGS[0] == "--help" || ARGS[0] == "-h" {
 		Banner()
-		Help()
+		BoldGreen.Println(Help)
 		os.Exit(0)
 	}
 		Banner()
@@ -137,77 +136,5 @@ func main() {
 	} else {
 		BoldGreen.Println("[✔] File successfully packed !\n")
 	}
-
-}
-
-func Banner() {
-
-	var BANNER string = `
-
-//   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ 
-//  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗
-//  ███████║██╔████╔██║██████╔╝█████╗  ██████╔╝
-//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
-//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
-//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-//  POC Reflective PE Packer ☣                                          
-`
-
-	var ArchBanner string = `
-
-
-//    _____      _____ _______________________________ 
-//   /  _  \    /     \\______   \_   _____/\______   \
-//  /  /_\  \  /  \ /  \|    |  _/|    __)_  |       _/
-// /    |    \/    Y    \    |   \|        \ |    |   \
-// \____|__  /\____|__  /______  /_______  / |____|_  /
-//         \/         \/       \/        \/         \/ 
-// POC Reflective PE Packer
-`
-
-
-	DIST, _ := exec.Command("lsb_release", "-a").Output()
-	if strings.Contains(string(DIST), "Arch") {
-		PACKET_MANAGER = "pacman"
-		BoldRed.Print(ArchBanner)
-	}else{
-		BoldRed.Print(BANNER)
-	}
-
-
-	//BoldRed.Print(BANNER)
-	
-	BoldBlue.Print("\n# Version: ")
-	BoldGreen.Println(VERSION)
-	BoldBlue.Print("# Author: ")
-	BoldGreen.Println("Ege Balcı")
-	BoldBlue.Print("# Source: ")
-	BoldGreen.Println("github.com/egebalci/Amber")
-
-
-}
-
-
-func Help() {
-	var Help string = `
-
-USAGE: 
-  amber [options] file.exe
-
-OPTIONS:
-  
-  -k, --key               Custom cipher key
-  -ks,--keysize           Size of the encryption key in bytes (Max:255/Min:8)
-  --staged                Generated a staged payload
-  --iat                   Uses import address table entries instead of hash api
-  --no-resource           Don't add any resource data
-  -v, --verbose           Verbose output mode
-  -h, --help              Show this massage
-
-EXAMPLE:
-  (Default settings if no option parameter passed)
-  amber -ks 8 file.exe
-`
-	green.Println(Help)
 
 }

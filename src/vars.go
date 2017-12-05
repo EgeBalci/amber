@@ -44,3 +44,43 @@ var white *color.Color = color.New(color.FgWhite)
 
 var progressBar *pb.ProgressBar
 var peid peID
+
+
+	var BANNER string = `
+
+//   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ 
+//  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗
+//  ███████║██╔████╔██║██████╔╝█████╗  ██████╔╝
+//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
+//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
+//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
+//  POC Reflective PE Packer ☣                                          
+`
+
+	var ArchBanner string = `
+
+
+//    _____      _____ _______________________________ 
+//   /  _  \    /     \\______   \_   _____/\______   \
+//  /  /_\  \  /  \ /  \|    |  _/|    __)_  |       _/
+// /    |    \/    Y    \    |   \|        \ |    |   \
+// \____|__  /\____|__  /______  /_______  / |____|_  /
+//         \/         \/       \/        \/         \/ 
+// POC Reflective PE Packer
+`
+
+	var Help string = `
+USAGE: 
+  amber [options] file.exe
+OPTIONS:
+  -k, --key            Custom cipher key
+  -ks,--keysize        Size of the encryption key in bytes (Max:255/Min:8)
+  --staged             Generated a staged payload
+  --iat                Uses import address table entries instead of hash api
+  --no-resource        Don't add any resource data
+  -v, --verbose        Verbose output mode
+  -h, --help           Show this massage
+EXAMPLE:
+  (Default settings if no option parameter passed)
+  amber -ks 8 file.exe
+`

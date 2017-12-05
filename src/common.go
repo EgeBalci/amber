@@ -165,7 +165,6 @@ func remove(file string) {
 	exec.Command("rm", file).Run()
 }
 
-
 func clean() {
 
 	if peid.debug != true {
@@ -188,4 +187,24 @@ func clean() {
 		exec.Command("sh", "-c", "echo   > stub/key.h").Run()
 		progress()
 	}
+}
+
+
+func Banner() {
+
+	DIST, _ := exec.Command("lsb_release", "-a").Output()
+	if strings.Contains(string(DIST), "Arch") {
+		PACKET_MANAGER = "pacman"
+		BoldRed.Print(ArchBanner)
+	}else{
+		BoldRed.Print(BANNER)
+	}
+	//BoldRed.Print(BANNER)
+	
+	BoldBlue.Print("\n# Version: ")
+	BoldGreen.Println(VERSION)
+	BoldBlue.Print("# Author: ")
+	BoldGreen.Println("Ege Balcı")
+	BoldBlue.Print("# Source: ")
+	BoldGreen.Println("github.com/egebalci/Amber")
 }
