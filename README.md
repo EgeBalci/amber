@@ -69,8 +69,8 @@ SUPPORTED PLATFORMS:
 </table>
 
 
-		sudo chmod +x Setup.sh
-		sudo ./Setup.sh
+		sudo chmod +x setup.sh
+		sudo ./setup.sh
 # USAGE
 
 
