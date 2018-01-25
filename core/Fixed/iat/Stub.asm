@@ -5,21 +5,24 @@
 [BITS 32]
 [ORG 0]
 
-%include "../../IAT.asm"
-
 	call Stub
 PE:
 	incbin "Mem.map"			; PE file image
 	ImageSize: equ $-PE
 Stub:
 	pop esi						; Get the address of image to esi
+	call IAT_API				; 
+	%include "iat_api.asm"		;
+IAT_API:
+	pop ebp						; Pop the address of iat_api to ebp
 	call GetAOE	
 	push 0x00000000 			; Allocate a DWORD variable inside stack
 	push esp					; lpflOldProtect
 	push byte 0x40				; PAGE_EXECUTE_READWRITE
 	push ImageSize				; dwSize
 	push ebx					; lpAddress
-	call [VP]					; VirtualProtect( ImageBase, ImageSize, PAGE_EXECUTE_READWRITE, lpflOldProtect)
+	push 0xC38AE110				; hash( "kernel32.dll", "VirtualProtect" )
+	call ebp					; VirtualProtect( ImageBase, ImageSize, PAGE_EXECUTE_READWRITE, lpflOldProtect)
 	test eax,eax				; Check success 
 	jz Fail						; If VirtualProtect fails don't bother :/
 	%include "BuildImportTable.asm"	; Call the module responsible for building the import address table

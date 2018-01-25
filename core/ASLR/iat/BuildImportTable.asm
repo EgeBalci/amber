@@ -3,7 +3,7 @@
 ; #########################################
 ; #  EBX -> Original image base           #
 ; #  ESI -> Address of PE image		  	  #
-; #  EBP -> &hash_api			  		  #  				
+; #  EBP -> &hook_api			  		  #  				
 ; #########################################
 ; 
 ; Author: Ege Balcı <ege.balci@protonmail.com> 
@@ -76,7 +76,8 @@ LoadLibraryA:
 	push ecx		; Save ecx to stack
 	push edx		; Save edx to stack
 	push eax 		; Push the address of linrary name string
-	call [LLA] 		; LoadLibraryA([esp+4])
+	push 0x0726774C	; hash( "kernel32.dll", "LoadLibraryA" )
+	call ebp 		; LoadLibraryA([esp+4])
 	pop edx			; Retreive edx
 	pop ecx			; Retreive ecx
 	ret 			; <-
@@ -86,7 +87,8 @@ GetProcAddress:
 	push edx		; Save edx to stack
 	push eax		; Push the address of proc name string
 	push ebx 		; Push the dll handle
-	call [GPA]		; GetProcAddress(ebx,[esp+4])
+	push 0x7802F749	; hash( "kernel32.dll", "GetProcAddress" )
+	call ebp		; GetProcAddress(ebx,[esp+4])
 	pop edx			; Retrieve edx
 	pop ecx			; Retrieve ecx
 	ret 			; <-
