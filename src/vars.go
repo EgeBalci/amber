@@ -4,7 +4,7 @@ import "gopkg.in/cheggaaa/pb.v1"
 import "github.com/fatih/color"
 import "debug/pe"
 
-const VERSION string = "1.1.0"
+const VERSION string = "1.2.0"
 
 var PACKET_MANAGER string = "apt"
 
@@ -76,7 +76,7 @@ OPTIONS:
   -k, --key            Custom cipher key
   -ks,--keysize        Size of the encryption key in bytes (Max:255/Min:8)
   --staged             Generated a staged payload
-  --iat                Uses import address table entries instead of hash api
+  --iat                Uses import address table entries instead of export address table
   --no-resource        Don't add any resource data
   -v, --verbose        Verbose output mode
   -h, --help           Show this massage
