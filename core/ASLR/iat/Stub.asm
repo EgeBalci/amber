@@ -20,6 +20,7 @@ PE:
 Stub:
 	pop esi					; Get the address of image to esi
 	call IAT_API			;
+	%include "iat_api.asm"	;
 IAT_API:					;
 	pop ebp					; Get the address of hook_api to ebp
 	push dword 0x40 		; PAGE_EXECUTE_READ_WRITE

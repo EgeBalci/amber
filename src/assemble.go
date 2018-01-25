@@ -42,7 +42,7 @@ func assemble() {
 		progress()
 		Cdir("/usr/share/Amber/core/ASLR")		
 		if peid.iat == true {
-			Cdir("/usr/share/Amber/core/Fixed/iat/")
+			Cdir("/usr/share/Amber/core/ASLR/iat/")
 		}
 		progress()
 		nasm, Err := exec.Command("nasm","-f","bin","Stub.asm","-o","/usr/share/Amber/Payload").Output()
