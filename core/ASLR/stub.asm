@@ -17,7 +17,7 @@
 
 	cld							; Clear out direction flags
 	call Start					; Start OP
-	%include "HASH-API.asm"		; hash_api
+	%include "block_api.asm"	; block_api
 GetAOE:
 	mov eax,[esi+0x3C]			; Get the offset of "PE" to eax
 	mov ebx,[eax+esi+0x34]		; Get the image base address to ebx
@@ -42,7 +42,7 @@ Stub:
 	jz OpEnd					; If VirtualAlloc fails don't bother :/	
 	push eax					; Save the new base address to stack
 	call GetAOE					; Get the AOE and image base 	
-	%include "Relocate.asm"		; Make image base relocation
+	%include "relocate.asm"		; Make image base relocation
 	%include "BuildImportTable.asm"	; Call the module responsible for building the import address table
 	xor ecx,ecx 				; Zero out the ECX
 	call GetAOE					; Get image base and AOE

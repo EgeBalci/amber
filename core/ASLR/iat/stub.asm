@@ -34,7 +34,7 @@ IAT_API:					;
 	jz OpEnd				; If VirtualAlloc fails don't bother :/	
 	push eax				; Save the new base address to stack
 	call GetAOE				; Get the AOE and image base 	
-	%include "Relocate.asm"	; Make image base relocation
+	%include "relocate.asm"	; Make image base relocation
 	%include "BuildImportTable.asm"	; Call the module responsible for building the import address table
 	xor ecx,ecx 			; Zero out the ECX
 	call GetAOE				; Get image base and AOE

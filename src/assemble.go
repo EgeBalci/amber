@@ -30,7 +30,7 @@ func assemble() {
 			Cdir("/usr/share/Amber/core/Fixed/iat")		
 		}
 		progress()
-		nasm, Err := exec.Command("nasm","-f","bin","Stub.asm","-o","/usr/share/Amber/Payload").Output()
+		nasm, Err := exec.Command("nasm","-f","bin","stub.asm","-o","/usr/share/Amber/Payload").Output()
 		ParseError(Err,"While assembling payload :(",string(nasm))
 		progress()
 	} else {
@@ -45,7 +45,7 @@ func assemble() {
 			Cdir("/usr/share/Amber/core/ASLR/iat/")
 		}
 		progress()
-		nasm, Err := exec.Command("nasm","-f","bin","Stub.asm","-o","/usr/share/Amber/Payload").Output()
+		nasm, Err := exec.Command("nasm","-f","bin","stub.asm","-o","/usr/share/Amber/Payload").Output()
 		ParseError(Err,"While assembling payload :(",string(nasm))
 		progress()
 	}
