@@ -1,11 +1,3 @@
-;
-;
-;
-; #########################
-; #  ESI -> &PE           #
-; #  EBP -> &hash_api     #
-; #########################
-;
 ; 
 ; Author: Ege Balcı <ege.balci@protonmail.com> 
 ; Version: 1.0

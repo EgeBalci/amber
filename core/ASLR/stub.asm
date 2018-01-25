@@ -1,19 +1,9 @@
-;
-;
-;
-; #########################
-; #  ESI -> &PE           #
-; #  EBP -> &hash_api     #
-; #########################
-;
 ; 
 ; Author: Ege Balcı <ege.balci@invictuseurope.com> 
 ; Version: 1.0
 
 [BITS 32]
 [ORG 0]
-
-;%define VirtualAlloc
 
 	cld							; Clear out direction flags
 	call Start					; Start OP

@@ -1,27 +1,10 @@
-; This block requires following values inside the specified registers...
-;
-; #########################################
-; #  EBX -> Original image base           #
-; #  ESI -> Address of PE image		  	  #
-; #  EBP -> &hash_api			  		  #  				
-; #########################################
 ; 
 ; Author: Ege Balcı <ege.balci@invictuseurope.com> 
 ; Version: 1.0
 ;
-;######## FUNCTION USAGE #######
-;	
-;	LoadLibraryA(string dllName); [eax]
-;	GetProcs(HANDLE dllHandle, &_IMPORT_DESCRIPTOR); [ebx] [eax]
-;	GetProcAddress(HANDLE dllHandle, string funcName)
-;	InserAddress();
-;
 
 [BITS 32]
 [ORG 0]
-
-;%define LoadLibraryA
-;%define GetProcAddress
 
 BuildImportTable:
 	mov eax,[esi+0x3C]		; Offset to IMAGE_NT_HEADER ("PE")

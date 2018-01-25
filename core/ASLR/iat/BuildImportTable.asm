@@ -1,20 +1,6 @@
-; This block requires following values inside the specified registers...
-;
-; #########################################
-; #  EBX -> Original image base           #
-; #  ESI -> Address of PE image		  	  #
-; #  EBP -> &hook_api			  		  #  				
-; #########################################
 ; 
 ; Author: Ege Balcı <ege.balci@protonmail.com> 
 ; Version: 1.0
-;
-;######## FUNCTION USAGE #######
-;	
-;	LoadLibraryA(string dllName); [eax]
-;	GetProcs(HANDLE dllHandle, &_IMPORT_DESCRIPTOR); [ebx] [eax]
-;	GetProcAddress(HANDLE dllHandle, string funcName)
-;	InserAddress();
 ;
 
 [BITS 32]

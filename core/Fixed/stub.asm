@@ -5,8 +5,6 @@
 [BITS 32]
 [ORG 0]
 
-;%define VirtualProtect
-
 	cld
 	call Start
 	%include "block_api.asm"
