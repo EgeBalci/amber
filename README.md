@@ -2,12 +2,10 @@
 
 [![Banner](https://github.com/EgeBalci/Amber/raw/master/Banner.png)](https://github.com/egebalci/Amber)
 
-[![Version](https://img.shields.io/badge/version-1.1.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
+[![Version](https://img.shields.io/badge/version-1.2.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
 
 
 Amber is a proof of concept packer, it can pack regularly compiled PE files into reflective PE files that can be used as multi stage infection payloads. If you want to learn the packing methodology used inside the Amber check out below. 
-
-PS: This is not a complete tool some things may break so take it easy on the issues :sweat_smile: and feel free to contribute.
 
 
 Developed By Ege Balcı from [INVICTUS](https://invictuseurope.com)/[PRODAFT](https://prodaft.com).
@@ -82,7 +80,7 @@ SUPPORTED PLATFORMS:
 		//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
 		//  POC Reflective PE Packer                                             
 
-		# Version: 1.1.0
+		# Version: 1.2.0
 		# Source: github.com/egebalci/Amber
 
 
@@ -95,7 +93,7 @@ SUPPORTED PLATFORMS:
 		  -k, --key       [string]        Custom cipher key
 		  -ks,--keysize   <length>        Size of the encryption key in bytes (Max:255/Min:8)
 		  --staged                        Generated a staged payload
-		  --iat                           Uses import address table entries instead of hash api
+		  --iat                           Uses import address table entries instead of export address table
 		  --no-resource                   Don't add any resource
 		  -v, --verbose                   Verbose output mode
 		  -h, --help                      Show this massage
@@ -146,10 +144,11 @@ When no extra parameters passed (only the file name) packer generates a multi st
 - [ ] Add x64 support
 - [ ] Add MacOS support
 - [ ] Add.NET file support
-- [ ] Add a IAT parser shellcode to stub
+- [x] Add IAT parser shellcode to stub
 - [x] Add yara rules to repo
 - [ ] Write a unpacker for Amber payloads
 - [x] Add RC4 encryption to payloads
-- [ ] Automate IAT index address finding on --iat option
 - [ ] Add more integrity checks to the file mapping function
 - [x] Better installation mechanism
+- [ ] Remove GetAOE function from stub.asm (will reduce the stub size)
+- [ ] Write a wiki page
