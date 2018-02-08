@@ -18,7 +18,7 @@ func main() {
 		BoldGreen.Println(Help)
 		os.Exit(0)
 	}
-		Banner()
+	Banner()
 
 	// Set the default values...
 	peid.KeySize = 0
@@ -61,6 +61,8 @@ func main() {
 			peid.debug = true
 		}
 	}
+
+	peid.FileName = ARGS[(len(ARGS)-1)]
 
 	if peid.KeySize == 0 && peid.staged == false {
 		peid.KeySize = 8
