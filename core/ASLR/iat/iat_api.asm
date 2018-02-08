@@ -2,7 +2,7 @@
 ; Author: Ege Balcı <ege.balci[at]invictuseurope[dot]com>
 ; Compatible: Windows 10/8.1/8/7/2008/Vista/2003/XP/2000/NT4
 ; Version: 1.0 (25 January 2018)
-; Size: 166 bytes
+; Size: 167 bytes
 ;-----------------------------------------------------------------------------;
 
 ; This block locates addresses from import address table with given ror(13) hash value.
@@ -36,6 +36,7 @@ next_desc:
 	add edx,0x14			; Get the next import descriptor
 	cmp dword [edx],0x00	; Check if import descriptor valid
 	jz not_found			; If import name array RVA is zero finish parsing
+	mov esi,[esp+0x08]		; Move the import table address to esi
 	mov si,[edx+0x0C]     	; Get pointer to module name string RVA
 	xor edi,edi           	; Clear EDI which will store the hash of the module name
 loop_modname:            	;
@@ -79,7 +80,6 @@ loop_funcname:           	;
   	add edi,[esp]       	; Add the current module hash to the function hash
   	cmp edi,[esp+0x34]      ; Compare the hash to the one we are searching for
   	jnz get_next_func      	; Go compute the next function hash if we have not found it
-
   	; If found, fix up stack, call the function and then value else compute the next one...
 	mov eax,[edx+0x10]		; Get the RVA of current descriptor's IAT 
 	mov edx,[edx]			; Get the import names table RVA of current import descriptor
@@ -98,7 +98,7 @@ finish:
   	pop edx                	; Pop off the hash value our caller will have pushed
   	push ecx               	; Push back the correct return value
 	mov eax,[eax]			; Get the add ress of the desired API
-  	jmp eax                ; Jump into the required function
+	jmp eax					; JMP to API
   	; We now automagically return to the correct caller...
 not_found:
 	add esp,0x0F		; Fix the stack

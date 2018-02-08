@@ -4,7 +4,7 @@
 
 [BITS 32]
 [ORG 0]
-
+	cld
 	call Stub				; ...
 PE:
 	incbin "Mem.map"		; PE file image
@@ -28,6 +28,23 @@ IAT_API:					;
 	call GetAOE				; Get the AOE and image base 	
 	%include "relocate.asm"	; Make image base relocation
 	%include "BuildImportTable.asm"	; Call the module responsible for building the import address table
+	push 0x00000000			; Push NULL byte string terminator
+	push 0x6c6c642e			; "lld."
+	push 0x32336c65			; "23le"
+	push 0x6e72656b			; "nrek"
+	push esp				; Push the address of "kernel32.dll" string
+	push 0x0726774C			; hash( "kernel32.dll","LoadLibraryA" )
+	call ebp				; LoadLibraryA("kernel32.dll")
+	push 0x00000000			; Push NULL byte string terminator
+	push 0x64616572			; "daer"
+	push 0x68546574			; "hTet"
+	push 0x61657243			; "aerC"
+	push esp				; Push the address of "CreateThread" string
+	push eax				; Push the kernel32.dll handle
+	push 0x7802F749			; hash( "kernel32.dll","GetProcAddress" )
+	call ebp				; GetProcAddress(HANDLE,"CreateThread")
+	add esp,0x20			; Clean the stack
+	mov [esp+4],eax			; Save the address of CreateThread API to stack
 	xor ecx,ecx 			; Zero out the ECX
 	call GetAOE				; Get image base and AOE
 	mov ebx,[esp]			; Copy the address of new base to ebx
@@ -40,9 +57,10 @@ Memcpy:
 	inc ecx 				; Decrease loop counter
 	cmp ecx,ImageSize 		; Check if ECX is 0
 	jnz Memcpy 				; If not loop
-	mov dword eax,[esp]		; Copy the AOEP to eax
+	mov dword eax,[esp]		; Copy the AOEP to eax	
 CreateThread:
 	pop ebx					; Pop back the AOE to ebx
+	pop ebp					; Pop the address of CreateThread API to EBP
 	xor eax,eax				; Zero out the eax
 	push eax				; lpThreadId
 	push eax				; dwCreationFlags
@@ -50,7 +68,6 @@ CreateThread:
   	push ebx				; lpStartAddress
   	push eax				; dwStackSize
   	push eax				; lpThreadAttributes
-  	push 0x160D6838 		; hash( "kernel32.dll", "CreateThread" )
 	call ebp				; CreateThread( NULL, 0, &threadstart, NULL, 0, NULL );
   	jmp OpEnd				; <-
 GetAOE:

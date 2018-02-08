@@ -66,9 +66,9 @@ SUPPORTED PLATFORMS:
     </tr>
 </table>
 
+For compiling from source running the setup file will be enough.
 
-		sudo chmod +x setup.sh
-		sudo ./setup.sh
+		./setup.sh
 # USAGE
 
 
@@ -137,18 +137,3 @@ When no extra parameters passed (only the file name) packer generates a multi st
 
 [![NoDistribute](https://pentest.blog/wp-content/uploads/NoDistribute-1.png)](https://NoDistribute.com/result/image/7uMa96SNOY13rtmTpW5ckBqzAv.png)
 
-
-
-# TODO
-
-- [ ] Add x64 support
-- [ ] Add MacOS support
-- [ ] Add.NET file support
-- [x] Add IAT parser shellcode to stub
-- [x] Add yara rules to repo
-- [ ] Write a unpacker for Amber payloads
-- [x] Add RC4 encryption to payloads
-- [ ] Add more integrity checks to the file mapping function
-- [x] Better installation mechanism
-- [ ] Remove GetAOE function from stub.asm (will reduce the stub size)
-- [ ] Write a wiki page
