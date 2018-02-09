@@ -116,6 +116,7 @@ elif [ $DIST == "Unknown" ]
 then
 	echo -e -n $BRed
 	echo "[!] OS not supported :("
+	echo -e $Color_Off
 	return 1	
 fi
 
@@ -152,5 +153,5 @@ sudo chown $(whoami):$(whoami) /usr/local/bin/amber_handler
 
 echo -e $BGreen
 echo "[✔] Setup completed !"
-
+echo -e $Color_Off
 
