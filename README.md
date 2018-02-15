@@ -66,9 +66,17 @@ SUPPORTED PLATFORMS:
     </tr>
 </table>
 
+<strong>BUILD</strong>
+
 For compiling from source running the setup file will be enough.
 
 		./setup.sh
+
+<strong>DOCKER</strong>
+
+		docker pull egee/amber
+		docker run -it amber 
+
 # USAGE
 
 
