@@ -78,7 +78,7 @@ else
 	echo "//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗"
 	echo "//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║"
 	echo "//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝"
-	echo "//  POC Reflective PE Packer  ☣           1.1.0"     
+	echo "//  POC Reflective PE Packer  ☣           1.2.0"     
 	#echo -e " "$Color_Off
 fi
 
