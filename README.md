@@ -64,7 +64,7 @@ For compiling from source running the setup file will be enough.
 
 		./setup.sh
 
-<strong>DOCKER BUILD</strong>
+<strong>DOCKER</strong>
 
 		docker pull egee/amber
 		docker run -it amber
@@ -92,11 +92,11 @@ For compiling from source running the setup file will be enough.
 # EXAMPLE USAGE
 <br>
 <a href="https://www.youtube.com/watch?v=JVv_spX6D4U" target="_blank">
-	<img src="http://img.youtube.com/vi/JVv_spX6D4U/0.jpg" alt="DEMO1" width="450" height="350" align="right"/>
+	<img src="http://img.youtube.com/vi/JVv_spX6D4U/0.jpg" alt="DEMO1" width="400" height="300" align="right"/>
 </a>
 
 <a href="https://www.youtube.com/watch?v=3en0ftnjEpE" target="_blank">
-	<img src="https://pentest.blog/wp-content/uploads/Screenshot-at-2018-02-23-22-42-18-2-1024x704.png" alt="DEMO1" width="450" height="350" align="left"/>
+	<img src="https://pentest.blog/wp-content/uploads/Screenshot-at-2018-02-23-22-42-18-2-1024x704.png" alt="DEMO1" width="400" height="300" align="left"/>
 </a><br><br><br>
 
 
