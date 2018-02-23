@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/badge/version-1.2.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
 
 
-Amber is a proof of concept packer for stealthy payload deployment and anti-virus evasion purposes, it can pack regularly compiled PE files into reflective PE files that can be used as multi stage infection payloads. If you want to learn the packing methodology used inside the Amber check out below. For more detail about usage, installation  and how to decrease detection rate chek out [WIKI](https://github.com/EgeBalci/Amber/wiki).
+Amber is a proof of concept packer for stealthy payload deployment and anti-virus evasion purposes, it can pack regularly compiled PE files into reflective PE files that can be used as multi stage infection payloads. If you want to learn the packing methodology used inside the Amber check out below. For more detail about usage, installation  and how to decrease detection rate check out [WIKI](https://github.com/EgeBalci/Amber/wiki).
 
 
 Developed By Ege Balcı from [INVICTUS](https://invictuseurope.com)/[PRODAFT](https://prodaft.com).
