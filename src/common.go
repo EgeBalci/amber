@@ -1,5 +1,6 @@
 package main
 
+import "io"
 import "os"
 import "fmt"
 import "os/exec"
@@ -127,20 +128,20 @@ func CheckRequirements() {
 }
 
 
-func ParseError(Err error,ErrStatus string,Msg string){
+func ParseError(err error,ErrStatus string,msg string){
 
-	if Err != nil {
+	if err != nil {
 		
 		//progressBar.Finish()
 		fmt.Println("\n")
 		BoldRed.Println("\n[!] ERROR: "+ErrStatus)
-		fmt.Println("\nERROR{\n",Err)
-		if len(Msg) > 0 {
-			fmt.Println(Msg+"\n}\n")
+		fmt.Println("\nERROR{\n",err)
+		if len(msg) > 0 {
+			fmt.Println(msg+"\n}\n")
 		}else{
 			fmt.Println("\n}\n")
 		} 
-		if Msg != " " {
+		if msg != " " {
 			clean()
 		}
 		fmt.Println("\n")
@@ -154,11 +155,24 @@ func Cdir(dir string) {
 }
 
 
-func move(Old, New string) {
-	err := os.Rename(Old,New)
+func move(old, new string) {
+	err := os.Rename(old,new)
 	if err != nil {
 		ParseError(err,"While moving a file.","")
 	}
+}
+
+func _copy(old, new string) { 
+	from, err := os.Open(old)
+	ParseError(err,"While opening "+old,"")
+	defer from.Close()
+  
+	to, err2 := os.OpenFile(new, os.O_RDWR|os.O_CREATE, 0666)
+	ParseError(err2,"While opening "+new,"")
+	defer to.Close()
+  
+	_, err = io.Copy(to, from)
+	ParseError(err,"While copying file.","")
 }
 
 func remove(file string) {

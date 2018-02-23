@@ -113,7 +113,7 @@ func main() {
 			nasm, Err := exec.Command("nasm","-f","bin","RC4.asm","-o","/usr/share/Amber/Payload").Output()
 			ParseError(Err,"While assembling the RC4 decipher header.",string(nasm))		
 		}
-		move("/usr/share/Amber/Payload",string(peid.FileName+".stage"))
+		_copy("/usr/share/Amber/Payload",string(peid.FileName+".stage")) // Incase the file is on different volume
 	} else {
 		crypt() // 4 steps
 		compile() // Compile the amber stub (10 steps)
