@@ -86,7 +86,7 @@ For compiling from source running the setup file will be enough.
 		EXAMPLE:
 		  (Default settings if no option parameter passed)
 		  amber -ks 8 file.exe
-<strong>On Docker</strong>
+<strong>On Docker</strong><br>
 		docker run -it -v /tmp/:/tmp/ amber /tmp/file.exe
 
 # EXAMPLE USAGE
