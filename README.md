@@ -67,7 +67,7 @@ For compiling from source running the setup file will be enough.
 <strong>DOCKER</strong>
 
 		docker pull egee/amber
-		docker run -it amber
+		docker run -it egee/amber
 
 # USAGE
 
