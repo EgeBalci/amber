@@ -1,6 +1,5 @@
 package main
 
-
 import "path/filepath"
 import "debug/pe"
 import "strconv"
@@ -33,7 +32,7 @@ func main() {
 		if ARGS[i] == "-ks" || ARGS[i] == "--keysize" {
 			ks, Err := strconv.Atoi(ARGS[i+1])
 			if Err != nil {
-				ParseError(Err,"Invalid key size.\n"," ")
+				ParseError(Err, "Invalid key size.\n", " ")
 			} else {
 				peid.KeySize = ks
 			}
@@ -41,7 +40,7 @@ func main() {
 		if ARGS[i] == "-k" || ARGS[i] == "--key" {
 			peid.key = []byte(ARGS[i+1])
 			if len([]byte(ARGS[i+1])) < 8 {
-				ParseError(errors.New("Invalid key size !"),"Key size can't be smaller than 8 byte.\n"," ")
+				ParseError(errors.New("Invalid key size !"), "Key size can't be smaller than 8 byte.\n", " ")
 			}
 			peid.KeySize = len([]byte(ARGS[i+1]))
 		}
@@ -62,7 +61,7 @@ func main() {
 		}
 	}
 
-	peid.FileName = ARGS[(len(ARGS)-1)]
+	peid.FileName = ARGS[(len(ARGS) - 1)]
 
 	if peid.KeySize == 0 && peid.staged == false {
 		peid.KeySize = 8
@@ -90,32 +89,32 @@ func main() {
 	CheckRequirements() // Check the required setup (6 steps)
 
 	// Get the absolute path of the file
-	abs,abs_err := filepath.Abs(ARGS[(len(ARGS)-1)])
-	ParseError(abs_err,"Can not open input file.","")
+	abs, abs_err := filepath.Abs(ARGS[(len(ARGS) - 1)])
+	ParseError(abs_err, "Can not open input file.", "")
 	peid.FileName = abs
 	progress()
 	Cdir("/usr/share/Amber")
 	progress()
 	// Open the input file
-	verbose("Opening input file...","*")
+	verbose("Opening input file...", "*")
 	file, FileErr := pe.Open(peid.FileName)
-	ParseError(FileErr,"Can not open input file.","")
+	ParseError(FileErr, "Can not open input file.", "")
 	progress()
 	// Analyze the input file
 	analyze(file) // 10 steps
 	// Assemble the core amber payload
-	assemble()    // 10 steps
+	assemble() // 10 steps
 
 	if peid.staged == true {
 		if peid.KeySize != 0 {
 			crypt() // 4 steps
 			Cdir("/usr/share/Amber/core")
-			nasm, Err := exec.Command("nasm","-f","bin","RC4.asm","-o","/usr/share/Amber/Payload").Output()
-			ParseError(Err,"While assembling the RC4 decipher header.",string(nasm))		
+			nasm, Err := exec.Command("nasm", "-f", "bin", "RC4.asm", "-o", "/usr/share/Amber/Payload").Output()
+			ParseError(Err, "While assembling the RC4 decipher header.", string(nasm))
 		}
-		_copy("/usr/share/Amber/Payload",string(peid.FileName+".stage")) // Incase the file is on different volume
+		_copy("/usr/share/Amber/Payload", string(peid.FileName+".stage")) // Incase the file is on different volume
 	} else {
-		crypt() // 4 steps
+		crypt()   // 4 steps
 		compile() // Compile the amber stub (10 steps)
 	}
 	// Clean the created files
@@ -126,10 +125,10 @@ func main() {
 
 	var getSize string = string("wc -c " + peid.FileName + "|awk '{print $1}'|tr -d '\n'")
 	if peid.staged == true {
-		getSize = string("wc -c " + peid.FileName+ ".stage" + "|awk '{print $1}'|tr -d '\n'")
+		getSize = string("wc -c " + peid.FileName + ".stage" + "|awk '{print $1}'|tr -d '\n'")
 	}
 	wc, wcErr := exec.Command("sh", "-c", getSize).Output()
-	ParseError(wcErr,"While getting the file size",string(wc))
+	ParseError(wcErr, "While getting the file size", string(wc))
 
 	BoldYellow.Print("\n[*] ")
 	white.Println("Final Size: " + peid.fileSize + " -> " + string(wc) + " bytes")

@@ -18,7 +18,7 @@ type peID struct {
 	iat      bool
 	resource bool
 	verbose  bool
-	debug	 bool
+	debug    bool
 
 	//Analysis...
 	fileSize  string
@@ -40,13 +40,13 @@ var BoldYellow *color.Color = yellow.Add(color.Bold)
 var green *color.Color = color.New(color.FgGreen)
 var BoldGreen *color.Color = green.Add(color.Bold)
 var white *color.Color = color.New(color.FgWhite)
+
 //var BoldWhite *color.Color = white.Add(color.Bold)
 
 var progressBar *pb.ProgressBar
 var peid peID
 
-
-	var BANNER string = `
+var BANNER string = `
 
 //   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ 
 //  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗
@@ -57,7 +57,7 @@ var peid peID
 //  POC Reflective PE Packer ☣                                          
 `
 
-	var ArchBanner string = `
+var ArchBanner string = `
 
 
 //    _____      _____ _______________________________ 
@@ -69,7 +69,7 @@ var peid peID
 // POC Reflective PE Packer
 `
 
-	var Help string = `
+var Help string = `
 USAGE: 
   amber [options] file.exe
 OPTIONS:
