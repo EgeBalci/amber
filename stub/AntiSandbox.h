@@ -2,7 +2,6 @@
 
 
 DWORD WINAPI BypassAV(LPVOID);
-void HideWindow();
 void Bunny();
 void Malloc();
 
