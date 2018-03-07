@@ -123,12 +123,10 @@ fi
 echo -e $Yellow
 echo "[*] Installing libraries..."
 
-export AMBERPATH=$(pwd)
-cd lib
+cd ../lib
 export GOPATH=$(pwd)
 cd ..
 
-echo "[*] INSTALLATION PATH=$AMBERPATH"
 echo "[*] GOPATH=$GOPATH"
 echo -e -n $Color_Off
 go build -ldflags "-s -w" handler.go
@@ -144,12 +142,6 @@ sudo ln -s /usr/share/Amber/amber /usr/local/bin/amber
 sudo chown $(whoami):$(whoami) /usr/local/bin/amber
 sudo ln -s /usr/share/Amber/handler /usr/local/bin/amber_handler
 sudo chown $(whoami):$(whoami) /usr/local/bin/amber_handler
-
-# echo "#!/bin/bash" > /tmp/amber
-# echo "cd $AMBERPATH" >> /tmp/amber
-# echo "./amber \$@" >> /tmp/amber
-# sudo mv /tmp/amber /usr/local/bin/
-# chmod +x /usr/local/bin/amber
 
 echo -e $BGreen
 echo "[✔] Setup completed !"

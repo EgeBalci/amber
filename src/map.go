@@ -5,41 +5,28 @@ import "debug/pe"
 import "errors"
 import "bytes"
 
-func CreateFileMapping(file string) (bytes.Buffer, error) {
+func CreateFileMapping(file string) (bytes.Buffer) {
 
 	verbose("Mapping PE file...", "*")
-
 	// Open the file as a *pe.File
 	File, err := pe.Open(file)
-	if err != nil {
-		return bytes.Buffer{}, err
-	}
-
+	ParseError(err,"While opening file for mapping")
 	progress()
-
 	// Open the file as a byte array
 	RawFile, err2 := ioutil.ReadFile(file)
-	if err2 != nil {
-		return bytes.Buffer{}, err2
-	}
-
+	ParseError(err2,"While reading file content")
 	progress()
-
 	OptionalHeader := File.OptionalHeader.(*pe.OptionalHeader32)
-
 	// Check if the PE file is 64 bit
 	if File.Machine == 0x8664 {
 		err := errors.New("64 bit files not supported.")
-		return bytes.Buffer{}, err
+		ParseError(err,"Amber currently does not support 64 bit PE files.")
 	}
-
 	var Offset uint32 = OptionalHeader.ImageBase
-
 	Map := bytes.Buffer{}
 	// Map the PE headers
 	Map.Write(RawFile[0:int(OptionalHeader.SizeOfHeaders)])
 	Offset += OptionalHeader.SizeOfHeaders
-
 	progress()
 
 	for i := 0; i < len(File.Sections); i++ {
@@ -55,8 +42,8 @@ func CreateFileMapping(file string) (bytes.Buffer, error) {
 		// Map the section
 		SectionData, err := File.Sections[i].Data()
 		if err != nil {
-			err := errors.New("Cannot read section data")
-			return bytes.Buffer{}, err
+			err := errors.New("Cannot read section data.")
+			ParseError(err,"While reading the file section data.")
 		}
 		Map.Write(SectionData)
 		Offset += File.Sections[i].Size
@@ -71,9 +58,7 @@ func CreateFileMapping(file string) (bytes.Buffer, error) {
 		}
 
 	}
-
 	progress()
-
 	for {
 		if (Offset - OptionalHeader.ImageBase) < OptionalHeader.SizeOfImage {
 			Map.WriteString(string(0x00))
@@ -82,18 +67,15 @@ func CreateFileMapping(file string) (bytes.Buffer, error) {
 			break
 		}
 	}
-
 	progress()
-
 	// Perform integrity checks...
-
 	verbose("\n[#] Performing integrity checks  on file mapping...\n|", "Y")
-
 	if int(OptionalHeader.SizeOfImage) != Map.Len() {
-		err := errors.New("Integrity check failed (Mapping size does not match the size of image header)")
-		return bytes.Buffer{}, err
+		if !target.IgnoreMappingSize {
+			err := errors.New("Integrity check failed (Mapping size does not match the size of image header)\nTry '--ignore-mapping-size' parameter.")
+			ParseError(err,"Integrity check failed (Mapping size does not match the size of image header)")
+		}
 	}
-
 	verbose("[Image Size]------------> OK", "Y")
 	/*
 
@@ -105,22 +87,18 @@ func CreateFileMapping(file string) (bytes.Buffer, error) {
 	*/
 	for i := 0; i < len(File.Sections); i++ {
 		for j := 0; j < int(File.Sections[i].Size/10); j++ {
-
 			Buffer := Map.Bytes()
-
 			if RawFile[int(int(File.Sections[i].Offset)+j)] != Buffer[int(int(File.Sections[i].VirtualAddress)+j)] {
-				err := errors.New("Integrity check failed (Broken section alignment)")
-				return bytes.Buffer{}, err
+				if !target.IgnoreSectionAlignment {
+					err := errors.New("Integrity check failed (Broken section alignment)\nTry '--ignore-section-alignment' parameter.")
+					ParseError(err,"Integrity check failed (Broken section alignment)")
+				}
 			}
 		}
 	}
-
 	verbose("[Section Alignment]-----> OK\n", "Y")
-
 	// Add data directory intervals check !
-
 	progress()
 
-	return Map, nil
-
+	return Map
 }

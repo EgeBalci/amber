@@ -8,7 +8,7 @@ const VERSION string = "1.2.0"
 
 var PACKET_MANAGER string = "apt"
 
-type peID struct {
+type PEID struct {
 
 	// Parameters...
 	FileName string
@@ -19,10 +19,13 @@ type peID struct {
 	resource bool
 	verbose  bool
 	debug    bool
+	help 	 bool
+	IgnoreMappingSize bool
+	IgnoreSectionAlignment bool
 
 	//Analysis...
-	fileSize  string
-	imageBase uint32
+	FileSize  string
+	ImageBase uint32
 	subsystem uint16
 	aslr      bool
 	Opt       *pe.OptionalHeader32
@@ -44,7 +47,7 @@ var white *color.Color = color.New(color.FgWhite)
 //var BoldWhite *color.Color = white.Add(color.Bold)
 
 var progressBar *pb.ProgressBar
-var peid peID
+var target PEID
 
 var BANNER string = `
 
@@ -73,14 +76,15 @@ var Help string = `
 USAGE: 
   amber [options] file.exe
 OPTIONS:
-  -k, --key            Custom cipher key
-  -ks,--keysize        Size of the encryption key in bytes (Max:255/Min:8)
-  --staged             Generated a staged payload
-  --iat                Uses import address table entries instead of export address table
-  --no-resource        Don't add any resource data
-  -v, --verbose        Verbose output mode
-  -h, --help           Show this massage
+  -k, -keysize                Size of the encryption key in bytes (Max:255/Min:8)
+  -r, -reflective             Generated a reflective payload
+  -i, -iat                    Uses import address table entries instead of export address table
+  -no-resource                Don't add any resource data
+  -ignore-mapping-size        Ignore mapping size mismatch errors
+  -ignore-section-alignment   Ignore broken section alignment errors
+  -v, -verbose                Verbose output mode
+  -h, -H                      Show this massage
 EXAMPLE:
   (Default settings if no option parameter passed)
-  amber -ks 8 file.exe
+  amber -k 8 file.exe
 `

@@ -9,13 +9,13 @@ func compile() {
 	move("Payload.rc4", "Payload")
 	xxd_err := exec.Command("sh", "-c", "xxd -i Payload > stub/payload.h").Run()
 	if xxd_err != nil {
-		ParseError(xxd_err, "While extracting payload hex stream.", "")
+		ParseError(xxd_err, "While extracting payload hex stream.")
 	}
 	progress()
 
 	_xxd_err := exec.Command("sh", "-c", "xxd -i Payload.key > stub/key.h").Run()
 	if _xxd_err != nil {
-		ParseError(_xxd_err, "While extracting key hex stream.", "")
+		ParseError(_xxd_err, "While extracting key hex stream.")
 	}
 	progress()
 
@@ -24,8 +24,8 @@ func compile() {
 		compileCommand = "i686-w64-mingw32-g++ -c stub/stub.cpp"
 	}
 
-	mingwObj, mingwObjErr := exec.Command("sh", "-c", compileCommand).Output()
-	ParseError(mingwObjErr, "While compiling the object file.", string(mingwObj))
+	mingwObjErr := exec.Command("sh", "-c", compileCommand).Run()
+	ParseError(mingwObjErr, "While compiling the object file.",)
 
 	progress()
 
@@ -34,24 +34,23 @@ func compile() {
 		compileCommand = "i686-w64-mingw32-g++ stub.o "
 	}
 
-	if peid.resource == true {
+	if target.resource == false {
 		compileCommand += "stub/Resource.o "
+		verbose("Adding resource data...", "*")
 	}
-	if peid.subsystem == 2 { // GUI
-		compileCommand += string("-mwindows -o " + peid.FileName)
+	if target.subsystem == 2 { // GUI
+		compileCommand += string("-mwindows -o " + target.FileName)
 	} else {
-		compileCommand += string("-o " + peid.FileName)
+		compileCommand += string("-o " + target.FileName)
 	}
 	progress()
 
 	verbose("Compiling to EXE...", "*")
-	mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
-	ParseError(mingwErr, "While compiling to exe. (This might caused by a permission issue)", string(mingw))
-
+	mingwErr := exec.Command("sh", "-c", compileCommand).Run()
+	ParseError(mingwErr, "While compiling to exe. (This might caused by a permission issue)")
 	progress()
 
-	strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.FileName)).Output()
-	ParseError(stripErr, "While striping the exe.", string(strip))
-
+	stripErr := exec.Command("sh", "-c", string("strip "+target.FileName)).Run()
+	ParseError(stripErr, "While striping the exe.")
 	progress()
 }

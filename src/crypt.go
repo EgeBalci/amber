@@ -12,41 +12,41 @@ func crypt() {
 
 	verbose("Ciphering payload...", "*")
 
-	if len(peid.key) != 0 {
+	if len(target.key) != 0 {
 		payload, err := ioutil.ReadFile("Payload")
-		ParseError(err, "Can't open payload file.", "")
+		ParseError(err, "Can't open payload file.")
 		progress()
-		if (len(peid.key)%8) != 0 && peid.staged == true {
-			//tmp := make([]byte,(len(peid.key)+(8-len(peid.key)%8)))
-			peid.key = append(peid.key, GenerateKey(8-(len(peid.key)%8))...)
-			verbose(string("Key size rounded to "+strconv.Itoa(len(peid.key))), "*")
+		if (len(target.key)%8) != 0 && target.staged == true {
+			//tmp := make([]byte,(len(target.key)+(8-len(target.key)%8)))
+			target.key = append(target.key, GenerateKey(8-(len(target.key)%8))...)
+			verbose(string("Key size rounded to "+strconv.Itoa(len(target.key))), "*")
 		}
 		progress()
-		payload = RC4(payload, peid.key)
+		payload = RC4(payload, target.key)
 		payload_rc4, err2 := os.Create("Payload.rc4")
-		ParseError(err2, "Can't create payload.rc4 file.", "")
+		ParseError(err2, "Can't create payload.rc4 file.")
 		progress()
 		payload_key, err3 := os.Create("Payload.key")
-		ParseError(err3, "Can't create payload.rc4 file.", "")
+		ParseError(err3, "Can't create payload.rc4 file.")
 		payload_rc4.Write(payload)
-		payload_rc4.Write(peid.key)
+		payload_rc4.Write(target.key)
 		payload_rc4.Close()
 		payload_key.Close()
 	} else {
-		key := GenerateKey(peid.KeySize)
-		if peid.KeySize != len(key) {
+		key := GenerateKey(target.KeySize)
+		if target.KeySize != len(key) {
 			verbose(string("Key size rounded to "+strconv.Itoa(len(key))), "*")
 		}
 		progress()
 		payload, err := ioutil.ReadFile("Payload")
-		ParseError(err, "Can't open payload file.", "")
+		ParseError(err, "Can't open payload file.")
 		progress()
 		payload = RC4(payload, key)
 		payload_rc4, err2 := os.Create("Payload.rc4")
-		ParseError(err2, "Can't create payload.rc4 file.", "")
+		ParseError(err2, "Can't create payload.rc4 file.")
 		progress()
 		payload_key, err3 := os.Create("Payload.key")
-		ParseError(err3, "Can't create payload.rc4 file.", "")
+		ParseError(err3, "Can't create payload.rc4 file.")
 		payload_rc4.Write(payload)
 		payload_key.Write(key)
 		payload_rc4.Close()
@@ -70,7 +70,7 @@ func xor(Data []byte, Key []byte) []byte {
 
 func RC4(data []byte, key []byte) []byte {
 	c, e := rc4.NewCipher(key)
-	ParseError(e, "While RC4 encryption !", "")
+	ParseError(e, "While RC4 encryption !")
 	dst := make([]byte, len(data))
 	c.XORKeyStream(dst, data)
 	return dst
@@ -78,7 +78,7 @@ func RC4(data []byte, key []byte) []byte {
 
 func GenerateKey(Size int) []byte {
 
-	if peid.staged == true && (Size%8) != 0 && Size >= 8 {
+	if target.staged == true && (Size%8) != 0 && Size >= 8 {
 		Size += (8 - (Size % 8))
 	}
 
