@@ -20,6 +20,7 @@ type PEID struct {
 	verbose  bool
 	debug    bool
 	help 	 bool
+	clean	 bool
 	IgnoreMappingSize bool
 	IgnoreSectionAlignment bool
 

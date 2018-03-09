@@ -9,6 +9,7 @@ func assemble() {
 	// Create a file mapping image (6 steps)
 	Map := CreateFileMapping(target.FileName)
 	MapFile, MapFileErr := os.Create("Mem.map")
+	target.clean = true
 	ParseError(MapFileErr, "While getting the file size")
 
 	MapFile.Write(Map.Bytes())

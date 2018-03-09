@@ -10,7 +10,7 @@ import "fmt"
 import "os"	
 
 func main() {
-	
+	runtime.GOMAXPROCS(runtime.NumCPU()) // Run faster !
 
 	flag.IntVar(&target.KeySize, "k", 0, "Size of the encryption key in bytes (Max:255/Min:8)")
 	flag.IntVar(&target.KeySize, "keysize", 0, "Size of the encryption key in bytes (Max:255/Min:8)")
@@ -27,8 +27,7 @@ func main() {
 	flag.BoolVar(&target.help, "h", false, "Display this message")
 	flag.BoolVar(&target.help, "H", false, "Display this message")
 	flag.Parse()
-
-	runtime.GOMAXPROCS(runtime.NumCPU()) // Run faster !
+	target.clean = false
 
 	if len(os.Args) == 1 || target.help {
 		Banner()
@@ -112,7 +111,7 @@ func main() {
 	BoldYellow.Print("\n[*] ")
 	white.Println("Final Size: " + target.FileSize + " -> " + string(wc) + " bytes")
 	if target.staged == true {
-		BoldGreen.Println("[✔] Stage generated !\n")
+		BoldGreen.Println("[✔] Reflective stage generated !\n")
 	} else {
 		BoldGreen.Println("[✔] File successfully packed !\n")
 	}

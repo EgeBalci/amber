@@ -69,17 +69,17 @@ func CheckRequirements() {
 
 	if PACKET_MANAGER == "pacman" {
 		progress()
-		CheckMingw, mingwErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++ --version").Output()
+		CheckMingw, mingwErr := exec.Command("i686-w64-mingw32-g++", "--version").Output()
 		if !strings.Contains(string(CheckMingw), "Copyright") {
 			ParseError(mingwErr, "MingW is not installed correctly.")
 		}
 		progress()
-		CheckNasm, _ := exec.Command("sh", "-c", "nasm -h").Output()
+		CheckNasm, _ := exec.Command("nasm", "-h").Output()
 		if !strings.Contains(string(CheckNasm), "usage:") {
 			ParseError(nil, "nasm is not installed correctly.")
 		}
 		progress()
-		CheckStrip, _ := exec.Command("sh", "-c", "strip -V").Output()
+		CheckStrip, _ := exec.Command("strip", "-V").Output()
 		if !strings.Contains(string(CheckStrip), "Copyright") {
 			ParseError(nil, "strip is not installed correctly.")
 		}
@@ -95,17 +95,17 @@ func CheckRequirements() {
 		}
 		progress()
 	} else {
-		CheckMingw, mingwErr := exec.Command("sh", "-c", "i686-w64-mingw32-g++-win32 --version").Output()
+		CheckMingw, mingwErr := exec.Command("i686-w64-mingw32-g++-win32", "--version").Output()
 		if !strings.Contains(string(CheckMingw), "Copyright") {
 			ParseError(mingwErr, "MingW is not installed correctly.")
 		}
 		progress()
-		CheckNasm, _ := exec.Command("sh", "-c", "nasm -h").Output()
+		CheckNasm, _ := exec.Command("nasm", "-h").Output()
 		if !strings.Contains(string(CheckNasm), "usage:") {
 			ParseError(nil, "nasm is not installed correctly.")
 		}
 		progress()
-		CheckStrip, _ := exec.Command("sh", "-c", "strip -V").Output()
+		CheckStrip, _ := exec.Command("strip", "-V").Output()
 		if !strings.Contains(string(CheckStrip), "Copyright") {
 			ParseError(nil, "strip is not installed correctly.")
 		}
@@ -176,7 +176,7 @@ func remove(file string) {
 
 func clean() {
 
-	if target.debug != true {
+	if target.debug != true && target.clean == true {
 		remove("core/ASLR/Mem.map")
 		progress()
 		remove("core/ASLR/iat/Mem.map")

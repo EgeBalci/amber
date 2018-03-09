@@ -96,8 +96,6 @@ echo -e $Yellow
 echo "[*] Installing dependencies..."
 echo -e $Color_Off 
 
-
-
 if [ $DIST == "Ubuntu" ] || [ $DIST == "Kali" ] || [ $DIST == "Mint" ] || [ $DIST == "Debian" ]
 then
 	sudo apt-get update
@@ -121,7 +119,7 @@ then
 fi
 
 echo -e $Yellow
-echo "[*] Installing libraries..."
+echo "[*] Building source..."
 
 cd ../lib
 export GOPATH=$(pwd)
