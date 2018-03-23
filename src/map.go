@@ -102,3 +102,29 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 
 	return Map
 }
+
+
+func scrape(Map []byte) ([]byte){
+
+	verbose("Scraping PE headers...","*")
+	
+	verbose("[>] "+string(Map[0])+string(Map[1]),"")
+	Map[0] = byte(0x00)
+	Map[1] = byte(0x00)
+	verbose("[>] "+string(Map[64])+string(Map[65]),"")
+	Map[64] = byte(0x00)
+	Map[65] = byte(0x00)
+	
+	for i:=66; i<0x1000; i++{
+		if Map[i] == 0x2e && Map[i+1] < 0x7e && Map[i+1] > 0x21 {
+			verbose("[>] "+string(Map[i:i+7])+"\n","")
+			for j:=0; j<7; j++{
+				Map[i+j] = byte(0x00)
+			}
+		}
+	}
+
+	verbose("Done scraping headers !","+")
+
+	return Map
+}

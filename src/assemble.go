@@ -12,7 +12,11 @@ func assemble() {
 	target.clean = true
 	ParseError(MapFileErr, "While getting the file size")
 
-	MapFile.Write(Map.Bytes())
+	if target.scrape {
+		MapFile.Write(scrape(Map.Bytes()))
+	}else{
+		MapFile.Write(Map.Bytes())
+	}
 	MapFile.Close()
 	progress()
 

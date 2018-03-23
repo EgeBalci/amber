@@ -17,6 +17,8 @@ func main() {
 	flag.BoolVar(&target.staged, "r", false, "Generated a reflective payload")
 	flag.BoolVar(&target.staged, "reflective", false, "Generated a reflective payload")
 	flag.BoolVar(&target.resource, "no-resource", false, "Don't add any resource data")
+	flag.BoolVar(&target.scrape, "s", false, "Scrape the PE header info (May break some files)")
+	flag.BoolVar(&target.scrape, "scrape", false, "Scrape the PE header info (May break some files)")
 	flag.BoolVar(&target.iat, "i", false, "Uses import address table entries instead of export address table")
 	flag.BoolVar(&target.iat, "iat", false, "Uses import address table entries instead of export address table")
 	flag.BoolVar(&target.verbose, "v", false, "Verbose output mode")

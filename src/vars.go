@@ -4,7 +4,7 @@ import "gopkg.in/cheggaaa/pb.v1"
 import "github.com/fatih/color"
 import "debug/pe"
 
-const VERSION string = "1.2.0"
+const VERSION string = "1.3.0"
 
 var PACKET_MANAGER string = "apt"
 
@@ -17,10 +17,12 @@ type PEID struct {
 	staged   bool
 	iat      bool
 	resource bool
+	scrape	 bool
 	verbose  bool
 	debug    bool
 	help 	 bool
 	clean	 bool
+
 	IgnoreMappingSize bool
 	IgnoreSectionAlignment bool
 
@@ -80,6 +82,7 @@ OPTIONS:
   -k, -keysize                Size of the encryption key in bytes (Max:255/Min:8)
   -r, -reflective             Generated a reflective payload
   -i, -iat                    Uses import address table entries instead of export address table
+  -s, -scrape                 Scrape the PE header info (May break some files)
   -no-resource                Don't add any resource data
   -ignore-mapping-size        Ignore mapping size mismatch errors
   -ignore-section-alignment   Ignore broken section alignment errors

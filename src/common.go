@@ -30,7 +30,7 @@ func CreateProgressBar() {
 
 func verbose(str string, status string) {
 
-	if target.verbose == true {
+	if target.verbose {
 		if status == "*" {
 			BoldYellow.Print("[*] ")
 			white.Println(str)
@@ -57,7 +57,7 @@ func verbose(str string, status string) {
 
 func _verbose(str string, value int32) {
 
-	if target.verbose == true {
+	if target.verbose {
 		BoldYellow.Print("[*] ")
 		white.Printf(str+" 0x%X\n", value)
 	}

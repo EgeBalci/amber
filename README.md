@@ -2,7 +2,7 @@
 
 [![Banner](https://github.com/EgeBalci/Amber/raw/master/Banner.png)](https://github.com/egebalci/Amber)
 
-[![Version](https://img.shields.io/badge/version-1.2.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
+[![Version](https://img.shields.io/badge/version-1.3.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
 
 
 Amber is a proof of concept packer for stealthy payload deployment and anti-virus evasion purposes, it can pack regularly compiled PE files into reflective PE files that can be used as multi stage infection payloads. If you want to learn the packing methodology used inside the Amber check out below. For more detail about usage, installation  and how to decrease detection rate check out [WIKI](https://github.com/EgeBalci/Amber/wiki).
@@ -73,21 +73,21 @@ For compiling from source running the setup file will be enough.
 
 # USAGE
 
-		USAGE: 
-		  amber [options] file.exe
-		OPTIONS:
-		  
-		  -k, --key       [string]        Custom cipher key
-		  -ks,--keysize   <length>        Size of the encryption key in bytes (Max:255/Min:8)
-		  --staged                        Generated a staged payload
-		  --iat                           Uses import address table entries instead of export address table
-		  --no-resource                   Don't add any resource
-		  -v, --verbose                   Verbose output mode
-		  -h, --help                      Show this massage
-
-		EXAMPLE:
-		  (Default settings if no option parameter passed)
-		  amber -ks 8 file.exe
+        USAGE: 
+        amber [options] file.exe
+        OPTIONS:
+        -k, -keysize                Size of the encryption key in bytes (Max:255/Min:8)
+        -r, -reflective             Generated a reflective payload
+        -i, -iat                    Uses import address table entries instead of export address table
+        -s, -scrape                 Scrape the PE header info (May break some files)
+        -no-resource                Don't add any resource data
+        -ignore-mapping-size        Ignore mapping size mismatch errors
+        -ignore-section-alignment   Ignore broken section alignment errors
+        -v, -verbose                Verbose output mode
+        -h, -H                      Show this massage
+        EXAMPLE:
+        (Default settings if no option parameter passed)
+        amber -k 8 file.exe
 <strong>On Docker</strong><br>
 		`docker run -it -v /tmp/:/tmp/ amber /tmp/file.exe`
 
