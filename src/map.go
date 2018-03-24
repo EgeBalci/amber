@@ -1,5 +1,6 @@
 package main
 
+import "encoding/hex"
 import "io/ioutil"
 import "debug/pe"
 import "errors"
@@ -107,24 +108,42 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 func scrape(Map []byte) ([]byte){
 
 	verbose("Scraping PE headers...","*")
+
+	if string(Map[:2]) == "MZ" {
+		verbose(hex.Dump(Map[:2]),"")
+		Map[0] = byte(0x00)
+		Map[1] = byte(0x00)
+	}
+
+	if string(Map[64:66]) == "PE" {
+		verbose(hex.Dump(Map[64:66]),"")
+		Map[64] = byte(0x00)
+		Map[65] = byte(0x00)
+	}
 	
-	verbose("[>] "+string(Map[0])+string(Map[1]),"")
-	Map[0] = byte(0x00)
-	Map[1] = byte(0x00)
-	verbose("[>] "+string(Map[64])+string(Map[65]),"")
-	Map[64] = byte(0x00)
-	Map[65] = byte(0x00)
-	
+	if string(Map[78:117]) == "This program cannot be run in DOS mode." {
+		verbose(hex.Dump(Map[78:117]),"")
+		for i:=0; i<40; i++ {
+			Map[78+i] = byte(0x00)
+		}
+	}
+
+	if string(Map[128:130]) == "PE" {
+		verbose(hex.Dump(Map[128:130]),"")
+		Map[128] = byte(0x00)
+		Map[129] = byte(0x00)
+	}
+
 	for i:=66; i<0x1000; i++{
 		if Map[i] == 0x2e && Map[i+1] < 0x7e && Map[i+1] > 0x21 {
-			verbose("[>] "+string(Map[i:i+7])+"\n","")
+			verbose(hex.Dump(Map[i:i+7]),"")
 			for j:=0; j<7; j++{
 				Map[i+j] = byte(0x00)
 			}
 		}
 	}
 
-	verbose("Done scraping headers !","+")
+	verbose("Done scraping headers.","+")
 
 	return Map
 }
