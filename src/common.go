@@ -55,7 +55,7 @@ func verbose(str string, status string) {
 	}
 }
 
-func _verbose(str string, value int32) {
+func _verbose(str string, value uint64) {
 
 	if target.verbose {
 		BoldYellow.Print("[*] ")

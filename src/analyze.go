@@ -59,14 +59,15 @@ func analyze(file *pe.File) {
 	target.Opt = Opt
 
 	verbose(string("File Size: "+target.FileSize+" byte"), "*")
-	_verbose("Machine:", int32(file.FileHeader.Machine))
-	_verbose("Magic:", int32(Opt.Magic))
-	_verbose("Subsystem:", int32(Opt.Subsystem))
-	_verbose("Image Base:", int32(target.ImageBase))
-	_verbose("Size Of Image:", int32(Opt.SizeOfImage))
-	_verbose("Export Table:", int32(Opt.DataDirectory[0].VirtualAddress+Opt.ImageBase))
-	_verbose("Import Table:", int32(Opt.DataDirectory[1].VirtualAddress+Opt.ImageBase))
-	_verbose("Base Relocation Table:", int32(Opt.DataDirectory[5].VirtualAddress+Opt.ImageBase))
-	_verbose("Import Address Table:", int32(Opt.DataDirectory[12].VirtualAddress+Opt.ImageBase))
+	_verbose("Machine:", uint64(file.FileHeader.Machine))
+	_verbose("Magic:", uint64(Opt.Magic))
+	_verbose("Subsystem:", uint64(Opt.Subsystem))
+	_verbose("Image Base:", uint64(target.ImageBase))
+	_verbose("Address Of Entry:", uint64(Opt.AddressOfEntryPoint))
+	_verbose("Size Of Image:", uint64(Opt.SizeOfImage))
+	_verbose("Export Table:", uint64(Opt.DataDirectory[0].VirtualAddress+Opt.ImageBase))
+	_verbose("Import Table:", uint64(Opt.DataDirectory[1].VirtualAddress+Opt.ImageBase))
+	_verbose("Base Relocation Table:", uint64(Opt.DataDirectory[5].VirtualAddress+Opt.ImageBase))
+	_verbose("Import Address Table:", uint64(Opt.DataDirectory[12].VirtualAddress+Opt.ImageBase))
 
 }
