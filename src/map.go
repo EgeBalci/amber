@@ -103,8 +103,8 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 	// Perform integrity checks...
 	verbose("\n[#] Performing integrity checks  on file mapping...\n|", "Y")
 	if int(opt.SizeOfImage) != Map.Len() {
-		if !target.IgnoreMappingSize {
-			err := errors.New("Integrity check failed (Mapping size does not match the size of image header)\nTry '--ignore-mapping-size' parameter.")
+		if !target.IgnoreIntegrity {
+			err := errors.New("Integrity check failed (Mapping size does not match the size of image header)\nTry '-ignore-integrity' parameter.")
 			ParseError(err,"Integrity check failed (Mapping size does not match the size of image header)")
 		}
 	}
@@ -114,8 +114,8 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 		for j := 0; j < int(File.Sections[i].Size/10); j++ {
 			Buffer := Map.Bytes()
 			if RawFile[int(int(File.Sections[i].Offset)+j)] != Buffer[int(int(File.Sections[i].VirtualAddress)+j)] {
-				if !target.IgnoreSectionAlignment {
-					err := errors.New("Integrity check failed (Broken section alignment)\nTry '--ignore-section-alignment' parameter.")
+				if !target.IgnoreIntegrity {
+					err := errors.New("Integrity check failed (Broken section alignment)\nTry '-ignore-integrity' parameter.")
 					ParseError(err,"Integrity check failed (Broken section alignment)")
 				}
 			}
