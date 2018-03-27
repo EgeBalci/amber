@@ -56,7 +56,6 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 
 	var offset uint64 = opt.ImageBase
 	Map := bytes.Buffer{}
-	// Map the PE headers
 	Map.Write(RawFile[0:opt.SizeOfHeaders])
 	offset += uint64(opt.SizeOfHeaders)
 	progress()
@@ -100,6 +99,7 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 		}
 	}
 	progress()
+	
 	// Perform integrity checks...
 	verbose("\n[#] Performing integrity checks  on file mapping...\n|", "Y")
 	if int(opt.SizeOfImage) != Map.Len() {

@@ -2,21 +2,15 @@ package main
 
 import "os/exec"
 
-//import "os"
-
 func compile() {
 
 	move("Payload.rc4", "Payload")
 	xxd_err := exec.Command("sh", "-c", "xxd -i Payload > stub/payload.h").Run()
-	if xxd_err != nil {
-		ParseError(xxd_err, "While extracting payload hex stream.")
-	}
+	ParseError(xxd_err, "While extracting payload hex stream.")
 	progress()
 
 	_xxd_err := exec.Command("sh", "-c", "xxd -i Payload.key > stub/key.h").Run()
-	if _xxd_err != nil {
-		ParseError(_xxd_err, "While extracting key hex stream.")
-	}
+	ParseError(_xxd_err, "While extracting key hex stream.")
 	progress()
 
 	var compileCommand string = "i686-w64-mingw32-g++-win32 -c stub/stub.cpp"
@@ -26,7 +20,6 @@ func compile() {
 
 	mingwObjErr := exec.Command("sh", "-c", compileCommand).Run()
 	ParseError(mingwObjErr, "While compiling the object file.",)
-
 	progress()
 
 	compileCommand = "i686-w64-mingw32-g++-win32 stub.o "

@@ -23,16 +23,12 @@ func analyze(file *pe.File) {
 	progress()
 	if (Opt.DataDirectory[5].Size) != 0x00 {
 		target.aslr = true
-		if target.verbose == true {
-			BoldGreen.Println("[+] ASLR supported !")
-			BoldYellow.Println("[x] Using ASLR stub...")
-		}
+		verbose("ASLR supported !","+")
+		verbose("[x] Using ASLR stub...","")	
 	} else if (Opt.DataDirectory[5].Size) == 0x00 {
 		target.aslr = false
-		if target.verbose == true {
-			BoldRed.Println("[-] ASLR not supported :(")
-			BoldYellow.Println("[x] Using Fixed stub...")
-		}
+		verbose("ASLR not supported :(","-")
+		verbose("[x] Using Fixed stub...","")
 	}
 	progress()
 	if (Opt.DataDirectory[11].Size) != 0x00 {
@@ -48,7 +44,7 @@ func analyze(file *pe.File) {
 	}
 	progress()
 	if (Opt.DataDirectory[1].Size) == 0x00 {
-		ParseError(errors.New(""), "File has empty import table.")
+		ParseError(errors.New("Import table size zero !"), "File has empty import table.")
 	}
 	progress()
 	wc, wcErr := exec.Command("sh", "-c", string("wc -c "+target.FileName+"|awk '{print $1}'|tr -d '\n'")).Output()
@@ -58,7 +54,7 @@ func analyze(file *pe.File) {
 
 	target.Opt = Opt
 
-	verbose(string("File Size: "+target.FileSize+" byte"), "*")
+	verbose("File Size: "+target.FileSize+" byte", "*")
 	_verbose("Machine:", uint64(file.FileHeader.Machine))
 	_verbose("Magic:", uint64(Opt.Magic))
 	_verbose("Subsystem:", uint64(Opt.Subsystem))
