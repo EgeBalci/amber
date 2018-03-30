@@ -2,7 +2,6 @@ package main
 
 import "gopkg.in/cheggaaa/pb.v1"
 import "github.com/fatih/color"
-import "debug/pe"
 
 const VERSION string = "1.3.0"
 
@@ -27,10 +26,9 @@ type PEID struct {
 
 	//Analysis...
 	FileSize  string
-	ImageBase uint32
-	subsystem uint16
+	dll       bool
 	aslr      bool
-	Opt       *pe.OptionalHeader32
+	opt       OptionalHeader
 	VP        string
 	GPA       string
 	LLA       string

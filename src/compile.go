@@ -1,5 +1,6 @@
 package main
 
+import "strconv"
 import "os/exec"
 
 func compile() {
@@ -9,41 +10,47 @@ func compile() {
 	ParseError(xxd_err, "While extracting payload hex stream.")
 	progress()
 
-	_xxd_err := exec.Command("sh", "-c", "xxd -i Payload.key > stub/key.h").Run()
-	ParseError(_xxd_err, "While extracting key hex stream.")
+	xxd_err = exec.Command("sh", "-c", "xxd -i Payload.key > stub/key.h").Run()
+	ParseError(xxd_err, "While extracting key hex stream.")
 	progress()
 
-	var compileCommand string = "i686-w64-mingw32-g++-win32 -c stub/stub.cpp"
+	var CompileCommand string = "i686-w64-mingw32-g++-win32 -c stub/stub.cpp"
 	if PACKET_MANAGER == "pacman" {
-		compileCommand = "i686-w64-mingw32-g++ -c stub/stub.cpp"
+		CompileCommand = "i686-w64-mingw32-g++ -c stub/stub.cpp"
 	}
 
-	mingwObjErr := exec.Command("sh", "-c", compileCommand).Run()
-	ParseError(mingwObjErr, "While compiling the object file.",)
+	MingwObjErr := exec.Command("sh", "-c", CompileCommand).Run()
+	ParseError(MingwObjErr, "While compiling the object file.",)
 	progress()
 
-	compileCommand = "i686-w64-mingw32-g++-win32 stub.o "
+	ImageBase := strconv.FormatInt(int64(target.opt.ImageBase), 16)
+	CompileCommand = "i686-w64-mingw32-g++-win32 -Wl,--image-base,0x"+ImageBase+" stub.o "
 	if PACKET_MANAGER == "pacman" {
-		compileCommand = "i686-w64-mingw32-g++ stub.o "
+		CompileCommand = "i686-w64-mingw32-g++ -Wl,--image-base,0x"+ImageBase+" stub.o "
 	}
 
-	if target.resource == false {
-		compileCommand += "stub/Resource.o "
-		verbose("Adding resource data...", "*")
+	if target.dll {
+		CompileCommand += "-shared -o "+target.FileName
+	}else{
+		if target.resource == false {
+			CompileCommand += "stub/Resource.o "
+			verbose("Adding resource data...", "*")
+		}
+		if target.opt.Subsystem == 2 { // GUI
+			CompileCommand += "-mwindows -o "+target.FileName
+		}else{
+			CompileCommand += "-o "+target.FileName
+		}
 	}
-	if target.subsystem == 2 { // GUI
-		compileCommand += string("-mwindows -o " + target.FileName)
-	} else {
-		compileCommand += string("-o " + target.FileName)
-	}
+	//verbose(CompileCommand, "*")
 	progress()
-
 	verbose("Compiling to EXE...", "*")
-	mingwErr := exec.Command("sh", "-c", compileCommand).Run()
-	ParseError(mingwErr, "While compiling to exe. (This might caused by a permission issue)")
+	//verbose(CompileCommand,"*")
+	MingwErr := exec.Command("sh", "-c", CompileCommand).Run()
+	ParseError(MingwErr, "While compiling to exe. (This might caused by a permission issue)")
 	progress()
 
-	stripErr := exec.Command("sh", "-c", string("strip "+target.FileName)).Run()
-	ParseError(stripErr, "While striping the exe.")
+	StripErr := exec.Command("sh", "-c", string("strip "+target.FileName)).Run()
+	ParseError(StripErr, "While striping the exe.")
 	progress()
 }

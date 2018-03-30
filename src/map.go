@@ -18,35 +18,33 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 	ParseError(err2,"While reading file content")
 	progress()
 
-	var opt OptionalHeader
-
-	if File.Machine == 0x8664 {
-		_opt := (File.OptionalHeader.(*pe.OptionalHeader64))
-		opt.Magic = _opt.Magic
-		opt.Subsystem = _opt.Subsystem
-		opt.CheckSum = _opt.CheckSum
-		opt.ImageBase = _opt.ImageBase
-		opt.AddressOfEntryPoint = _opt.AddressOfEntryPoint
-		opt.SizeOfImage =  _opt.SizeOfImage
-		opt.SizeOfHeaders = _opt.SizeOfHeaders
-		for i:=0; i<16; i++ {
-			opt.DataDirectory[i].VirtualAddress = _opt.DataDirectory[i].VirtualAddress
-			opt.DataDirectory[i].Size = _opt.DataDirectory[i].Size
-		}
-	}else{
-		_opt := File.OptionalHeader.((*pe.OptionalHeader32))
-		opt.Magic = _opt.Magic
-		opt.Subsystem = _opt.Subsystem
-		opt.CheckSum = _opt.CheckSum
-		opt.ImageBase = uint64(_opt.ImageBase)
-		opt.AddressOfEntryPoint = _opt.AddressOfEntryPoint
-		opt.SizeOfImage =  _opt.SizeOfImage
-		opt.SizeOfHeaders = _opt.SizeOfHeaders
-		for i:=0; i<16; i++ {
-			opt.DataDirectory[i].VirtualAddress = _opt.DataDirectory[i].VirtualAddress
-			opt.DataDirectory[i].Size = _opt.DataDirectory[i].Size
-		}
-	}
+	// if File.Machine == 0x8664 {
+	// 	_opt := (File.OptionalHeader.(*pe.OptionalHeader64))
+	// 	target.opt.Magic = _opt.Magic
+	// 	target.opt.Subsystem = _opt.Subsystem
+	// 	target.opt.CheckSum = _opt.CheckSum
+	// 	target.opt.ImageBase = _opt.ImageBase
+	// 	target.opt.AddressOfEntryPoint = _opt.AddressOfEntryPoint
+	// 	target.opt.SizeOfImage =  _opt.SizeOfImage
+	// 	target.opt.SizeOfHeaders = _opt.SizeOfHeaders
+	// 	for i:=0; i<16; i++ {
+	// 		target.opt.DataDirectory[i].VirtualAddress = _opt.DataDirectory[i].VirtualAddress
+	// 		target.opt.DataDirectory[i].Size = _opt.DataDirectory[i].Size
+	// 	}
+	// }else{
+	// 	_opt := File.OptionalHeader.((*pe.OptionalHeader32))
+	// 	target.opt.Magic = _opt.Magic
+	// 	target.opt.Subsystem = _opt.Subsystem
+	// 	target.opt.CheckSum = _opt.CheckSum
+	// 	target.opt.ImageBase = uint64(_opt.ImageBase)
+	// 	target.opt.AddressOfEntryPoint = _opt.AddressOfEntryPoint
+	// 	target.opt.SizeOfImage =  _opt.SizeOfImage
+	// 	target.opt.SizeOfHeaders = _opt.SizeOfHeaders
+	// 	for i:=0; i<16; i++ {
+	// 		target.opt.DataDirectory[i].VirtualAddress = _opt.DataDirectory[i].VirtualAddress
+	// 		target.opt.DataDirectory[i].Size = _opt.DataDirectory[i].Size
+	// 	}
+	// }
 
 	// Check if the PE file is 64 bit (Will be removed)
 	if File.Machine == 0x8664 {
@@ -54,16 +52,16 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 		ParseError(err,"Amber currently does not support 64 bit PE files.")
 	}
 
-	var offset uint64 = opt.ImageBase
+	var offset uint64 = target.opt.ImageBase
 	Map := bytes.Buffer{}
-	Map.Write(RawFile[0:opt.SizeOfHeaders])
-	offset += uint64(opt.SizeOfHeaders)
+	Map.Write(RawFile[0:target.opt.SizeOfHeaders])
+	offset += uint64(target.opt.SizeOfHeaders)
 	progress()
 
 	for i := 0; i < len(File.Sections); i++ {
 		// Append null bytes if there is a gap between sections or PE header
 		for {
-			if offset < (uint64(File.Sections[i].VirtualAddress)+opt.ImageBase) {
+			if offset < (uint64(File.Sections[i].VirtualAddress)+target.opt.ImageBase) {
 				Map.WriteString(string(0x00))
 				offset += 1
 			} else {
@@ -80,7 +78,7 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 		offset += uint64(File.Sections[i].Size)
 		// Append null bytes until reaching the end of the virtual address of the section
 		for {
-			if offset < (uint64(File.Sections[i].VirtualAddress)+uint64(File.Sections[i].VirtualSize)+opt.ImageBase) {
+			if offset < (uint64(File.Sections[i].VirtualAddress)+uint64(File.Sections[i].VirtualSize)+target.opt.ImageBase) {
 				Map.WriteString(string(0x00))
 				offset += 1
 			} else {
@@ -91,7 +89,7 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 	}
 	progress()
 	for {
-		if (offset-opt.ImageBase) < uint64(opt.SizeOfImage) {
+		if (offset-target.opt.ImageBase) < uint64(target.opt.SizeOfImage) {
 			Map.WriteString(string(0x00))
 			offset += 1
 		} else {
@@ -102,7 +100,7 @@ func CreateFileMapping(file string) (bytes.Buffer) {
 	
 	// Perform integrity checks...
 	verbose("\n[#] Performing integrity checks  on file mapping...\n|", "Y")
-	if int(opt.SizeOfImage) != Map.Len() {
+	if int(target.opt.SizeOfImage) != Map.Len() {
 		if !target.IgnoreIntegrity {
 			err := errors.New("Integrity check failed (Mapping size does not match the size of image header)\nTry '-ignore-integrity' parameter.")
 			ParseError(err,"Integrity check failed (Mapping size does not match the size of image header)")
