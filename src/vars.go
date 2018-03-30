@@ -120,7 +120,7 @@ OPTIONS:
   -i, -iat                    Uses import address table entries instead of export address table
   -s, -scrape                 Scrape the PE header info (May break some files)
   -no-resource                Don't add any resource data
-  -ignore-integrity           Ignore integrity check errors.
+  -ignore-integrity           Ignore integrity check errors
   -v, -verbose                Verbose output mode
   -h, -H                      Show this massage
 EXAMPLE:

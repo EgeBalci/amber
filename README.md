@@ -81,8 +81,7 @@ For compiling from source running the setup file will be enough.
         -i, -iat                    Uses import address table entries instead of export address table
         -s, -scrape                 Scrape the PE header info (May break some files)
         -no-resource                Don't add any resource data
-        -ignore-mapping-size        Ignore mapping size mismatch errors
-        -ignore-section-alignment   Ignore broken section alignment errors
+        -ignore-integrity           Ignore integrity check errors
         -v, -verbose                Verbose output mode
         -h, -H                      Show this massage
         EXAMPLE:
