@@ -63,7 +63,7 @@ SUPPORTED PLATFORMS:
 For compiling from source running the setup file will be enough.
 
         git clone https://github.com/egebalci/Amber.git
-		cd Amber/setup/
+        cd Amber/setup/
         ./setup.sh
 
 <strong>DOCKER</strong>
