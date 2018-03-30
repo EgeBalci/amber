@@ -134,10 +134,7 @@ func ParseError(err error, ErrStatus string) {
 	if err != nil {
 		//progressBar.Finish()
 		BoldRed.Println("\n\n\n[!] ERROR: " + ErrStatus)
-		verbose("|\n|>","R")
-		verbose(err.Error(),"")
-		verbose("\n}\n","R")
-		fmt.Println("\n")
+		verbose(err.Error()+"\n","")
 		clean()
 		os.Exit(1)
 

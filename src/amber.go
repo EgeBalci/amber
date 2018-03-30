@@ -41,7 +41,7 @@ func main() {
 		target.KeySize = 8
 	}
 
-	if target.KeySize < 8 || target.KeySize > 255 {
+	if (target.KeySize < 8 || target.KeySize > 255) && target.staged == false {
 		ParseError(errors.New("Key size must be between 8-255."), "Invalid key size.\n")
 	}
 
