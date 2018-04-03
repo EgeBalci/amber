@@ -18,3 +18,18 @@ rule Amber_Reflective_PE_Packer {
 
 }
 
+rule Amber_Reflective_PE_Packer_1_4 {
+	meta:
+		description = "Amber Packer - POC Reflective PE Packer"
+		author = "Ege Balcı"
+		reference = "https://github.com/egebalci/Amber"
+		date = "11.28.2017"
+		sample_filetype = "exe"
+	strings:
+		$s1 = "<Amber:4ba34949430d0ee1840305b65eb905c8ac1bf0fe>" ascii wide
+		$s2 = "Mingw-w64 runtime failure:" ascii wide 
+
+	condition:
+		($s1 and $s2) and (pe.number_of_sections < 17 and pe.number_of_sections > 6)
+
+}
