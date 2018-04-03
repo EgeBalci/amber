@@ -1,7 +1,9 @@
+0 RCDATA "Payload"
+1 RCDATA "Payload.key"
 id ICON "amber.ico"
-1 VERSIONINFO
-FILEVERSION     1,3,0,0
-PRODUCTVERSION  1,3,0,0
+2 VERSIONINFO
+FILEVERSION     1,4,0,0
+PRODUCTVERSION  1,4,0,0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -9,12 +11,12 @@ BEGIN
     BEGIN
       VALUE "CompanyName", "INVICTUS EUROPE"
       VALUE "FileDescription", "Amber Packer - Reflective PE Packer"
-      VALUE "FileVersion", "1.3"
+      VALUE "FileVersion", "1.4"
       VALUE "InternalName", "Amber"
-      VALUE "LegalCopyright", "Ege Balcı"
+      VALUE "LegalCopyright", "Ege Balci"
       VALUE "OriginalFilename", "amber.exe"
       VALUE "ProductName", "Amber"
-      VALUE "ProductVersion", "1.3"
+      VALUE "ProductVersion", "1.4"
     END
   END
   BLOCK "VarFileInfo"

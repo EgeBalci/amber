@@ -15,11 +15,11 @@ func progress() {
 
 func CreateProgressBar() {
 
-	var full int = 48
+	var full int = 53
 
 	if target.verbose == false {
 		if target.staged == true {
-			full -= 10
+			full -= 13
 		}
 
 		progressBar = pb.New(full)
@@ -174,19 +174,23 @@ func remove(file string) {
 func clean() {
 
 	if target.debug != true && target.clean == true {
-		remove("core/ASLR/Mem.map")
+		remove("/usr/share/Amber/core/ASLR/Mem.map")
 		progress()
-		remove("core/ASLR/iat/Mem.map")
+		remove("/usr/share/Amber/core/ASLR/iat/Mem.map")
 		progress()
-		remove("core/Fixed/Mem.map")
+		remove("/usr/share/Amber/core/Fixed/Mem.map")
 		progress()
-		remove("core/Fixed/iat/Mem.map")
+		remove("/usr/share/Amber/core/Fixed/iat/Mem.map")
 		progress()
-		remove("stub.o")
+		remove("/usr/share/Amber/stub/stub.o")
 		progress()
-		remove("Payload")
+		remove("/usr/share/Amber/stub/stub2.o")
 		progress()
-		remove("Payload.key")
+		remove("/usr/share/Amber/stub/Res.o")
+		progress()
+		remove("/usr/share/Amber/stub/Payload")
+		progress()
+		remove("/usr/share/Amber/stub/Payload.key")
 		progress()
 		exec.Command("sh", "-c", "echo   > stub/payload.h").Run()
 		progress()
