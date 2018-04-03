@@ -2,7 +2,7 @@
 #include "AntiSandbox.h"
 #include "RC4.h"
 
-const char LABEL[] = {"<Amber:4ba34949430d0ee1840305b65eb905c8ac1bf0fe>"}; // Descriptive label for yara rules ;D
+const char LABEL[] = {"<Amber:27a01d4772038a3f83552908e0470604e773f8af>"}; // Descriptive label for yara rules ;D
 void ExecutePayload();
 
 
