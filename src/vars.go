@@ -3,7 +3,7 @@ package main
 import "gopkg.in/cheggaaa/pb.v1"
 import "github.com/fatih/color"
 
-const VERSION string = "1.3.0"
+const VERSION string = "1.4.0"
 
 var PACKET_MANAGER string = "apt"
 

@@ -19,11 +19,6 @@ int main(int argc, char const *argv[])
 
 void ExecutePayload(){
 
-/*
-	for(int i = 0; i < sizeof(Payload); i++) {
-		Payload[i] = (Payload[i] ^ Payload_key[(i%sizeof(Payload_key))]);
-	}	
-*/
 
 	unsigned char S[N];
     KSA(Payload_key,Payload_key_len,S);	
