@@ -95,9 +95,9 @@ For compiling from source running the setup file will be enough.
 
 # EXAMPLE USAGE
 
-<strong>NOPcon 2018 [DEMO](https://www.youtube.com/watch?v=lCPdKSH6RMc)</strong>
+- <strong>NOPcon 2018 [DEMO](https://www.youtube.com/watch?v=lCPdKSH6RMc)</strong>
 
-<br><br><br>
+<br><br>
 
 <a href="https://www.youtube.com/watch?v=JVv_spX6D4U" target="_blank">
 	<img src="http://img.youtube.com/vi/JVv_spX6D4U/0.jpg" alt="DEMO1" width="400" height="300" align="right"/>
