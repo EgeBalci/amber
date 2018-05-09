@@ -59,6 +59,7 @@ SUPPORTED PLATFORMS:
 </table>
 
 <strong>BLACKARCH INSTALL</strong>
+        
         sudo pacman -S amber
 
 <strong>DOCKER INSTALL</strong>
@@ -93,7 +94,10 @@ For compiling from source running the setup file will be enough.
 		`docker run -it -v /tmp/:/tmp/ amber /tmp/file.exe`
 
 # EXAMPLE USAGE
-<br>
+
+- <strong>NOPcon 2018 [DEMO](https://www.youtube.com/watch?v=lCPdKSH6RMc)</strong>
+
+<br><br>
 
 <a href="https://www.youtube.com/watch?v=JVv_spX6D4U" target="_blank">
 	<img src="http://img.youtube.com/vi/JVv_spX6D4U/0.jpg" alt="DEMO1" width="400" height="300" align="right"/>
@@ -102,9 +106,4 @@ For compiling from source running the setup file will be enough.
 <a href="https://www.youtube.com/watch?v=3en0ftnjEpE" target="_blank">
 	<img src="https://pentest.blog/wp-content/uploads/Screenshot-at-2018-02-23-22-42-18-2-1024x704.png" alt="DEMO1" width="400" height="300" align="left"/>
 </a><br><br><br>
-<br><br><br>
-<br><br><br>
-
-<strong>NOPcon 2018 [DEMO](https://www.youtube.com/watch?v=lCPdKSH6RMc)</strong>
-
 <br>
