@@ -59,6 +59,7 @@ SUPPORTED PLATFORMS:
 </table>
 
 <strong>BLACKARCH INSTALL</strong>
+        
         sudo pacman -S amber
 
 <strong>DOCKER INSTALL</strong>
@@ -102,6 +103,7 @@ For compiling from source running the setup file will be enough.
 <a href="https://www.youtube.com/watch?v=3en0ftnjEpE" target="_blank">
 	<img src="https://pentest.blog/wp-content/uploads/Screenshot-at-2018-02-23-22-42-18-2-1024x704.png" alt="DEMO1" width="400" height="300" align="left"/>
 </a><br><br><br>
+<br><br><br>
 <br><br><br>
 <br><br><br>
 
