@@ -42,13 +42,19 @@ On_Yellow='\033[43m'      # Yellow
 
 
 ### Getting OS Information
-if [ -f /etc/lsb-release ]; then
-	. /etc/lsb-release
-	DIST=$DISTRIB_ID
-	DIST_VER=$DISTRIB_RELEASE
+
+if [[ $(uname) == "Darwin" ]]; then
+	DIST="MacOS"
+	DIST_VER=$(uname -r)
 else
-	DIST="Unknown"
-	DIST_VER="Unknown"
+	if [ -f /etc/lsb-release ]; then
+		. /etc/lsb-release
+		DIST=$DISTRIB_ID
+		DIST_VER=$DISTRIB_RELEASE
+	else
+		DIST="Unknown"
+		DIST_VER="Unknown"
+	fi	
 fi
 
 
@@ -61,7 +67,7 @@ if [ $DIST == "Arch" ] || [ $DIST == "Manjaro" ]; then
 	echo '// /    |    \/    Y    \    |   \|        \ |    |   \'
 	echo '// \____|__  /\____|__  /______  /_______  / |____|_  /'
 	echo '//         \/         \/       \/        \/         \/ '
-	echo '// POC Reflective PE Packer'
+	echo '// POC Reflective PE Packer                       1.3.0'
 else 
 
 	#tput setaf 1;
@@ -72,19 +78,15 @@ else
 	echo "//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗"
 	echo "//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║"
 	echo "//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝"
-	echo "//  POC Reflective PE Packer  ☣          "     
+	echo "//  POC Reflective PE Packer  ☣           1.3.0"     
 	#echo -e " "$Color_Off
 fi
-
-
 
 
 echo -e  $Blue
 echo "Author: Ege Balcı"
 echo -e -n $Green
 echo "Source: github.com/egebalci/Amber"
-
-
 
 
 echo -e $BYellow
@@ -94,8 +96,6 @@ echo -e $Yellow
 echo "[*] Installing dependencies..."
 echo -e $Color_Off 
 
-
-
 if [ $DIST == "Ubuntu" ] || [ $DIST == "Kali" ] || [ $DIST == "Mint" ] || [ $DIST == "Debian" ]
 then
 	sudo apt-get update
@@ -103,37 +103,45 @@ then
 elif [ $DIST == "Arch" ] || [ $DIST == "Manjaro" ]
 then
 	pacman -S --noconfirm go nasm mingw-w64-binutils mingw-w64-crt mingw-w64-gcc mingw-w64-headers mingw-w64-headers-bootstrap mingw-w64-winpthreads gcc-multilib
+elif [ $DIST == "MacOS" ]
+then
+	# MacOS install...
+	brew install mingw-w64
+	brew install go
+	brew install gcc-multilib
+
 elif [ $DIST == "Unknown" ]
 then
 	echo -e -n $BRed
 	echo "[!] OS not supported :("
+	echo -e $Color_Off
+	return 1	
 fi
 
 echo -e $Yellow
-echo "[*] Installing libraries..."
+echo "[*] Building source..."
 
-export AMBERPATH=$(pwd)
-cd lib
+cd ../lib
 export GOPATH=$(pwd)
 cd ..
 
-echo "[*] AMBERPATH=$AMBERPATH"
 echo "[*] GOPATH=$GOPATH"
 echo -e -n $Color_Off
 go build -ldflags "-s -w" handler.go
 cd src
 go build -ldflags "-s -w" -o ../amber
+cd ..
+echo "[*] Creating Amber directory..."
+sudo mkdir /usr/share/Amber
+sudo chown $(whoami):$(whoami) /usr/share/Amber
+cp -r * /usr/share/Amber/
 
-#sudo ln amber /usr/local/bin/amber
-
-
-echo "#!/bin/bash" > /tmp/amber
-echo "cd $AMBERPATH" >> /tmp/amber
-echo "./amber \$@" >> /tmp/amber
-sudo mv /tmp/amber /usr/local/bin/
-chmod +x /usr/local/bin/amber
+sudo ln -s /usr/share/Amber/amber /usr/local/bin/amber
+sudo chown $(whoami):$(whoami) /usr/local/bin/amber
+sudo ln -s /usr/share/Amber/handler /usr/local/bin/amber_handler
+sudo chown $(whoami):$(whoami) /usr/local/bin/amber_handler
 
 echo -e $BGreen
 echo "[✔] Setup completed !"
-
+echo -e $Color_Off
 

@@ -1,11 +1,5 @@
-; This block requires following values inside the specified registers...
-;
-; ############################################
-; #  Stack[0] -> New base address            #
-; #  EBX      -> Deault image base          #
-; ############################################
 ; 
-; Author: Ege Balcı <ege.balci@invictuseurope.com> 
+; Author: Ege Balcı <ege.balci@protonmail.com> 
 ; Version: 1.0
 
 [BITS 32]

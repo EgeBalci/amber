@@ -1,60 +1,56 @@
 package main
 
+import "strconv"
 import "os/exec"
-import "os"
 
 func compile() {
- 
-  verbose("Ciphering payload...","*")
-  crypt() // 4 steps
 
-  xxd := exec.Command("sh", "-c", "rm Payload && mv Payload.xor Payload && xxd -i Payload > stub/payload.h")
-  xxd.Stdout = os.Stdout
-  xxd.Stderr = os.Stderr
-  xxd.Run()
-  progress()
+	move("Payload.rc4", "Payload")
+	xxd_err := exec.Command("sh", "-c", "xxd -i Payload > stub/payload.h").Run()
+	ParseError(xxd_err, "While extracting payload hex stream.")
+	progress()
 
-  _xxd := exec.Command("sh", "-c", "xxd -i Payload.key > stub/key.h")
-  _xxd.Stdout = os.Stdout
-  _xxd.Stderr = os.Stderr
-  _xxd.Run()
-  progress()
+	xxd_err = exec.Command("sh", "-c", "xxd -i Payload.key > stub/key.h").Run()
+	ParseError(xxd_err, "While extracting key hex stream.")
+	progress()
 
-  var compileCommand string = "i686-w64-mingw32-g++-win32 -c stub/stub.cpp"
-  if PACKET_MANAGER == "pacman" {
-  	compileCommand = "i686-w64-mingw32-g++ -c stub/stub.cpp"
-  }
+	var CompileCommand string = "i686-w64-mingw32-g++-win32 -c stub/stub.cpp"
+	if PACKET_MANAGER == "pacman" {
+		CompileCommand = "i686-w64-mingw32-g++ -c stub/stub.cpp"
+	}
 
+	MingwObjErr := exec.Command("sh", "-c", CompileCommand).Run()
+	ParseError(MingwObjErr, "While compiling the object file.",)
+	progress()
 
-  mingwObj, mingwObjErr := exec.Command("sh", "-c", compileCommand).Output()
-  ParseError(mingwObjErr,"\n[!] ERROR: While compiling the object file.",string(mingwObj))
-  
-  progress()
+	ImageBase := strconv.FormatInt(int64(target.opt.ImageBase), 16)
+	CompileCommand = "i686-w64-mingw32-g++-win32 -Wl,--image-base,0x"+ImageBase+" stub.o "
+	if PACKET_MANAGER == "pacman" {
+		CompileCommand = "i686-w64-mingw32-g++ -Wl,--image-base,0x"+ImageBase+" stub.o "
+	}
 
-  compileCommand = "i686-w64-mingw32-g++-win32 stub.o "
-  if PACKET_MANAGER == "pacman" {
-  	compileCommand = "i686-w64-mingw32-g++ stub.o "
-  }
+	if target.dll {
+		CompileCommand += "-shared -o "+target.FileName
+	}else{
+		if target.resource == false {
+			CompileCommand += "stub/Resource.o "
+			verbose("Adding resource data...", "*")
+		}
+		if target.opt.Subsystem == 2 { // GUI
+			CompileCommand += "-mwindows -o "+target.FileName
+		}else{
+			CompileCommand += "-o "+target.FileName
+		}
+	}
+	//verbose(CompileCommand, "*")
+	progress()
+	verbose("Compiling to EXE...", "*")
+	//verbose(CompileCommand,"*")
+	MingwErr := exec.Command("sh", "-c", CompileCommand).Run()
+	ParseError(MingwErr, "While compiling to exe. (This might caused by a permission issue)")
+	progress()
 
-
-  if peid.resource == true {
-    compileCommand += "stub/Resource.o "
-  }
-  if peid.subsystem == 2 { // GUI
-    compileCommand += string("-mwindows -o "+peid.fileName)
-  }else{
-    compileCommand += string("-o "+peid.fileName)
-  }
-  progress()
-
-  verbose("Compiling to EXE...","*")
-  mingw, mingwErr := exec.Command("sh", "-c", compileCommand).Output()
-  ParseError(mingwErr,"\n[!] ERROR: While compiling to exe. (This might caused by a permission issue)",string(mingw))
-
-  progress()
-
-  strip, stripErr := exec.Command("sh", "-c", string("strip "+peid.fileName)).Output()
-  ParseError(stripErr,"\n[!] ERROR: While striping the exe.",string(strip))
-
-  progress()
+	StripErr := exec.Command("sh", "-c", string("strip "+target.FileName)).Run()
+	ParseError(StripErr, "While striping the exe.")
+	progress()
 }

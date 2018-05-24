@@ -5,24 +5,16 @@
 [BITS 32]
 [ORG 0]
 
-;%define VirtualProtect
-
-	cld
-	call Start
-	%include "HASH-API.asm"
-GetAOE:
-	mov eax,[esi+0x3C]			; Get the offset of "PE" to eax
-	mov ebx,[eax+esi+0x34]		; Get the image base address to ebx
-	mov eax,[eax+esi+0x28]		; Get the address of entry point to eax
-	ret							; <-
-Start:
-	pop ebp
 	call Stub
 PE:
 	incbin "Mem.map"			; PE file image
 	ImageSize: equ $-PE
 Stub:
 	pop esi						; Get the address of image to esi
+	call IAT_API				; 
+	%include "iat_api.asm"		;
+IAT_API:
+	pop ebp						; Pop the address of iat_api to ebp
 	call GetAOE	
 	push 0x00000000 			; Allocate a DWORD variable inside stack
 	push esp					; lpflOldProtect
@@ -32,7 +24,7 @@ Stub:
 	push 0xC38AE110				; hash( "kernel32.dll", "VirtualProtect" )
 	call ebp					; VirtualProtect( ImageBase, ImageSize, PAGE_EXECUTE_READWRITE, lpflOldProtect)
 	test eax,eax				; Check success 
-	jz Fail						; If VirtualProtect fails we are FUCKED !
+	jz Fail						; If VirtualProtect fails don't bother :/
 	%include "BuildImportTable.asm"	; Call the module responsible for building the import address table
 	xor ecx,ecx 				; Zero out the ECX
 	call GetAOE					; Get image base and AOE
@@ -48,5 +40,10 @@ Memcpy:
 	jnz Memcpy 					; If not loop
 	mov dword eax,[esp]			; Copy the AOEP to eax
 	ret							; Return to the AOEP
+GetAOE:
+	mov eax,[esi+0x3C]			; Get the offset of "PE" to eax
+	mov ebx,[eax+esi+0x34]		; Get the image base address to ebx
+	mov eax,[eax+esi+0x28]		; Get the address of entry point to eax
+	ret							; <-
 Fail:
 	ret							; VirtualProtect failed :(
