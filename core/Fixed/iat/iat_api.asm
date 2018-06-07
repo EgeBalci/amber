@@ -2,7 +2,7 @@
 ; Author: Ege Balcı <ege.balci[at]invictuseurope[dot]com>
 ; Compatible: Windows 10/8.1/8/7/2008/Vista/2003/XP/2000/NT4
 ; Version: 1.0 (25 January 2018)
-; Size: 167 bytes
+; Size: 177 bytes
 ;-----------------------------------------------------------------------------;
 
 ; This block locates addresses from import address table with given ror(13) hash value.
@@ -12,8 +12,8 @@
 
 ; Input: The hash of the API to call and all its parameters must be pushed onto stack.
 ; Output: The return value from the API call will be in EAX.
-; Clobbers: EAX, ECX and EDX (ala the normal stdcall calling convention)
-; Un-Clobbered: EBX, ESI, EDI, ESP and EBP can be expected to remain un-clobbered.
+; Clobbers: EAX, EBX, ECX and EDX (NOT !! the normal stdcall calling convention because EBX is clobbered)
+; Un-Clobbered: ESI, EDI, ESP and EBP can be expected to remain un-clobbered.
 ; Note: This function assumes the direction flag has allready been cleared via a CLD instruction.
 ; Note: This function is unable to call forwarded exports.
 
@@ -23,7 +23,9 @@ set_essentials:
   	pushad                 	; We preserve all the registers for the caller, bar EAX and ECX.
   	xor eax,eax           	; Zero EAX (upper 3 bytes will remain zero until function is found)
   	mov edx,[fs:eax+0x30] 	; Get a pointer to the PEB
-  	mov edx,[edx+0x08]      ; Get PEB->ImageBaseAddress
+  	mov edx,[edx+0x0C]		; Get PEB->Ldr
+	mov edx,[edx+0x14]		; Get the first module from the InMemoryOrder module list
+	mov edx,[edx+0x10]		; Get this modules base address
 	push edx				; Save the image base to stack (will use this alot)
   	add edx,[edx+0x3C]     	; "PE" Header
 	mov edx,[edx+0x80]		; Import table RVA
@@ -94,14 +96,15 @@ finish:
   	mov [esp+0x2C],eax      ; Overwrite the old EAX value with the desired api address for the upcoming popad
 	add esp,0x10			; Deallocate saved module hash, import descriptor address and import table address
   	popad                  	; Restore all of the callers registers, bar EAX, ECX and EDX which are clobbered
-  	pop ecx                	; Pop off the origional return address our caller will have pushed
+  	pop ebx                	; Pop off the origional return address our caller will have pushed
   	pop edx                	; Pop off the hash value our caller will have pushed
-  	push ecx               	; Push back the correct return value
 	mov eax,[eax]			; Get the add ress of the desired API
-	jmp eax					; JMP to API
+	call eax				; Call API
+  	push ebx               	; Push back the return value
+	ret						; 
   	; We now automagically return to the correct caller...
 not_found:
-	add esp,0x0F		; Fix the stack
-	popad				; Restore all registers
-	ret 				; Return
+	add esp,0x0F			; Fix the stack
+	popad					; Restore all registers
+	ret						; Return
 	; (API is not found)
