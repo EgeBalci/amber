@@ -1,6 +1,5 @@
 package main
 
-import "gopkg.in/cheggaaa/pb.v1"
 import "github.com/fatih/color"
 
 const VERSION string = "1.4.0"
@@ -16,22 +15,22 @@ type PEID struct {
 	staged   bool
 	iat      bool
 	resource bool
-	scrape	 bool
+	scrape   bool
 	verbose  bool
 	debug    bool
-	help 	 bool
-	clean	 bool
+	help     bool
+	clean    bool
 
 	IgnoreIntegrity bool
 
 	//Analysis...
-	FileSize  string
-	dll       bool
-	aslr      bool
-	opt       OptionalHeader
-	VP        string
-	GPA       string
-	LLA       string
+	FileSize string
+	dll      bool
+	aslr     bool
+	opt      OptionalHeader
+	VP       string
+	GPA      string
+	LLA      string
 }
 
 type OptionalHeader struct {
@@ -71,7 +70,6 @@ type DataDirectory struct {
 	VirtualAddress uint32
 	Size           uint32
 }
-
 
 var red *color.Color = color.New(color.FgRed)
 var BoldRed *color.Color = red.Add(color.Bold)
