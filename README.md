@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/badge/version-1.3.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
 
 
-Amber is a proof of concept packer for bypassing security products and mitigations. It can pack regularly compiled PE files into reflective payloads that can load and execute itself like a shellcode. It enables stealthy in-memory payload deployment that can be used to bypass anti-virus, firewall, IDS, IPS products and application white-listing mitigations.  If you want to learn more about the packing methodology used inside Amber check out below. For more detail about usage, installation and how to decrease detection rate check out [WIKI](https://github.com/EgeBalci/Amber/wiki).
+Amber is a reflective PE packer for bypassing security products and mitigations. It can pack regularly compiled PE files into reflective payloads that can load and execute itself like a shellcode. It enables stealthy in-memory payload deployment that can be used to bypass anti-virus, firewall, IDS, IPS products and application white-listing mitigations.  If you want to learn more about the packing methodology used inside Amber check out below. For more detail about usage, installation and how to decrease detection rate check out [WIKI](https://github.com/EgeBalci/Amber/wiki).
 
 
 Developed By Ege Balcı from [INVICTUS](https://invictuseurope.com)/[PRODAFT](https://prodaft.com).
@@ -26,7 +26,11 @@ Developed By Ege Balcı from [INVICTUS](https://invictuseurope.com)/[PRODAFT](ht
 
 # INSTALLATION
 
-SUPPORTED PLATFORMS:
+```
+go get github.com/egebalci/amber
+```
+
+***SUPPORTED PLATFORMS:***
 <table>
     <tr>
         <th>Operating system</th>
@@ -58,22 +62,18 @@ SUPPORTED PLATFORMS:
     </tr>
 </table>
 
-<strong>BLACKARCH INSTALL</strong>
-        
-        sudo pacman -S amber
+***BLACKARCH INSTALL***     
+```
+sudo pacman -S amber
+```
+***DOCKER INSTALL***
+[![Docker](http://dockeri.co/image/egee/amber)](https://hub.docker.com/r/egee/amber/)
 
-<strong>DOCKER INSTALL</strong>
+```
+docker pull egee/amber
+docker run -it egee/amber
+```
 
-		docker pull egee/amber
-		docker run -it egee/amber
-
-<strong>BUILD FROM SOURCE</strong>
-
-For compiling from source running the setup file will be enough.
-
-        git clone https://github.com/egebalci/Amber.git
-        cd Amber/setup/
-        ./setup.sh
 # USAGE
 
         USAGE: 
@@ -90,8 +90,10 @@ For compiling from source running the setup file will be enough.
         EXAMPLE:
         (Default settings if no option parameter passed)
         amber -k 8 file.exe
-<strong>On Docker</strong><br>
-		`docker run -it -v /tmp/:/tmp/ amber /tmp/file.exe`
+***On Docker***
+```
+docker run -it -v /tmp/:/tmp/ amber /tmp/file.exe
+```
 
 # EXAMPLE USAGE
 
