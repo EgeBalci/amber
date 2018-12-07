@@ -2,7 +2,7 @@
 ; Authors: Michael Schierl, Ege Balcı
 ; Version: 2.0 (02 December 2017)
 ;-----------------------------------------------------------------------------;
-[BITS 32]
+[BITS 64]
 
 ; Input: EBP - Data to decode
 ;        ESI - Key
@@ -15,10 +15,10 @@
 	cld
   	call start
 Payload:
-	incbin "../Payload.rc4"
+	incbin "payload.enc"
 PSize: equ $-Payload
 Key:
-	incbin "../Payload.key"
+	incbin "payload.key"
 KSize: equ $-Key
   ; Initialize S-box
 start:

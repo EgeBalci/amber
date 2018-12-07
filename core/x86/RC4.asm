@@ -15,10 +15,10 @@
 	cld
   	call start
 Payload:
-	incbin "../Payload.rc4"
+	incbin "payload.enc"
 PSize: equ $-Payload
 Key:
-	incbin "../Payload.key"
+	incbin "payload.key"
 KSize: equ $-Key
   ; Initialize S-box
 start:
