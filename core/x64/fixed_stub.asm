@@ -36,9 +36,8 @@ start:								;
 	mov rcx,rbx				        ; lpAddress
 	mov r10d,0xC38AE110				; hash( "kernel32.dll", "VirtualProtect" )
 	call rbp						; VirtualProtect( image_base, image_size, PAGE_EXECUTE_READWRITE, lpflOldProtect)
-	test rax,rax					; Check success 
-	jz end						    ; If VirtualAlloc fails don't bother :/	
-	add rsp,0x20					; Clear stack
+	pop rdi     					; Clear stack
+	pop rdi                         ; ...
 	mov rdi,rax						; Save the new base address to rdi
 
 ;#- resolve.asm --------------------------------
@@ -98,7 +97,8 @@ LoadLibraryA:
 	mov rcx,rax                     ; Move the address of library name string to RCX
 	mov r10d,0x0726774C             ; hash( "kernel32.dll", "LoadLibraryA" )
 	call rbp                        ; LoadLibraryA(RCX)
-	add rsp,32                      ; Fix the stack
+	pop rcx                         ; Fix the stack
+	pop rcx                         ; ...
 	pop rcx                         ; Retreive ecx
 	ret                             ; <-
 GetProcAddress:
@@ -106,7 +106,8 @@ GetProcAddress:
 	mov rdx,rax                     ; Move the address of function name string to RDX as second parameter
 	mov r10d,0x7802F749             ; hash( "kernel32.dll", "GetProcAddress" )
 	call rbp                        ; GetProcAddress(RCX,RDX)
-	add rsp,32                      ; Retrieve ecx
+	pop rdx                         ; Retrieve ecx
+	pop rdx                         ; ...
 	ret                             ; <-
 complete:
 	pop rax                         ; Clean out the stack
@@ -132,6 +133,3 @@ memcpy:
 	push rdi                        ; Push the new image base to stack
 	add [rsp],r12                   ; Add the address of entry
   	ret				                ; <-
-fail:
-	add rsp,0x20                    ; Clean stack
-	ret                             ; <-

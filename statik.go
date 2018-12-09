@@ -7,15 +7,14 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 	"time"
-)
 
-const (
-	nameSourceFile = "payload.go"
+	"github.com/rakyll/statik/fs"
 )
 
 var namePackage string = "statik"
@@ -24,14 +23,26 @@ var namePackage string = "statik"
 // flagNoMtime is set.
 var mtimeDate = time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC)
 
-func statik(namePackage, src, dest string) {
-	verbose("Extracting statik files...", "*")
-	file, err := generateSource(src)
+func statik(src, dest string) string {
+	verbose("Creating virtual file system...", "*")
+	file, id, err := generateSource(src)
 	parseErr(err)
 	destDir := path.Join(dest, namePackage)
 	err = os.MkdirAll(destDir, 0755)
 	parseErr(err)
-	err = rename(file.Name(), path.Join(destDir, nameSourceFile))
+	err = rename(file.Name(), path.Join(destDir, RandomString(10)+".go"))
+	parseErr(err)
+	defer progress()
+	return id
+}
+
+func extract(hfs http.FileSystem, fileName string, dst string) {
+	rawFile, err := fs.ReadFile(hfs, fileName)
+	parseErr(err)
+	file, err := os.Create(target.workdir + "/" + dst)
+	parseErr(err)
+	defer file.Close()
+	_, err = file.Write(rawFile)
 	parseErr(err)
 	defer progress()
 }
@@ -75,7 +86,7 @@ func rename(src, dest string) error {
 // that contains source directory's contents as zip contents.
 // Generates source registers generated zip contents data to
 // be read by the statik/fs HTTP file system.
-func generateSource(srcPath string) (file *os.File, err error) {
+func generateSource(srcPath string) (file *os.File, id string, err error) {
 	var (
 		buffer    bytes.Buffer
 		zipWriter io.Writer
@@ -123,22 +134,22 @@ func generateSource(srcPath string) (file *os.File, err error) {
 		_, err = f.Write(b)
 		return err
 	}); err != nil {
-		return
+		return nil, "", err
 	}
 	if err = w.Close(); err != nil {
-		return
+		return nil, "", err
 	}
-
+	funcID := RandomString(10)
 	// then embed it as a quoted string
 	var qb bytes.Buffer
 	fmt.Fprintf(&qb, `
 package %s
 
 import (
-	"github.com/rakyll/statik/fs"
+	"../fs"
 )
 
-func OpenSesame() {
+func `+funcID+`() {
 	data := "`, namePackage)
 	FprintZipData(&qb, buffer.Bytes())
 	fmt.Fprint(&qb, `"
@@ -147,9 +158,9 @@ func OpenSesame() {
 `)
 
 	if err = ioutil.WriteFile(f.Name(), qb.Bytes(), 0644); err != nil {
-		return
+		return nil, "", err
 	}
-	return f, nil
+	return f, funcID, nil
 }
 
 // FprintZipData converts zip binary contents to a string literal.

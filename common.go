@@ -23,7 +23,7 @@ func progress() {
 }
 
 func createProgressBar() {
-	step := 19
+	step := 35
 	if target.reflective {
 		step = step - 5
 	}
@@ -103,11 +103,11 @@ func print(str string, status string) {
 
 func printParams() {
 	BoldYellow.Print("\n[*] File: ")
-	BoldBlue.Println(target.fileName)
+	BoldBlue.Println(target.FileName)
 	BoldYellow.Print("[*] Reflective: ")
 	BoldBlue.Println(target.reflective)
 	BoldYellow.Print("[*] Key Size: ")
-	BoldBlue.Println(target.keySize)
+	BoldBlue.Println(target.KeySize)
 	BoldYellow.Print("[*] API: ")
 	if target.iat {
 		BoldBlue.Println("IAT")
@@ -139,7 +139,7 @@ func requirements() {
 
 func parseErr(err error) {
 	if err != nil {
-		fmt.Println("")
+		fmt.Println("\n")
 		//clean()
 		log.Fatal(err)
 	}

@@ -83,8 +83,8 @@ pass:
 	xor edx,edx				; Zero out edx
 	jmp fix					; Loop
 reloc_fin:
-	add esp,0x08			; Deallocate all vars
-
+	pop eax                 ; Deallocate all vars
+	pop eax                 ; ...
 ;#- resolve.asm ------------------------------
 ; ESI = &PE
 ; EBX = HANDLE(module)
@@ -140,7 +140,8 @@ insert_iat:
 all_resolved:
 	mov ecx,[esp+4]         ; Move the IAT address to ecx 
 	mov dword [ecx],0x00	; Insert a NULL dword
-	add esp,0x08			; Deallocate index values
+	pop ecx					; Deallocate index values
+	pop ecx                 ; ...
 	pop ecx					; Put back the ecx value
 	ret						; <-
 LoadLibraryA:

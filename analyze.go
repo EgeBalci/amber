@@ -11,7 +11,7 @@ import (
 func analyze(file *pe.File) {
 	//Do analysis on pe file...
 	verbose("Analyzing PE file...", "*")
-	verbose("File Size: "+target.fileSize+" byte", "*")
+	verbose("File Size: "+target.FileSize+" byte", "*")
 	verbose("Machine: "+fmt.Sprintf("0x%X", file.FileHeader.Machine), "*")
 	if file.FileHeader.Machine == 0x14C {
 		target.arch = "x86"
@@ -55,8 +55,8 @@ func analyze(file *pe.File) {
 	if (opt.DataDirectory[1].Size) == 0x00 {
 		parseErr(errors.New("Import table size zero, file has empty import table"))
 	}
-	target.fileSize = fileSize(target.fileName)
-	target.imageBase = opt.ImageBase
+	target.FileSize = fileSize(target.FileName)
+	target.ImageBase = opt.ImageBase
 	target.subsystem = opt.Subsystem
 
 	verbose("Subsystem: "+fmt.Sprintf("0x%X", uint64(opt.Subsystem)), "*")

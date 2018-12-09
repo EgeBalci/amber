@@ -14,8 +14,8 @@ func crypt() {
 
 	verbose("Ciphering payload...", "*")
 
-	key := GenerateKey(target.keySize)
-	if target.keySize != len(key) {
+	key := GenerateKey(target.KeySize)
+	if target.KeySize != len(key) {
 		verbose(string("Key size rounded to "+strconv.Itoa(len(key))), "*")
 	}
 	payload, err := ioutil.ReadFile(target.workdir + "/payload")
@@ -85,4 +85,14 @@ func GenerateKey(Size int) []byte {
 	}
 	defer progress()
 	return Key
+}
+
+// RandomString .
+func RandomString(length int) string {
+	charset := "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[rand.New(rand.NewSource(time.Now().UnixNano())).Intn(len(charset))]
+	}
+	return string(b)
 }

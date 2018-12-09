@@ -15,10 +15,11 @@ const VERSION string = "2.0.0"
 type ID struct {
 
 	// Parameters...
-	fileName        string
-	keySize         int
+	FileName        string
+	KeySize         int
 	key             []byte
 	reflective      bool
+	AntiAnalysis    bool
 	iat             bool
 	resource        bool
 	scrape          bool
@@ -26,16 +27,16 @@ type ID struct {
 	debug           bool
 	help            bool
 	clean           bool
-	ignoreIntegrity bool
+	IgnoreIntegrity bool
 
 	// System anaylsis
 	nasm    string
 	workdir string
 
 	// PE analysis
-	fileSize  string
+	FileSize  string
 	arch      string
-	imageBase uint64
+	ImageBase uint64
 	subsystem uint16
 	aslr      bool
 	dll       bool
@@ -50,8 +51,6 @@ var BoldYellow *color.Color = yellow.Add(color.Bold)
 var green *color.Color = color.New(color.FgGreen)
 var BoldGreen *color.Color = green.Add(color.Bold)
 var white *color.Color = color.New(color.FgWhite)
-
-//var BoldWhite *color.Color = white.Add(color.Bold)
 
 var progressBar *pb.ProgressBar
 var target ID

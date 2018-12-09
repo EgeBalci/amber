@@ -1,20 +1,47 @@
 package main
 
 import (
+	"io/ioutil"
 	"os"
 	"os/exec"
+	"strings"
+
+	"github.com/rakyll/statik/fs"
 )
 
 func compile() {
+
+	mkdir(target.workdir + "/fs")
 	mkdir(target.workdir + "/data")
 	move(target.workdir+"/stage", target.workdir+"/data/stage")
-	statik("statik", target.workdir+"/data", target.workdir)
+	id := statik(target.workdir+"/data", target.workdir)
+
+	// Create static fs
+	statikFS, err := fs.New()
+	parseErr(err)
+
+	// Extract virtual fs libraries
+	extract(statikFS, "/stub/fs/fs.go", "./fs/fs.go")
+	extract(statikFS, "/stub/fs/walk.go", "./fs/walk.go")
+	extract(statikFS, "/stub/fs/fs_test.go", "./fs/fs_test.go")
+
+	// Write stub.go to workdir
+	if target.AntiAnalysis {
+		extract(statikFS, "/stub/bypass_stub.go", "stub.go")
+	} else {
+		extract(statikFS, "/stub/stub.go", "stub.go")
+	}
+
+	if !target.resource {
+		// Write rsrc.syso to workdir
+		extract(statikFS, "/stub/rsrc.syso", "rsrc.syso")
+	}
 
 	ldflags := `-ldflags=-s`
 	if target.subsystem == 0x02 {
 		ldflags = `-ldflags="-s -H windowsgui"`
 	}
-	build := exec.Command("go", "build", "-buildmode=exe", ldflags, "-o", target.fileName, ".")
+	build := exec.Command("go", "build", "-buildmode=exe", ldflags, "-o", target.FileName, ".")
 	build.Env = os.Environ()
 	build.Env = append(build.Env, "GOOS=windows")
 	if target.arch == "x86" {
@@ -22,11 +49,23 @@ func compile() {
 	} else {
 		build.Env = append(build.Env, "GOARCH=amd64")
 	}
-
+	obfuscateFunctionNames(id)
 	verbose("Compiling go stub...", "*")
 	build.Stderr = os.Stderr
 	build.Stdout = os.Stdout
-	err := build.Run()
+	err = build.Run()
+	parseErr(err)
+	defer progress()
+}
+
+func obfuscateFunctionNames(id string) {
+	verbose("Obfuscating function names...", "*")
+	file, err := os.OpenFile(target.workdir+"/stub.go", os.O_WRONLY, os.ModeDevice)
+	parseErr(err)
+	rawFile, err := ioutil.ReadFile(target.workdir + "/stub.go")
+	parseErr(err)
+	stub := strings.Replace(string(rawFile), "{{statik}}", id, -1)
+	_, err = file.Write([]byte(stub))
 	parseErr(err)
 	defer progress()
 }
@@ -35,7 +74,7 @@ func compile() {
 // 	file, err := pe.Open(fileName)
 // 	parseErr(err)
 // 	opt := mape.ConvertOptionalHeader(file)
-// 	if target.imageBase != opt.ImageBase {
+// 	if target.ImageBase != opt.ImageBase {
 // 		rawFile, err := ioutil.ReadFile(fileName)
 // 		parseErr(err)
 // 		nt := int(rawFile[0x3c])

