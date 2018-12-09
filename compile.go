@@ -43,7 +43,7 @@ func compile() {
 
 	ldflags := `-ldflags=-s`
 	if target.subsystem == 0x02 {
-		ldflags = `-ldflags="-s -H windowsgui"`
+		ldflags = `-ldflags=-s -H windowsgui`
 	}
 	build := exec.Command("go", "build", "-buildmode=exe", ldflags, "-o", target.FileName, ".")
 	build.Env = os.Environ()
@@ -55,11 +55,13 @@ func compile() {
 	}
 	obfuscateFunctionNames(id)
 	verbose("Compiling go stub...", "*")
-	build.Stderr = os.Stderr
-	build.Stdout = os.Stdout
+	if target.debug {
+		build.Stderr = os.Stderr
+		build.Stdout = os.Stdout
+	}
 	err = build.Run()
 	parseErr(err)
-	alignBase(target.FileName)
+	//alignBase(target.FileName)
 	defer progress()
 }
 

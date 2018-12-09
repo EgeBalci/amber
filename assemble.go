@@ -79,7 +79,12 @@ func assemble() {
 }
 
 func nasm(file, out string) {
-	err := exec.Command(target.nasm, "-f", "bin", file, "-o", out).Run()
+	nasm := exec.Command(target.nasm, "-f", "bin", file, "-o", out)
+	if target.debug {
+		nasm.Stderr = os.Stderr
+		nasm.Stdout = os.Stdout
+	}
+	err := nasm.Run()
 	parseErr(err)
 	defer progress()
 }

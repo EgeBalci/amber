@@ -23,7 +23,10 @@ func progress() {
 }
 
 func createProgressBar() {
-	step := 35
+	step := 29
+	if target.resource {
+		step--
+	}
 	if target.reflective {
 		step = step - 5
 	}
@@ -139,8 +142,11 @@ func requirements() {
 
 func parseErr(err error) {
 	if err != nil {
+		if !target.verbose {
+			progressBar.Finish()
+		}
 		fmt.Println("\n")
-		//clean()
+		clean()
 		log.Fatal(err)
 	}
 }
@@ -184,10 +190,10 @@ func copyFile(src, dst string) {
 	defer progress()
 }
 
-func remove(file string) {
+func remove(file string) error {
 	err := os.RemoveAll(file)
-	parseErr(err)
 	defer progress()
+	return err
 }
 
 func clean() {

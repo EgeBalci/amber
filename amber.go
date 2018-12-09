@@ -77,7 +77,7 @@ func main() {
 	}
 	// Clean the created files
 	clean() // 10 steps
-	if target.verbose == false {
+	if !target.verbose {
 		progressBar.Finish()
 	}
 

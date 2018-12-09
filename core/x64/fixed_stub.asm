@@ -97,8 +97,7 @@ LoadLibraryA:
 	mov rcx,rax                     ; Move the address of library name string to RCX
 	mov r10d,0x0726774C             ; hash( "kernel32.dll", "LoadLibraryA" )
 	call rbp                        ; LoadLibraryA(RCX)
-	pop rcx                         ; Fix the stack
-	pop rcx                         ; ...
+	add rsp,32                      ; Fix the stack
 	pop rcx                         ; Retreive ecx
 	ret                             ; <-
 GetProcAddress:
@@ -106,7 +105,7 @@ GetProcAddress:
 	mov rdx,rax                     ; Move the address of function name string to RDX as second parameter
 	mov r10d,0x7802F749             ; hash( "kernel32.dll", "GetProcAddress" )
 	call rbp                        ; GetProcAddress(RCX,RDX)
-	pop rdx                         ; Retrieve ecx
+	add rsp,24                      ; Fix the stack
 	pop rdx                         ; ...
 	ret                             ; <-
 complete:

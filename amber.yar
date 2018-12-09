@@ -1,4 +1,3 @@
-
 import "pe"
 
 rule Amber_Reflective_PE_Packer {

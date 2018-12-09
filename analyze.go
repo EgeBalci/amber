@@ -23,10 +23,6 @@ func analyze(file *pe.File) {
 	opt := mape.ConvertOptionalHeader(file)
 
 	verbose("Magic: "+fmt.Sprintf("0x%X", opt.Magic), "*")
-	// PE32 = 0x10B
-	if opt.Magic != 0x10B {
-		parseErr(errors.New("file is not a valid PE (false magic value)"))
-	}
 	if file.Characteristics >= 0x2000 {
 		verbose("Found DLL characteristics.", "*")
 		target.dll = true

@@ -64,7 +64,7 @@ const BANNER string = `
 //  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
 //  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
 //  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-//  Reflective PE Packer ☣                                          
+//  Reflective PE Packer ☣   
 `
 
 // BasicBanner .
@@ -87,9 +87,10 @@ USAGE:
 OPTIONS:
   -k, -keysize                Size of the encryption key in bytes (Max:255/Min:8)
   -r, -reflective             Generated a reflective payload
-  -i, -iat                    Uses import address table entries instead of export address table
+  -a, -anti-analysis          Add anti-analysis masures
+  -i, -iat                    Use import address table entries instead of export address table
   -s, -scrape                 Scrape the PE header info (May break some files)
-  -no-resource                Don't add any resource data
+  -no-resource                Don't add any resource data (removes icon)
   -ignore-integrity           Ignore integrity check errors
   -v, -verbose                Verbose output mode
   -h, -H                      Show this massage
