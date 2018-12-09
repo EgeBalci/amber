@@ -1,11 +1,15 @@
 package main
 
 import (
+	"debug/pe"
+	"encoding/binary"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
 
+	"github.com/egebalci/mappe/mape"
 	"github.com/rakyll/statik/fs"
 )
 
@@ -55,6 +59,7 @@ func compile() {
 	build.Stdout = os.Stdout
 	err = build.Run()
 	parseErr(err)
+	alignBase(target.FileName)
 	defer progress()
 }
 
@@ -70,14 +75,31 @@ func obfuscateFunctionNames(id string) {
 	defer progress()
 }
 
-// func alignBase(fileName string) {
-// 	file, err := pe.Open(fileName)
-// 	parseErr(err)
-// 	opt := mape.ConvertOptionalHeader(file)
-// 	if target.ImageBase != opt.ImageBase {
-// 		rawFile, err := ioutil.ReadFile(fileName)
-// 		parseErr(err)
-// 		nt := int(rawFile[0x3c])
-// 		imageBaseP := int(nt + 0x1c)
-// 	}
-// }
+func alignBase(fileName string) {
+
+	file, err := pe.Open(fileName)
+	parseErr(err)
+	opt := mape.ConvertOptionalHeader(file)
+	if target.ImageBase != opt.ImageBase {
+		verbose("Aligning image base...", "*")
+		rawFile, err := ioutil.ReadFile(fileName)
+		parseErr(err)
+		oFileHeader := int(rawFile[0x3c])
+
+		if target.arch == "x64" {
+			oImageBase := int(oFileHeader + 0x30)
+			imageBase := binary.LittleEndian.Uint64(rawFile[oImageBase : oImageBase+8])
+			verbose("ImageBase "+fmt.Sprintf("0x%016X -> ", imageBase)+fmt.Sprintf("0x%016X", target.ImageBase), "*")
+			binary.LittleEndian.PutUint64(rawFile[oImageBase:oImageBase+8], target.ImageBase)
+		} else {
+			oImageBase := int(oFileHeader + 0x34)
+			imageBase := binary.LittleEndian.Uint32(rawFile[oImageBase : oImageBase+4])
+			verbose("ImageBase "+fmt.Sprintf("0x%08X -> ", imageBase)+fmt.Sprintf("0x%08X", target.ImageBase), "*")
+			binary.LittleEndian.PutUint32(rawFile[oImageBase:oImageBase+4], uint32(target.ImageBase))
+		}
+		err = ioutil.WriteFile(target.FileName, rawFile, os.ModeDir)
+		parseErr(err)
+
+	}
+
+}
