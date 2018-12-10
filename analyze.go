@@ -64,5 +64,9 @@ func analyze(file *pe.File) {
 	verbose("Base Relocation Table: "+fmt.Sprintf("0x%X", uint64(opt.DataDirectory[5].VirtualAddress+uint32(opt.ImageBase))), "*")
 	verbose("Import Address Table: "+fmt.Sprintf("0x%X", uint64(opt.DataDirectory[12].VirtualAddress+uint32(opt.ImageBase))), "*")
 
+	if !target.aslr && target.ImageBase != 0x400000 {
+		parseErr(errors.New("Unable to align image (file may already been packed)"))
+	}
+
 	defer progress()
 }

@@ -15,30 +15,30 @@
 [BITS 64]
 [ORG 0]
 
-	cld								; Clear direction flags
-	call stub						; Call stub
+	cld                             ; Clear direction flags
+	call stub                       ; Call stub
 PE:
-	incbin "Mem.map"				; PE file image
-	image_size: equ $-PE			; Size of the PE image
+	incbin "Mem.map"                ; PE file image
+	image_size: equ $-PE            ; Size of the PE image
 stub:
-	pop rsi							; Get the address of image to rsi
-	call start						; Call start
-	%include "api.asm"		        ;
-start:								;
-	pop rbp							; Get the address of hook_api to rbp
-	mov eax,dword [rsi+0x3C]		; Get the offset of "PE" to eax
-	mov rbx,qword [rax+rsi+0x30]	; Get the image base address to rbx
-	mov r12d,dword [rax+rsi+0x28]	; Get the address of entry point to r12
+	pop rsi                         ; Get the address of image to rsi
+	call start                      ; Call start
+	%include "api.asm"              ;
+start:                              ;
+	pop rbp                         ; Get the address of hook_api to rbp
+	mov eax,dword [rsi+0x3C]        ; Get the offset of "PE" to eax
+	mov rbx,qword [rax+rsi+0x30]    ; Get the image base address to rbx
+	mov r12d,dword [rax+rsi+0x28]   ; Get the address of entry point to r12
 	push rax                        ; Allocate 8 bytes for lpflOldProtect
-	mov r9,rsp 				        ; lpflOldProtect
-	mov r8d,dword 0x40			    ; PAGE_EXECUTE_READWRITE
-	mov edx,dword image_size		; dwSize
-	mov rcx,rbx				        ; lpAddress
-	mov r10d,0xC38AE110				; hash( "kernel32.dll", "VirtualProtect" )
-	call rbp						; VirtualProtect( image_base, image_size, PAGE_EXECUTE_READWRITE, lpflOldProtect)
-	pop rdi     					; Clear stack
+	mov r9,rsp                      ; lpflOldProtect
+	mov r8d,dword 0x40              ; PAGE_EXECUTE_READWRITE
+	mov edx,dword image_size        ; dwSize
+	mov rcx,rbx                     ; lpAddress
+	mov r10d,0xC38AE110             ; hash( "kernel32.dll", "VirtualProtect" )
+	call rbp                        ; VirtualProtect( image_base, image_size, PAGE_EXECUTE_READWRITE, lpflOldProtect)
+	pop rdi                         ; Clear stack
 	pop rdi                         ; ...
-	mov rdi,rax						; Save the new base address to rdi
+	mov rdi,rax                     ; Save the new base address to rdi
 
 ;#- resolve.asm --------------------------------
 ; STACK[0] = &_IMPORT_DESCRIPTOR
@@ -56,7 +56,7 @@ get_modules:
 	cmp dword [rax],0               ; Check if the import names table RVA is NULL
 	jz complete                     ; If yes building process is done
 	mov eax,dword [rax+0x0C]        ; Get RVA of dll name to eax
-	add rax,rsi                     ; Get the dll name address		
+	add rax,rsi                     ; Get the dll name address
 	call LoadLibraryA               ; Load the library
 	mov r13,rax                     ; Move the dll handle to R13
 	mov rax,[rsp]                   ; Move the address of current _IMPORT_DESCRIPTOR to eax 
@@ -119,16 +119,16 @@ complete:
 ; R12 = pe_address_of_entry
 ; R13 = (RDI+R12)
 ;
-	xor rcx,rcx 					; Zero out the ECX
-	mov rcx,image_size				; Move the image size to RCX
-	mov r13,rdi						; Copy the new base value to rbx
-	add r13,r12						; Add the address of entry value to new base address
+	xor rcx,rcx                     ; Zero out the ECX
+	mov rcx,image_size              ; Move the image size to RCX
+	mov r13,rdi                     ; Copy the new base value to rbx
+	add r13,r12                     ; Add the address of entry value to new base address
 memcpy:	
-	mov al,[rsi] 			        ; Move 1 byte of PE image to AL register
-	mov [rdi],al 			        ; Move 1 byte of PE image to image base
-	inc rsi 				        ; Increase PE image index
-	inc rdi 				        ; Increase image base index
-	loop memcpy 				    ; Loop until zero
+	mov al,[rsi]                    ; Move 1 byte of PE image to AL register
+	mov [rdi],al                    ; Move 1 byte of PE image to image base
+	inc rsi                         ; Increase PE image index
+	inc rdi                         ; Increase image base index
+	loop memcpy                     ; Loop until zero
 	push rdi                        ; Push the new image base to stack
 	add [rsp],r12                   ; Add the address of entry
-  	ret				                ; <-
+	ret                             ; <-

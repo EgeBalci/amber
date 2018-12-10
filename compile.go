@@ -61,7 +61,9 @@ func compile() {
 	}
 	err = build.Run()
 	parseErr(err)
-	//alignBase(target.FileName)
+	if !target.aslr {
+		//alignBase(target.FileName)
+	}
 	defer progress()
 }
 
