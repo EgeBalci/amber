@@ -1,8 +1,8 @@
 
 
-[![Banner](https://github.com/EgeBalci/Amber/raw/master/Banner.png)](https://github.com/egebalci/Amber)
+[![Banner](https://github.com/EgeBalci/Amber/raw/master/banner.png)](https://github.com/egebalci/Amber)
 
-[![Version](https://img.shields.io/badge/version-1.3.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.10-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
 
 
 Amber is a reflective PE packer for bypassing security products and mitigations. It can pack regularly compiled PE files into reflective payloads that can load and execute itself like a shellcode. It enables stealthy in-memory payload deployment that can be used to bypass anti-virus, firewall, IDS, IPS products and application white-listing mitigations.  If you want to learn more about the packing methodology used inside Amber check out below. For more detail about usage, installation and how to decrease detection rate check out [WIKI](https://github.com/EgeBalci/Amber/wiki).
@@ -38,11 +38,11 @@ go get github.com/egebalci/amber
     </tr>
     <tr>
         <td>Ubuntu</td>
-        <td>16.04\16.10\17.04\17.08</td>
+        <td>16.04\17.04\17.08\18.04</td>
     </tr>
     <tr>
         <td>Kali linux</td>
-        <td>2017.1\2018.1</td>
+        <td>2017.1\2018.1\2018.4</td>
     </tr>
     <tr>
         <td>BlackArch</td>
@@ -75,21 +75,24 @@ docker run -it egee/amber
 ```
 
 # USAGE
+```
+USAGE: 
+  amber [options] file.exe
+OPTIONS:
+  -k, -keysize                Size of the encryption key in bytes (Max:255/Min:8)
+  -r, -reflective             Generated a reflective payload
+  -a, -anti-analysis          Add anti-analysis masures
+  -i, -iat                    Use import address table entries instead of export address table
+  -s, -scrape                 Scrape the PE header info (May break some files)
+  -no-resource                Don't add any resource data (removes icon)
+  -ignore-integrity           Ignore integrity check errors
+  -v, -verbose                Verbose output mode
+  -h, -H                      Show this massage
+EXAMPLE:
+  (Default settings if no option parameter passed)
+  amber -k 8 file.exe
+```
 
-        USAGE: 
-        amber [options] file.exe
-        OPTIONS:
-        -k, -keysize                Size of the encryption key in bytes (Max:255/Min:8)
-        -r, -reflective             Generated a reflective payload
-        -i, -iat                    Uses import address table entries instead of export address table
-        -s, -scrape                 Scrape the PE header info (May break some files)
-        -no-resource                Don't add any resource data
-        -ignore-integrity           Ignore integrity check errors
-        -v, -verbose                Verbose output mode
-        -h, -H                      Show this massage
-        EXAMPLE:
-        (Default settings if no option parameter passed)
-        amber -k 8 file.exe
 ***On Docker***
 ```
 docker run -it -v /tmp/:/tmp/ amber /tmp/file.exe
