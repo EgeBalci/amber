@@ -63,7 +63,7 @@ USAGE:
 OPTIONS:
   -k, -keysize                Size of the encryption key in bytes (Max:255/Min:8)
   -r, -reflective             Generated a reflective payload
-  -a, -anti-analysis          Add anti-analysis masures
+  -a, -anti-analysis          Add anti-analysis measures
   -i, -iat                    Use import address table entries instead of export address table
   -s, -scrape                 Scrape the PE header info (May break some files)
   -no-resource                Don't add any resource data (removes icon)
