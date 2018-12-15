@@ -1,5 +1,5 @@
 
-FROM ubuntu:17.04
+FROM ubuntu:17.10
 MAINTAINER Ege Balcı <ege.balci@invictuseurope.com>
 USER root
 RUN apt-get update -y
