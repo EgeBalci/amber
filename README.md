@@ -24,14 +24,17 @@ Developed By Ege Balcı from [INVICTUS](https://invictuseurope.com)/[PRODAFT](ht
 
 <br><br><br><br><br><br><br><br>
 
-# DEPENDENCIES
+# INSTALLATION
+
+
+***DEPENDENCIES***
 
 - [go](https://golang.org/dl/)
 - [NASM](https://www.nasm.us/)
 
 On *nix systems both of the dependencies can be installed with OS packet managers. (APT/PACMAN/YUM)
 
-# INSTALLATION
+
 Get one of the pre-build release [here](https://github.com/egebalci/amber/releases). Or get it with following alternatives.
 
 ***GO (suggested)***
@@ -45,6 +48,7 @@ sudo pacman -S amber
 ```
 
 ***DOCKER INSTALL***
+
 [![Docker](http://dockeri.co/image/egee/amber)](https://hub.docker.com/r/egee/amber/)
 
 ```
