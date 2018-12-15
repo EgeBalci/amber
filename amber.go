@@ -54,19 +54,19 @@ func main() {
 	createProgressBar()
 	// Check dependencies
 	requirements()
+	// Get the absolute path of the file
+	abs, err := filepath.Abs(ARGS[(len(ARGS) - 1)])
+	parseErr(err)
 	// Setup the working directory
 	target.workdir = workdir(target.FileName)
 	verbose("Setting up workdirectory at "+target.workdir, "*")
 	mkdir(target.workdir)
 	cdir(target.workdir)
-	// Get the absolute path of the file
-	abs, absErr := filepath.Abs(ARGS[(len(ARGS) - 1)])
-	parseErr(absErr)
 	target.FileName = abs
 	// Open the input file
 	verbose("Opening input file...", "*")
-	file, fileErr := pe.Open(target.FileName)
-	parseErr(fileErr)
+	file, err := pe.Open(target.FileName)
+	parseErr(err)
 	analyze(file) // 10 steps
 	// Assemble the core amber payload
 	assemble() // 10 steps

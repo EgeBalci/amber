@@ -39,10 +39,7 @@ func createProgressBar() {
 
 func workdir(fileName string) string {
 	defer progress()
-	if runtime.GOOS == "windows" {
-		return os.Getenv("TEMP") + "\\" + md5sum(fileName)
-	}
-	return "/tmp/" + md5sum(fileName)
+	return os.TempDir() + "/" + md5sum(fileName)
 }
 
 func md5sum(str string) string {
@@ -191,14 +188,14 @@ func copyFile(src, dst string) {
 }
 
 func remove(file string) error {
-	err := os.RemoveAll(file)
 	defer progress()
-	return err
+	return os.RemoveAll(file)
 }
 
 func clean() {
 	if !target.debug {
-		remove(target.workdir)
+		os.Chdir(os.TempDir())
+		os.RemoveAll(target.workdir)
 	}
 }
 

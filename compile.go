@@ -45,7 +45,7 @@ func compile() {
 	if target.subsystem == 0x02 {
 		ldflags = `-ldflags=-s -H windowsgui`
 	}
-	build := exec.Command("go", "build", "-buildmode=exe", ldflags, "-o", target.FileName, ".")
+	build := exec.Command("go", "build", "-buildmode=exe", ldflags, "-o", "packed.exe", ".")
 	build.Env = os.Environ()
 	build.Env = append(build.Env, "GOOS=windows")
 	if target.arch == "x86" {
@@ -61,6 +61,7 @@ func compile() {
 	}
 	err = build.Run()
 	parseErr(err)
+	copyFile(target.workdir+"/packed.exe", target.FileName)
 	if !target.aslr {
 		//alignBase(target.FileName)
 	}
