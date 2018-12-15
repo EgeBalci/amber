@@ -1,11 +1,11 @@
 
 
-[![Banner](https://github.com/EgeBalci/Amber/raw/master/banner.png)](https://github.com/egebalci/Amber)
+[![Banner](https://github.com/EgeBalci/amber/raw/master/banner.png)](https://github.com/egebalci/amber)
 
-[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.10-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
+[![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](https://github.com/egebalci/amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/amber/master/LICENSE) [![Go Report Card](https://goreportcard.com/badge/github.com/egebalci/amber)](https://goreportcard.com/report/github.com/egebalci/amber) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
 
 
-Amber is a reflective PE packer for bypassing security products and mitigations. It can pack regularly compiled PE files into reflective payloads that can load and execute itself like a shellcode. It enables stealthy in-memory payload deployment that can be used to bypass anti-virus, firewall, IDS, IPS products and application white-listing mitigations.  If you want to learn more about the packing methodology used inside Amber check out below. For more detail about usage, installation and how to decrease detection rate check out [WIKI](https://github.com/EgeBalci/Amber/wiki).
+amber is a reflective PE packer for bypassing security products and mitigations. It can pack regularly compiled PE files into reflective payloads that can load and execute itself like a shellcode. It enables stealthy in-memory payload deployment that can be used to bypass anti-virus, firewall, IDS, IPS products and application white-listing mitigations.  If you want to learn more about the packing methodology used inside amber check out below. For more detail about usage, installation and how to decrease detection rate check out [WIKI](https://github.com/egebalci/amber/wiki).
 
 
 Developed By Ege Balcı from [INVICTUS](https://invictuseurope.com)/[PRODAFT](https://prodaft.com).
@@ -17,55 +17,33 @@ Developed By Ege Balcı from [INVICTUS](https://invictuseurope.com)/[PRODAFT](ht
 <a href="https://pentest.blog/introducing-new-packing-method-first-reflective-pe-packer" target="_blank">
 		<img height="250" align="left" src="https://pentest.blog/wp-content/uploads/68747470733a2f2f696d6167652e6962622e636f2f66426e51566d2f70656e746573745f626c6f67332e6a7067.jpeg" alt="DEMO1"  />
 </a>
-<a href="https://raw.githubusercontent.com/EgeBalci/Amber/master/PAPER.pdf"></a>
-<a href="https://github.com/EgeBalci/Amber/raw/master/PAPER.pdf">
+<a href="https://raw.githubusercontent.com/EgeBalci/amber/master/PAPER.pdf"></a>
+<a href="https://github.com/EgeBalci/amber/raw/master/PAPER.pdf">
 	<img align="right" src="https://pentest.blog/wp-content/uploads/pdf2.png"/>
 </a>
 
 <br><br><br><br><br><br><br><br>
 
-# INSTALLATION
+# DEPENDENCIES
 
+- [go](https://golang.org/dl/)
+- [NASM](https://www.nasm.us/)
+
+On *nix systems both of the dependencies can be installed with OS packet managers. (APT/PACMAN/YUM)
+
+# INSTALLATION
+Get one of the pre-build release [here](https://github.com/egebalci/amber/releases). Or get it with following alternatives.
+
+***GO (suggested)***
 ```
 go get github.com/egebalci/amber
 ```
-
-***SUPPORTED PLATFORMS:***
-<table>
-    <tr>
-        <th>Operating system</th>
-        <th>Tested Version</th>
-    </tr>
-    <tr>
-        <td>Ubuntu</td>
-        <td>16.04\17.04\17.08\18.04</td>
-    </tr>
-    <tr>
-        <td>Kali linux</td>
-        <td>2017.1\2018.1\2018.4</td>
-    </tr>
-    <tr>
-        <td>BlackArch</td>
-        <td> * </td>
-    </tr>
-    <tr>
-        <td>Arch Linux</td>
-        <td> * </td>
-    </tr>
-    <tr>
-        <td>Manjaro</td>
-        <td> * </td>
-    </tr>
-    <tr>
-        <td>Debian</td>
-        <td>9.2</td>
-    </tr>
-</table>
 
 ***BLACKARCH INSTALL***     
 ```
 sudo pacman -S amber
 ```
+
 ***DOCKER INSTALL***
 [![Docker](http://dockeri.co/image/egee/amber)](https://hub.docker.com/r/egee/amber/)
 
@@ -93,7 +71,7 @@ EXAMPLE:
   amber -k 8 file.exe
 ```
 
-***On Docker***
+***Docker Usage***
 ```
 docker run -it -v /tmp/:/tmp/ amber /tmp/file.exe
 ```
