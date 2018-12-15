@@ -1,7 +1,7 @@
 package main
 
 import (
-	//_ "./statik"
+	_ "github.com/egebalci/amber/statik"
 	"github.com/fatih/color"
 	pb "gopkg.in/cheggaaa/pb.v1"
 )
