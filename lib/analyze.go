@@ -3,7 +3,7 @@ package amber
 import (
 	"errors"
 
-	"github.com/EgeBalci/debug/pe"
+	pe "amber/debug/pe"
 )
 
 // Analyze returns a Blueprint structure for the given PE file name

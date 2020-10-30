@@ -29,9 +29,9 @@ func (bp *Blueprint) AssemblePayload() ([]byte, error) {
 	case 32:
 
 		if bp.HasRelocData {
-			stub = STUB32
+			stub = LoaderX86
 		} else {
-			stub = FIXED_STUB32
+			stub = FixedLoaderX86
 		}
 
 		if bp.IAT {
@@ -43,9 +43,9 @@ func (bp *Blueprint) AssemblePayload() ([]byte, error) {
 	case 64:
 
 		if bp.HasRelocData {
-			stub = STUB64
+			stub = LoaderX64
 		} else {
-			stub = FIXED_STUB64
+			stub = FixedLoaderX64
 		}
 
 		if bp.IAT {
@@ -58,7 +58,6 @@ func (bp *Blueprint) AssemblePayload() ([]byte, error) {
 
 	stub = strings.ReplaceAll(stub, ";", "\n;")
 	stub = strings.ReplaceAll(stub, "$+", "")
-	stub = strings.ReplaceAll(stub, "fs:", "fs+")
 	stubBin, ok := bp.Assemble(stub)
 	if !ok {
 		bp.printFaultingLine(stub)

@@ -1,7 +1,7 @@
 package amber
 
 import (
-	"github.com/EgeBalci/debug/pe"
+	pe "amber/debug/pe"
 
 	"github.com/EgeBalci/keystone-go"
 )

