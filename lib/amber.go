@@ -9,20 +9,12 @@ import (
 // VERSION number
 const VERSION = "3.0.0"
 
-// IMAGE_FILE_MACHINE_I386 Intel 386 or later processors and compatible processors
-const IMAGE_FILE_MACHINE_I386 = 0x14c
-
-// IMAGE_FILE_MACHINE_AMD64 x64
-const IMAGE_FILE_MACHINE_AMD64 = 0x8664
-const IMAGE_FILE_DLL = 0x2000
-
 // Blueprint structure contains PE specs, tool parameters and
 // OS spesific info
 type Blueprint struct {
 	// Parameters...
 	FileName        string
 	FileSize        int
-	Reflective      bool
 	IAT             bool
 	Resource        bool
 	ScrapePEHeaders bool

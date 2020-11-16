@@ -149,6 +149,7 @@ PE_start:
   xchg rbp,rsp                    ; Swap shadow stack
   mov r10d,0x975B539E             ; crc32("KERNEL32.dll", "FlushInstructionCache")
   call api_call                   ; FlushInstructionCache(0xffffffff,NULL,NULL);
+  xchg rbp,rsp                    ; Swap shadow stack
   add r13,r12                     ; Add the address of entry value to image base
   jmp r13                         ; Call the AOE
 

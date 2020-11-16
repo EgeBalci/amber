@@ -1,11 +1,11 @@
 package amber
 
-/*
 import (
+	pe "amber/debug/pe"
 	"bytes"
-	"math/rand"
-
-	"github.com/EgeBalci/debug/pe"
+	"encoding/binary"
+	"io/ioutil"
+	"os"
 )
 
 // CompileStub generates the final stub file with given payload
@@ -15,101 +15,83 @@ func (bp *Blueprint) CompileStub(payload []byte) ([]byte, error) {
 		err    error
 	)
 
-	switch bp.architecture {
-	case 32:
-		peFile, err = pe.NewFile(bytes.NewReader(PE_STUB32))
-	case 64:
-		peFile, err = pe.NewFile(bytes.NewReader(PE_STUB64))
-	}
-
+	tmpStub, err := ioutil.TempFile(os.TempDir(), "amber_")
 	if err != nil {
 		return nil, err
 	}
+	defer os.Remove(tmpStub.Name())
 
-	var entryPoint, sectionAlignment, fileAlignment, scAddr uint32
+	switch bp.Architecture {
+	case 32:
+		tmpStub.Write(PE_STUB32)
+	case 64:
+		tmpStub.Write(PE_STUB64)
+	}
+
+	tmpStubPE, err := pe.Open(tmpStub.Name())
+
+	var sizeOfImage, fileAlignment uint32
 	var imageBase uint64
 
-	lastSection := peFile.Sections[peFile.NumberOfSections-1]
+	lastSection := tmpStubPE.Sections[peFile.NumberOfSections-1]
 
-	switch hdr := (peFile.OptionalHeader).(type) {
+	switch hdr := (tmpStubPE.OptionalHeader).(type) {
 	case *pe.OptionalHeader32:
 		imageBase = uint64(hdr.ImageBase) // cast this back to a uint32 before use in 32bit
-		entryPoint = hdr.AddressOfEntryPoint
-		sectionAlignment = hdr.SectionAlignment
+		sizeOfImage = hdr.SizeOfImage
 		fileAlignment = hdr.FileAlignment
-		scAddr = align(lastSection.Size, fileAlignment, lastSection.Offset) //PointerToRawData
-		//shellcode = api.ApplySuffixJmpIntel32(shellcodeBytes, scAddr, entryPoint+uint32(imageBase), binary.LittleEndian)
-		break
 	case *pe.OptionalHeader64:
 		imageBase = hdr.ImageBase
-		entryPoint = hdr.AddressOfEntryPoint
-		sectionAlignment = hdr.SectionAlignment
+		sizeOfImage = hdr.SizeOfImage
 		fileAlignment = hdr.FileAlignment
-		scAddr = align(lastSection.Size, fileAlignment, lastSection.Offset) //PointerToRawData
-		//shellcode = api.ApplySuffixJmpIntel32(shellcodeBytes, scAddr, entryPoint+uint32(imageBase), binary.LittleEndian)
-		break
 	}
 
-	newsection := new(pe.Section)
-	newsection.Name = "." + randomString(rand.Intn(5)+1)
-	o := []byte(newsection.Name)
-	newsection.OriginalName = [8]byte{o[0], o[1], o[2], o[3], o[4], o[5], 0, 0}
-	newsection.VirtualSize = uint32(len(payload))
-	newsection.VirtualAddress = align(lastSection.VirtualSize, sectionAlignment, lastSection.VirtualAddress)
-	newsection.Size = align(uint32(len(payload)), fileAlignment, 0)                //SizeOfRawData
-	newsection.Offset = align(lastSection.Size, fileAlignment, lastSection.Offset) //PointerToRawData
-	newsection.Characteristics = pe.IMAGE_SCN_CNT_CODE | pe.IMAGE_SCN_MEM_EXECUTE | pe.IMAGE_SCN_MEM_READ
+	newSectionName := "." + randomString(7)
+	final := bytes.Replace(PE_STUB32, []byte(lastSection.Name), []byte(newSectionName), 1)
+	oldBytes := make([]byte, 4)
+	newBytes := make([]byte, 4)
 
-	peFile.InsertionAddr = scAddr
-	peFile.InsertionBytes = payload
-
-	switch hdr := (peFile.OptionalHeader).(type) {
-	case *pe.OptionalHeader32:
-		v := newsection.VirtualSize
-		if v == 0 {
-			v = newsection.Size // SizeOfRawData
-		}
-		hdr.SizeOfImage = align(v, sectionAlignment, newsection.VirtualAddress)
-		//hdr.AddressOfEntryPoint = bp.addressOfEntryPoint
-		hdr.CheckSum = 0
-		// disable ASLR
-		//hdr.DllCharacteristics ^= pe.IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE
-		//hdr.DataDirectory[5].VirtualAddress = 0
-		//hdr.DataDirectory[5].Size = 0
-		//peFile.FileHeader.Characteristics |= pe.IMAGE_FILE_RELOCS_STRIPPED
-		//disable DEP
-		//hdr.DllCharacteristics ^= pe.IMAGE_DLLCHARACTERISTICS_NX_COMPAT
-		// zero out cert table offset and size
-		//hdr.DataDirectory[4].VirtualAddress = 0
-		//hdr.DataDirectory[4].Size = 0
-		break
-	case *pe.OptionalHeader64:
-		v := newsection.VirtualSize
-		if v == 0 {
-			v = newsection.Size // SizeOfRawData
-		}
-		hdr.SizeOfImage = align(v, sectionAlignment, newsection.VirtualAddress)
-		//hdr.AddressOfEntryPoint = bp.addressOfEntryPoint
-		hdr.CheckSum = 0
-		// disable ASLR
-		//hdr.DllCharacteristics ^= pe.IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE
-		//hdr.DataDirectory[5].VirtualAddress = 0
-		//hdr.DataDirectory[5].Size = 0
-		//peFile.FileHeader.Characteristics |= pe.IMAGE_FILE_RELOCS_STRIPPED
-		//disable DEP
-		//hdr.DllCharacteristics ^= pe.IMAGE_DLLCHARACTERISTICS_NX_COMPAT
-		// zero out cert table offset and size
-		//hdr.DataDirectory[4].VirtualAddress = 0
-		//hdr.DataDirectory[4].Size = 0
-		break
+	switch bp.Architecture {
+	case 32:
+		// Change ImageBase
+		binary.LittleEndian.PutUint32(oldBytes, uint32(imageBase))
+		binary.LittleEndian.PutUint32(newBytes, uint32(bp.ImageBase))
+		final = bytes.Replace(PE_STUB32, oldBytes, newBytes, 1)
+		// Change SizeOfImage
+		binary.LittleEndian.PutUint32(oldBytes, uint32(sizeOfImage))
+		binary.LittleEndian.PutUint32(newBytes, uint32(bp.SizeOfImage))
+		final = bytes.Replace(PE_STUB32, oldBytes, newBytes, 1)
+		// Change SectionSize
+		binary.LittleEndian.PutUint32(oldBytes, uint32(lastSection.Size))
+		binary.LittleEndian.PutUint32(newBytes, uint32(align(uint32(len(payload)), fileAlignment, 0)))
+		final = bytes.Replace(PE_STUB32, oldBytes, newBytes, 1)
+		// Change SectionVirtualSize
+		binary.LittleEndian.PutUint32(oldBytes, uint32(lastSection.VirtualSize))
+		binary.LittleEndian.PutUint32(newBytes, uint32(len(payload)))
+		final = bytes.Replace(PE_STUB32, oldBytes, newBytes, 1)
+	case 64:
+		// Change ImageBase
+		binary.LittleEndian.PutUint32(oldBytes, uint32(imageBase))
+		binary.LittleEndian.PutUint32(newBytes, uint32(bp.ImageBase))
+		final = bytes.Replace(PE_STUB32, oldBytes, newBytes, 1)
+		// Change SizeOfImage
+		binary.LittleEndian.PutUint32(oldBytes, uint32(sizeOfImage))
+		binary.LittleEndian.PutUint32(newBytes, uint32(bp.SizeOfImage))
+		final = bytes.Replace(PE_STUB32, oldBytes, newBytes, 1)
+		// Change SectionSize
+		binary.LittleEndian.PutUint32(oldBytes, uint32(lastSection.Size))
+		binary.LittleEndian.PutUint32(newBytes, uint32(align(uint32(len(payload)), fileAlignment, 0)))
+		final = bytes.Replace(PE_STUB32, oldBytes, newBytes, 1)
+		// Change SectionVirtualSize
+		binary.LittleEndian.PutUint32(oldBytes, uint32(lastSection.VirtualSize))
+		binary.LittleEndian.PutUint32(newBytes, uint32(len(payload)))
+		final = bytes.Replace(PE_STUB32, oldBytes, newBytes, 1)
 	}
 
-	peFile.FileHeader.NumberOfSections++
-	peFile.Sections = append(peFile.Sections, newsection)
-
-	return peFile.Bytes()
+	return final, nil
 }
 
+/*
 // func setSizeOfImage(fileName string, newSizeOfImage uint64) {
 // 	verbose("Aligning SizeOfImage...", "*")
 // 	rawFile, err := ioutil.ReadFile(fileName)
@@ -175,11 +157,11 @@ func (bp *Blueprint) CompileStub(payload []byte) ([]byte, error) {
 // 	}
 // }
 
+*/
+
 func align(size, align, addr uint32) uint32 {
 	if 0 == (size % align) {
 		return addr + size
 	}
 	return addr + (size/align+1)*align
 }
-
-*/

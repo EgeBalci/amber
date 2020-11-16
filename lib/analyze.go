@@ -19,9 +19,9 @@ func Analyze(fileName string) (*Blueprint, error) {
 	new.FileName = fileName
 	// Set architecture
 	switch peFile.FileHeader.Machine {
-	case IMAGE_FILE_MACHINE_I386:
+	case pe.IMAGE_FILE_MACHINE_I386:
 		new.Architecture = 32
-	case IMAGE_FILE_MACHINE_AMD64:
+	case pe.IMAGE_FILE_MACHINE_AMD64:
 		new.Architecture = 64
 	default:
 		return nil, errors.New("file architecture not supported")
@@ -34,7 +34,7 @@ func Analyze(fileName string) (*Blueprint, error) {
 		new.Subsystem = hdr.Subsystem
 		new.SizeOfImage = hdr.SizeOfImage
 
-		new.IsDLL = peFile.Characteristics == (peFile.Characteristics | IMAGE_FILE_DLL)
+		new.IsDLL = peFile.Characteristics == (peFile.Characteristics | pe.IMAGE_FILE_DLL)
 		new.HasRelocData = hdr.DataDirectory[5].Size != 0x00
 		new.HasBoundedImports = hdr.DataDirectory[11].Size != 0x00
 		new.HasDelayedImports = hdr.DataDirectory[13].Size != 0x00
@@ -50,7 +50,7 @@ func Analyze(fileName string) (*Blueprint, error) {
 		new.Subsystem = hdr.Subsystem
 		new.SizeOfImage = hdr.SizeOfImage
 
-		new.IsDLL = peFile.Characteristics == (peFile.Characteristics | IMAGE_FILE_DLL)
+		new.IsDLL = peFile.Characteristics == (peFile.Characteristics | pe.IMAGE_FILE_DLL)
 		new.HasRelocData = hdr.DataDirectory[5].Size != 0x00
 		new.HasBoundedImports = hdr.DataDirectory[11].Size != 0x00
 		new.HasDelayedImports = hdr.DataDirectory[13].Size != 0x00

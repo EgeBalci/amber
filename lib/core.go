@@ -3,7 +3,8 @@ package amber
 const LoaderX64 = `
 start:
   pop rsi                         ; Get the address of image to rsi
-  call $+5                        ; Push the current RIP value to stack
+  call get_ip                     ; Push the current EIP to stack
+get_ip:
   cld                             ; Clear direction flags
   sub [rsp],rsi                   ; Subtract the address of pre mapped PE image and get the image_size+8 to ST[0]
   mov rbp,rsp                     ; Copy current stack address to rbp
@@ -141,6 +142,7 @@ PE_start:
   xchg rbp,rsp                    ; Swap shadow stack
   mov r10d,0x975B539E             ; crc32("KERNEL32.dll", "FlushInstructionCache")
   call api_call                   ; FlushInstructionCache(0xffffffff,NULL,NULL);
+  xchg rbp,rsp                    ; Swap shadow stack
   add r13,r12                     ; Add the address of entry value to image base
   jmp r13                         ; Call the AOE
 
@@ -150,7 +152,8 @@ const LoaderX86 = `
 start:
   cld                     ; Clear direction flags
   pop esi                 ; Get the address of image to esi
-  call $+5                ; Push the current EIP to stack
+  call get_ip             ; Push the current EIP to stack
+get_ip:
   sub [esp],esi           ; Subtract &PE from EIP and get image_size
   mov eax,[esi+0x3C]      ; Get the offset of "PE" to eax
   mov ebx,[eax+esi+0x34]  ; Get the image base address to ebx
@@ -292,7 +295,8 @@ PE_Start:
 const FixedLoaderX64 = `
 start:
 	pop rsi                         ; Get the address of image to rsi
-	call $+5
+  call get_ip                     ; Push the current EIP to stack
+get_ip:
 	sub [rsp],rsi                   ; Subtract the address of pre mapped PE image and get the image_size to R11
 	mov rbp,rsp                     ; Copy current stack address to rbp
 	and rbp,-0x1000                 ; Create a new shadow stack address
@@ -390,7 +394,8 @@ const FixedLoaderX86 = `
 start:                    ;
   cld                     ; Clear direction flags
   pop esi                 ; Get the address of image to esi
-  call $+5                ; Push the current EIP to stack
+  call get_ip             ; Push the current EIP to stack
+get_ip:
   sub [esp],esi           ; Subtract &PE from EIP and get image_size
   mov eax,[esi+0x3C]      ; Get the offset of "PE" to eax
   mov ebx,[eax+esi+0x34]  ; Get the image base address to ebx
@@ -524,12 +529,12 @@ not_lowercase:             ;
   mov rdx, [rdx+0x20]      ; Get this modules base address
   mov eax, dword [rdx+0x3C]; Get PE header
   add rax, rdx             ; Add the modules base address
-  cmp word [rax+24],0x020B ; is this module actually a PE64 executable? 
+  cmp word [rax+0x18],0x020B ; is this module actually a PE64 executable? 
   ; this test case covers when running on wow64 but in a native x64 context via nativex64.asm and 
   ; their may be a PE32 module present in the PEB's module list, (typicaly the main module).
   ; as we are using the win64 PEB ([gs:96]) we wont see the wow64 modules present in the win32 PEB ([fs:48])
   jne get_next_mod1        ; if not, proceed to the next module
-  mov eax, dword [rax+136] ; Get export tables RVA
+  mov eax, dword [rax+0x88] ; Get export tables RVA
   test rax, rax            ; Test if no export address table is present
   jz get_next_mod1         ; If no EAT present, process the next module
   add rax, rdx             ; Add the modules base address
@@ -572,7 +577,7 @@ finish:
   pop r8                   ; Restore the 3rd parameter
   pop r9                   ; Restore the 4th parameter
   pop r10                  ; Pop off the return address
-  sub rsp, 32              ; Reserve space for the four register params (4 * sizeof(QWORD) = 32)
+  sub rsp, 0x20            ; Reserve space for the four register params (4 * sizeof(QWORD) = 32)
                            ; It is the callers responsibility to restore RSP if need be (or alloc more space or align RSP).
   push r10                 ; Push back the return address
   jmp rax                  ; Jump to required function
@@ -781,7 +786,7 @@ api_call:
 	add rdx,[rsp]           ; Address of Import Table
 	push rdx                ; Save the &IT to stack (will use this alot)
  	mov rsi,[rsp+8]         ; Move the image base to RSI
-	sub rsp,16              ; Allocate space for import descriptor counter & hash
+	sub rsp,0x10            ; Allocate space for import descriptor counter & hash
 	sub rdx,0x14            ; Prepare import descriptor pointer for processing
 next_desc:
 	add rdx,0x14            ; Get the next import descriptor

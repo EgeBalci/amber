@@ -9,7 +9,9 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 
+	"github.com/briandowns/spinner"
 	sgn "github.com/egebalci/sgn/lib"
 	"github.com/fatih/color"
 )
@@ -23,15 +25,16 @@ var red = color.New(color.FgRed).Add(color.Bold)
 var blue = color.New(color.FgBlue).Add(color.Bold)
 var green = color.New(color.FgGreen).Add(color.Bold)
 var yellow = color.New(color.FgYellow).Add(color.Bold)
+var spinr = spinner.New(spinner.CharSets[9], 50*time.Millisecond)
 
 func main() {
 
 	banner()
+	file := flag.String("f", "", "Input PE file")
 	encount := flag.Int("e", 1, "Number of times to encode the binary (increases overall size)")
-	reflective := flag.Bool("r", false, "Generated a reflective payload")
+	buildStub := flag.Bool("build", false, "Build EXE stub for executing the reflective payload")
 	iat := flag.Bool("iat", false, "Use IAT API resolver block instead of CRC API resolver")
-	//verbose := flag.Bool("v", false, "Verbose output mode")
-	ignoreIntegrity := flag.Bool("ignore-integrity", false, "Ignore integrity check errors.")
+	ignoreIntegrity := flag.Bool("ignore-checks", false, "Ignore integrity check errors.")
 	flag.Parse()
 
 	if len(os.Args) < 2 {
@@ -39,15 +42,12 @@ func main() {
 		os.Exit(0)
 	}
 
-	ARGS := flag.Args()
 	// Get the absolute path of the file
-	abs, err := filepath.Abs(ARGS[(len(ARGS) - 1)])
-	eror(err)
-	bp, err := amber.Analyze(abs)
+	abs, err := filepath.Abs(*file)
 	eror(err)
 
 	status("File: %s\n", abs)
-	status("Reflective: %t\n", *reflective)
+	status("Build Stub: %t\n", *buildStub)
 	status("Encode Count: %d\n", *encount)
 	if bp.IAT {
 		status("API: IAT\n")
@@ -55,67 +55,62 @@ func main() {
 		status("API: CRC\n")
 	}
 
+	spinr.Start()
+	spinr.Suffix = " Analyzing PE file..."
+	bp, err := amber.Analyze(abs)
+	eror(err)
 	bp.EncodeCount = *encount
-	bp.Reflective = *reflective
 	bp.IAT = *iat
 	bp.IgnoreIntegrity = *ignoreIntegrity
 
+	spinr.Suffix = " Assembling reflective payload..."
 	payload, err := bp.AssemblePayload()
 	eror(err)
 
-	// Create a new SGN encoder
-	encoder := sgn.NewEncoder()
-	encoder.SetArchitecture(bp.Architecture)
-
-	for i := 0; i < bp.EncodeCount; i++ {
-		// Encode the binary
+	if *encount > 0 {
+		spinr.Suffix = " Encoding reflective payload..."
+		// Create a new SGN encoder
+		encoder := sgn.NewEncoder()
+		encoder.SetArchitecture(bp.Architecture)
+		encoder.EncodingCount = *encount
 		encodedPayload, err := encoder.Encode(payload)
 		eror(err)
 		payload = encodedPayload
 	}
 
-	if bp.Reflective {
+	if !*buildStub {
 		bp.FileName += ".bin"
-		file, err := os.Create(bp.FileName)
-		eror(err)
-		file.Write(payload)
-		defer file.Close()
 	} else {
-		backupFile(bp.FileName)
-		file, err := os.Create(bp.FileName)
+		// Construct EXE stub
+		spinr.Suffix = " Building EXE stub..."
+		payload, err = bp.CompileStub(payload)
 		eror(err)
-		file.Write(payload)
-		defer file.Close()
+		bp.FileName = "packed_" + bp.FileName
 	}
+	spinr.Stop()
+	outFile, err := os.Create(bp.FileName)
+	eror(err)
+	outFile.Write(payload)
+	defer outFile.Close()
 
 	finSize, err := amber.GetFileSize(bp.FileName)
 	eror(err)
-
 	status("Final Size: %d bytes\n", finSize)
-	if bp.Reflective {
-		green.Println("[✔] Reflective stub generated !\n")
-	} else {
-		green.Println("[✔] File successfully packed !\n")
-	}
+	green.Println("[✔] Reflective stub generated !\n")
 
-}
-
-func backupFile(fileName string) {
-	err := os.Rename(fileName, fileName+".bak")
-	eror(err)
 }
 
 // BANNER .
 const BANNER string = `
 
-//   █████╗ ███╗   ███╗██████╗ ███████╗██████╗ 
-//  ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗
-//  ███████║██╔████╔██║██████╔╝█████╗  ██████╔╝
-//  ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
-//  ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
-//  ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
-//  Reflective PE Packer ☣ by EGE BALCI %s
-//  >> %s <<
+//       █████╗ ███╗   ███╗██████╗ ███████╗██████╗ 
+//      ██╔══██╗████╗ ████║██╔══██╗██╔════╝██╔══██╗
+//      ███████║██╔████╔██║██████╔╝█████╗  ██████╔╝
+//      ██╔══██║██║╚██╔╝██║██╔══██╗██╔══╝  ██╔══██╗
+//      ██║  ██║██║ ╚═╝ ██║██████╔╝███████╗██║  ██║
+//      ╚═╝  ╚═╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝
+//  Reflective PE Packer ☣ Copyright (c) 2017 EGE BALCI
+//      %s - %s
 
 `
 
@@ -130,6 +125,9 @@ func status(formatstr string, a ...interface{}) {
 
 func eror(err error) {
 	if err != nil {
+		if spinr.Active() {
+			spinr.Stop()
+		}
 		pc, _, _, ok := runtime.Caller(1)
 		details := runtime.FuncForPC(pc)
 		if ok && details != nil {
