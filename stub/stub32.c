@@ -2,21 +2,17 @@
 
 int main(int argc, char const *argv[])
 {
-
-    LoadLibrary("USER32.dll");
     PIMAGE_DOS_HEADER dosHeader = {};
     PIMAGE_SECTION_HEADER sectionHeader = {};
-    PIMAGE_NT_HEADERS64 imageNTHeaders = {};
+    PIMAGE_NT_HEADERS imageNTHeaders = {};
 
     LPVOID moduleHandle = GetModuleHandle(NULL);
     if (moduleHandle == NULL)
-    {
         return 1;
-    }
 
     dosHeader = (PIMAGE_DOS_HEADER)moduleHandle;
-    imageNTHeaders = (PIMAGE_NT_HEADERS64)(moduleHandle + dosHeader->e_lfanew);
-    __int64 sectionLocation = (__int64)((__int64)(&imageNTHeaders->OptionalHeader) + (WORD)imageNTHeaders->FileHeader.SizeOfOptionalHeader);
+    imageNTHeaders = (PIMAGE_NT_HEADERS)((DWORD)moduleHandle + dosHeader->e_lfanew);
+    DWORD sectionLocation = (DWORD) & (imageNTHeaders->OptionalHeader) + (WORD)imageNTHeaders->FileHeader.SizeOfOptionalHeader;
     DWORD sectionSize = (DWORD)sizeof(IMAGE_SECTION_HEADER);
 
     for (int i = 0; i < imageNTHeaders->FileHeader.NumberOfSections; i++)

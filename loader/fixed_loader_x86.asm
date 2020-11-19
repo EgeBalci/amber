@@ -22,7 +22,7 @@ start:                    ;
   push ebx                ; Save image base to stack
   push 0x00000000         ; Allocate a DWORD variable inside stack
   push esp                ; lpflOldProtect
-  push byte 0x40          ; PAGE_EXECUTE_READWRITE
+  push 0x40               ; PAGE_EXECUTE_READWRITE
   push dword [esp+0x14]   ; dwSize
   push ebx                ; lpAddress
   push 0x80886EF1         ; crc32( "kernel32.dll", "VirtualProtect" )

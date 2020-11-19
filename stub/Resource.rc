@@ -1,5 +1,3 @@
-0 RCDATA "payload"
-1 RCDATA "payload.key"
 id ICON "amber.ico"
 2 VERSIONINFO
 FILEVERSION     2,1,0,0
@@ -9,14 +7,14 @@ BEGIN
   BEGIN
     BLOCK "080904E4"
     BEGIN
-      VALUE "CompanyName", "INVICTUS/PRODAFT"
-      VALUE "FileDescription", "Amber Reflective PE Packer"
+      VALUE "CompanyName", "PRODAFT"
+      VALUE "FileDescription", "Amber - Reflective PE Packer"
       VALUE "FileVersion", "2.1"
-      VALUE "InternalName", "Amber"
+      VALUE "InternalName", "AMBER"
       VALUE "LegalCopyright", "Ege Balci"
       VALUE "OriginalFilename", "amber.exe"
-      VALUE "ProductName", "Amber"
-      VALUE "ProductVersion", "2.1.0"
+      VALUE "ProductName", "AMBER - Reflective PE Packer"
+      VALUE "ProductVersion", "3.0.0"
     END
   END
   BLOCK "VarFileInfo"

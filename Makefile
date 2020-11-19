@@ -11,4 +11,4 @@ windows_amd64:
 windows_386:
 	GOOS=windows GOARCH=386 CGO_ENABLED=1 CGO_LDFLAGS="-lkeystone -L`pwd`/build/lib32/" CXX=i686-w64-mingw32-g++ CC=i686-w64-mingw32-gcc go build -ldflags="-s -w" -trimpath -o amber32.exe
 darwin:
-	GOOS=darwin CGO_ENABLED=1 CGO_LDFLAGS="-lkeystone -L/usr/lib/" go build -ldflags="-s -w" -trimpath -o amber
+	GOOS=darwin CGO_ENABLED=1 CGO_LDFLAGS="-lkeystone -L`pwd`/build/lib/" go build -ldflags="-s -w" -trimpath -o amber

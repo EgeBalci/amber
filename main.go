@@ -37,7 +37,7 @@ func main() {
 	ignoreIntegrity := flag.Bool("ignore-checks", false, "Ignore integrity check errors.")
 	flag.Parse()
 
-	if len(os.Args) < 2 {
+	if *file == "" {
 		flag.PrintDefaults()
 		os.Exit(0)
 	}
@@ -46,6 +46,7 @@ func main() {
 	abs, err := filepath.Abs(*file)
 	eror(err)
 
+	spinr.Start()
 	status("File: %s\n", abs)
 	status("Build Stub: %t\n", *buildStub)
 	status("Encode Count: %d\n", *encount)
@@ -55,10 +56,10 @@ func main() {
 		status("API: CRC\n")
 	}
 
-	spinr.Start()
 	spinr.Suffix = " Analyzing PE file..."
 	bp, err := amber.Analyze(abs)
 	eror(err)
+	status("Relocation Data: %t\n", bp.HasRelocData)
 	bp.EncodeCount = *encount
 	bp.IAT = *iat
 	bp.IgnoreIntegrity = *ignoreIntegrity
@@ -73,9 +74,8 @@ func main() {
 		encoder := sgn.NewEncoder()
 		encoder.SetArchitecture(bp.Architecture)
 		encoder.EncodingCount = *encount
-		encodedPayload, err := encoder.Encode(payload)
+		payload, err = encoder.Encode(payload)
 		eror(err)
-		payload = encodedPayload
 	}
 
 	if !*buildStub {
@@ -85,7 +85,7 @@ func main() {
 		spinr.Suffix = " Building EXE stub..."
 		payload, err = bp.CompileStub(payload)
 		eror(err)
-		bp.FileName = "packed_" + bp.FileName
+		bp.FileName = strings.ReplaceAll(bp.FileName, ".", "_packed.")
 	}
 	spinr.Stop()
 	outFile, err := os.Create(bp.FileName)
@@ -119,6 +119,12 @@ func banner() {
 }
 
 func status(formatstr string, a ...interface{}) {
+	if spinr.Active() {
+		spinr.Stop()
+		status(formatstr, a...)
+		spinr.Start()
+		return
+	}
 	yellow.Print("[*] ")
 	fmt.Printf(formatstr, a...)
 }
