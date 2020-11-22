@@ -19,6 +19,11 @@
 
 .idea
 
+# vscode debug configs
+.vscode
+.vscode/*
+
 # BUILDS
 build
+stub/*.exe
 amber

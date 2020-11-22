@@ -1,7 +1,7 @@
 package amber
 
 import (
-	pe "amber/debug/pe"
+	pe "github.com/EgeBalci/debug/pe"
 
 	"github.com/EgeBalci/keystone-go"
 )
@@ -14,13 +14,13 @@ const VERSION = "3.0.0"
 type Blueprint struct {
 	// Parameters...
 	FileName        string
+	FullFileName    string
 	FileSize        int
 	IAT             bool
 	Resource        bool
-	ScrapePEHeaders bool
 	IgnoreIntegrity bool
-	EncodeCount     int
-
+	CustomStubName  string
+	CustomStub      []byte
 	// PE specs...
 	Architecture      int
 	SizeOfImage       uint32

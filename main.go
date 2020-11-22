@@ -1,7 +1,6 @@
 package main
 
 import (
-	amber "amber/lib"
 	"flag"
 	"fmt"
 	"log"
@@ -11,92 +10,88 @@ import (
 	"strings"
 	"time"
 
+	amber "github.com/EgeBalci/amber/pkg"
+	sgn "github.com/EgeBalci/sgn/lib"
 	"github.com/briandowns/spinner"
-	sgn "github.com/egebalci/sgn/lib"
 	"github.com/fatih/color"
 )
 
-func init() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-}
-
-var bp amber.Blueprint
-var red = color.New(color.FgRed).Add(color.Bold)
-var blue = color.New(color.FgBlue).Add(color.Bold)
-var green = color.New(color.FgGreen).Add(color.Bold)
-var yellow = color.New(color.FgYellow).Add(color.Bold)
-var spinr = spinner.New(spinner.CharSets[9], 50*time.Millisecond)
+// Set globals...
+var spinr = spinner.New(spinner.CharSets[9], 30*time.Millisecond)
 
 func main() {
 
 	banner()
-	file := flag.String("f", "", "Input PE file")
-	encount := flag.Int("e", 1, "Number of times to encode the binary (increases overall size)")
-	buildStub := flag.Bool("build", false, "Build EXE stub for executing the reflective payload")
-	iat := flag.Bool("iat", false, "Use IAT API resolver block instead of CRC API resolver")
-	ignoreIntegrity := flag.Bool("ignore-checks", false, "Ignore integrity check errors.")
+	bp := new(amber.Blueprint)
+	encoder := sgn.NewEncoder()
+
+	flag.StringVar(&bp.FileName, "f", "", "Input PE file")
+	flag.BoolVar(&bp.IAT, "iat", false, "Use IAT API resolver block instead of CRC API resolver block")
+	flag.BoolVar(&bp.IgnoreIntegrity, "ignore-checks", false, "Ignore integrity check errors.")
+	flag.StringVar(&bp.CustomStubName, "stub", "", "Use custom stub file (experimental)")
+	flag.IntVar(&encoder.ObfuscationLimit, "max", 5, "Maximum number of bytes for obfuscation")
+	flag.IntVar(&encoder.EncodingCount, "e", 1, "Number of times to encode the generated reflective payload")
+	buildStub := flag.Bool("build", false, "Build EXE stub that executes the generated reflective payload")
+
+	green := color.New(color.FgGreen).Add(color.Bold)
 	flag.Parse()
 
-	if *file == "" {
+	if bp.FileName == "" {
 		flag.PrintDefaults()
 		os.Exit(0)
 	}
 
-	// Get the absolute path of the file
-	abs, err := filepath.Abs(*file)
-	eror(err)
-
 	spinr.Start()
-	status("File: %s\n", abs)
+	status("File: %s\n", bp.FileName)
 	status("Build Stub: %t\n", *buildStub)
-	status("Encode Count: %d\n", *encount)
+	status("Encode Count: %d\n", encoder.EncodingCount)
 	if bp.IAT {
 		status("API: IAT\n")
 	} else {
 		status("API: CRC\n")
 	}
-
+	// First analyze PE and generate a blueprint
 	spinr.Suffix = " Analyzing PE file..."
-	bp, err := amber.Analyze(abs)
-	eror(err)
-	status("Relocation Data: %t\n", bp.HasRelocData)
-	bp.EncodeCount = *encount
-	bp.IAT = *iat
-	bp.IgnoreIntegrity = *ignoreIntegrity
-
+	eror(bp.Analyze())
+	if !bp.HasRelocData {
+		statusBad("%s has no relocation data.\n", bp.FileName)
+		if bp.ImageBase != 0x400000 {
+			statusBad("Can't switch to fixed address loader because ImageBase mismatch!\n")
+		}
+		status("Switching to fixed address loader...\n")
+	}
 	spinr.Suffix = " Assembling reflective payload..."
 	payload, err := bp.AssemblePayload()
 	eror(err)
 
-	if *encount > 0 {
+	if encoder.EncodingCount > 0 {
 		spinr.Suffix = " Encoding reflective payload..."
-		// Create a new SGN encoder
-		encoder := sgn.NewEncoder()
 		encoder.SetArchitecture(bp.Architecture)
-		encoder.EncodingCount = *encount
 		payload, err = encoder.Encode(payload)
 		eror(err)
 	}
 
 	if !*buildStub {
-		bp.FileName += ".bin"
+		bp.FullFileName += ".bin"
 	} else {
 		// Construct EXE stub
 		spinr.Suffix = " Building EXE stub..."
 		payload, err = bp.CompileStub(payload)
 		eror(err)
-		bp.FileName = strings.ReplaceAll(bp.FileName, ".", "_packed.")
+
+		bp.FullFileName = strings.ReplaceAll(bp.FullFileName, filepath.Ext(bp.FullFileName), "_packed.exe")
 	}
 	spinr.Stop()
-	outFile, err := os.Create(bp.FileName)
+	outFile, err := os.Create(bp.FullFileName)
 	eror(err)
 	outFile.Write(payload)
 	defer outFile.Close()
 
-	finSize, err := amber.GetFileSize(bp.FileName)
+	finSize, err := amber.GetFileSize(bp.FullFileName)
 	eror(err)
 	status("Final Size: %d bytes\n", finSize)
-	green.Println("[✔] Reflective stub generated !\n")
+	status("Build File: %s\n", bp.FileName)
+	green.Println("[✔] Reflective PE generated !")
 
 }
 
@@ -115,18 +110,31 @@ const BANNER string = `
 `
 
 func banner() {
+	green := color.New(color.FgGreen).Add(color.Bold)
+	red := color.New(color.FgRed).Add(color.Bold)
+	blue := color.New(color.FgBlue).Add(color.Bold)
 	red.Printf(BANNER, green.Sprintf("v%s", amber.VERSION), blue.Sprintf("https://github.com/egebalci/amber"))
 }
 
 func status(formatstr string, a ...interface{}) {
 	if spinr.Active() {
 		spinr.Stop()
-		status(formatstr, a...)
-		spinr.Start()
-		return
 	}
+	yellow := color.New(color.FgYellow).Add(color.Bold)
 	yellow.Print("[*] ")
 	fmt.Printf(formatstr, a...)
+	spinr.Start()
+}
+
+func statusBad(formatstr string, a ...interface{}) {
+	if spinr.Active() {
+		spinr.Stop()
+	}
+	red := color.New(color.FgRed).Add(color.Bold)
+	white := color.New(color.FgWhite).Add(color.Bold)
+	red.Print("[!] ")
+	white.Printf(formatstr, a...)
+	spinr.Start()
 }
 
 func eror(err error) {
@@ -134,6 +142,7 @@ func eror(err error) {
 		if spinr.Active() {
 			spinr.Stop()
 		}
+		red := color.New(color.FgRed).Add(color.Bold)
 		pc, _, _, ok := runtime.Caller(1)
 		details := runtime.FuncForPC(pc)
 		if ok && details != nil {
