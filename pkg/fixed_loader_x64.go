@@ -1,16 +1,11 @@
-;#==============================================#
-;# X64 Fixed Reflective Loader (No relocation)  #
-;# Author: Ege Balcı <egebalci@pm.me>           #
-;# Version: 1.1                                 #
-;#==============================================#
+package amber
 
-[BITS 64]
-
-	call start                      ; Get the address of pre-mapped PE image to stack
-	incbin "pemap.bin"              ; Pre-mapped PE image
+// FixedLoaderX64 contains the 64 bit PE loader for non-relocatable PE files
+const FixedLoaderX64 = `
 start:
 	pop rsi                         ; Get the address of image to rsi
-	call $+5
+  call get_ip                     ; Push the current EIP to stack
+get_ip:
 	sub [rsp],rsi                   ; Subtract the address of pre mapped PE image and get the image_size to R11
 	mov rbp,rsp                     ; Copy current stack address to rbp
 	and rbp,-0x1000                 ; Create a new shadow stack address
@@ -96,16 +91,13 @@ complete:
 	add [rsp],r12                   ; Add the address of entry value to new base address
 memcpy:	
 	mov al,[rsi]                    ; Move 1 byte of PE image to AL register
-	mov byte [rbx],al               ; Move 1 byte of PE image to image base
-	mov byte [rsi],0                ; Overwrite copied byte (for less memory footprint)
+  mov byte [rbx],al               ; Move 1 byte of PE image to image base
+  mov byte [rsi],0                ; Overwrite copied byte (for less memory footprint)
 	inc rsi                         ; Increase PE image index
 	inc rbx                         ; Increase image base index
 	loop memcpy                     ; Loop until zero
-	jmp PE_start
-
-; ========== API ==========
-%include "CRC32_API/x64_crc32_api.asm"
-
+  jmp PE_start                    ; Wipe artifacts from memory and start PE
+%s
 PE_start:
   mov rcx,wipe                    ; Get the number of bytes until wipe label
   lea rax,[rip]                   ; Get RIP to RAX
@@ -114,4 +106,7 @@ wipe:
   mov byte [rax],0                ; Wipe 1 byte at a time
   dec rax                         ; Decraise RAX
   loop wipe                       ; Loop until RCX = 0
+%s
   ret                             ; Return to AOE
+
+`

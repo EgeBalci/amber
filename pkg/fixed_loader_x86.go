@@ -1,19 +1,12 @@
-;#==================================================#
-;# x86 Fixed Address Reflective Stub (no relocation)# 
-;# Author: Ege Balcı <egebalci@pm.me>               #
-;# Version: 2.0                                     #
-;#==================================================#
+package amber
 
-[BITS 32]
-[ORG 0]
-
-
-  call start              ; Get the address of pre-mapped PE image to stack
-  incbin "pemap.bin"      ; Pre-mapped PE image
+// FixedLoaderX86 contains the 64 bit PE loader for non-relocatable PE files
+const FixedLoaderX86 = `
 start:                    ;
   cld                     ; Clear direction flags
   pop esi                 ; Get the address of image to esi
-  call $+5                ; Push the current EIP to stack
+  call get_ip             ; Push the current EIP to stack
+get_ip:
   sub [esp],esi           ; Subtract &PE from EIP and get image_size
   mov eax,[esi+0x3C]      ; Get the offset of "PE" to eax
   mov ebx,[eax+esi+0x34]  ; Get the image base address to ebx
@@ -107,22 +100,22 @@ complete:
 memcpy:
   mov al,[esi]            ; Move 1 byte of PE image to AL register
   mov byte [edx],al       ; Move 1 byte of PE image to image base
-  mov byte [esi],0        ; Overwrite copied byte (for less memory footprint)
+  mov byte [esi],0        ; Overwrite copied byte (for less memory footprint) 
   inc esi                 ; Increase PE image index
   inc edx                 ; Increase image base index
   loop memcpy             ; Loop until ECX = 0
-  jmp PE_start
-
-; ========== API ==========
-%include "CRC32_API/x86_crc32_api.asm"
-
+  jmp PE_start            ; Wipe artifacts from memory and start PE
+%s
 PE_start:
-  mov ecx,wipe                    ; Get the number of bytes until wipe label
-  call wipe_start                 ; Call wipe_start
+%s
+  mov ecx,wipe             ; Get the number of bytes until wipe label
+  call wipe_start          ; Call wipe_start
 wipe_start:
-  pop eax                         ; Get EIP to EAX
+  pop eax                  ; Get EIP to EAX
 wipe:
-  mov byte [eax],0                ; Wipe 1 byte at a time
-  dec eax                         ; Decraise EAX
-  loop wipe                       ; Loop until ECX = 0
-  ret                             ; Return to AOE
+  mov byte [eax],0         ; Wipe 1 byte at a time
+  dec eax                  ; Decraise EAX
+  loop wipe                ; Loop until ECX = 0
+  jmp edi                  ; Call the AOE
+
+`

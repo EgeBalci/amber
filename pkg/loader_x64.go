@@ -1,17 +1,11 @@
-;#==============================================#
-;# X64 Reflective Loader                        #
-;# Author: Ege Balcı <egebalci@pm.me>           #
-;# Version: 2.0                                 #
-;#==============================================#
-;
-[BITS 64]
+package amber
 
-
-  call start                      ; Get the address of pre-mapped PE image to stack
-  incbin "pemap.bin"              ; Pre-mapped PE image
+// LoaderX64 contains the 64 bit PE loader for relocatable PE files
+const LoaderX64 = `
 start:
   pop rsi                         ; Get the address of image to rsi
-  call $+5                        ; Push the current RIP value to stack
+  call get_ip                     ; Push the current EIP to stack
+get_ip:
   cld                             ; Clear direction flags
   sub [rsp],rsi                   ; Subtract the address of pre mapped PE image and get the image_size+8 to ST[0]
   mov rbp,rsp                     ; Copy current stack address to rbp
@@ -141,7 +135,6 @@ memcpy:
   inc rsi                         ; Increase PE image index
   inc rdi                         ; Increase image base index
   loop memcpy                     ; Loop until zero
-  ; Flush instruction cache
   pop r13                         ; Pop the image base to r13
   or rcx,-1                       ; hProcess
   xor rdx,rdx                     ; lpBaseAddress
@@ -152,10 +145,7 @@ memcpy:
   xchg rbp,rsp                    ; Swap shadow stack
   add r13,r12                     ; Add the address of entry value to image base
   jmp PE_start                    ; Wipe artifacts from memory and start PE
-  
-; ========== API ==========
-%include "CRC32_API/x64_crc32_api.asm"
-
+%s
 PE_start:
   mov rcx,wipe                    ; Get the number of bytes until wipe label
   lea rax,[rip]                   ; Get RIP to RAX
@@ -164,5 +154,7 @@ wipe:
   mov byte [rax],0                ; Wipe 1 byte at a time
   dec rax                         ; Decraise RAX
   loop wipe                       ; Loop until RCX = 0
+%s
   jmp r13                         ; Call the AOE
-  
+
+`
