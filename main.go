@@ -11,7 +11,7 @@ import (
 	"time"
 
 	amber "github.com/EgeBalci/amber/pkg"
-	sgn "github.com/EgeBalci/sgn/lib"
+	sgn "github.com/EgeBalci/sgn/pkg"
 	"github.com/briandowns/spinner"
 	"github.com/fatih/color"
 )
