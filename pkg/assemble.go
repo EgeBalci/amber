@@ -46,14 +46,14 @@ func (bp *Blueprint) GetLoaderAssembly() (string, error) {
 
 	if bp.IsDLL {
 		switch bp.Architecture {
-		case 32:
+		case 64:
 			dllPrologue = `		
 			mov rcx,r13                     ; hinstDLL
 			mov rdx,0x01                    ; fdwReason
 			xor r8,r8                       ; lpReserved
 	
 			`
-		case 64:
+		case 32:
 			dllPrologue = `
 			push edi                ; AOE
 			sub [esp],eax           ; hinstDLL
