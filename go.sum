@@ -4,6 +4,8 @@ github.com/EgeBalci/keystone-go v0.0.0-20200525180613-e6c7cd32ceae h1:IMOEVXYMrz
 github.com/EgeBalci/keystone-go v0.0.0-20200525180613-e6c7cd32ceae/go.mod h1:/HCfOmUN3INldcXC0YnFrOtOw3MuRFEQ9cKTT5fZuQ8=
 github.com/EgeBalci/sgn v0.0.0-20201122214045-550a17d79251 h1:VyTVKce2AzuB6521arwJvyQFHLQ0USNnw/0IZ/RP3bE=
 github.com/EgeBalci/sgn v0.0.0-20201122214045-550a17d79251/go.mod h1:gI4nYEhbKmf35Q+NPyoX+o1ajkCgabjYjsyu19tmfgM=
+github.com/EgeBalci/sgn v0.0.0-20201126033925-686e60d127dc h1:OVYO6tY6ivMDvT/np+bKnkUSIgHRJ4S7hAGcd1ylas8=
+github.com/EgeBalci/sgn v0.0.0-20201126033925-686e60d127dc/go.mod h1:gI4nYEhbKmf35Q+NPyoX+o1ajkCgabjYjsyu19tmfgM=
 github.com/briandowns/spinner v1.11.1 h1:OixPqDEcX3juo5AjQZAnFPbeUA0jvkp2qzB5gOZJ/L0=
 github.com/briandowns/spinner v1.11.1/go.mod h1:QOuQk7x+EaDASo80FEXwlwiA+j/PPIcX3FScO+3/ZPQ=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
@@ -21,4 +23,5 @@ github.com/olekukonko/tablewriter v0.0.4 h1:vHD/YYe1Wolo78koG299f7V/VAS08c6IpCLn
 github.com/olekukonko/tablewriter v0.0.4/go.mod h1:zq6QwlOf5SlnkVbMSr5EoBv3636FWnp+qbPhuoO21uA=
 golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20200116001909-b77594299b42/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae h1:/WDfKMnPU+m5M4xB+6x4kaepxRw6jWvR5iDRdvjHgy8=
 golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=

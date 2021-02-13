@@ -7,7 +7,7 @@ import (
 )
 
 // VERSION number
-const VERSION = "3.0.0"
+const VERSION = "3.1.0"
 
 // Blueprint structure contains PE specs, tool parameters and
 // OS spesific info
@@ -19,6 +19,7 @@ type Blueprint struct {
 	IAT             bool
 	Resource        bool
 	IgnoreIntegrity bool
+	BuildStub       bool
 	CustomStubName  string
 	CustomStub      []byte
 	// PE specs...

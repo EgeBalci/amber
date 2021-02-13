@@ -3,7 +3,7 @@
   <img src="https://github.com/EgeBalci/amber/raw/master/img/banner.png">
   <br/>
   <a href="https://github.com/EgeBalci/amber">
-    <img src="https://img.shields.io/badge/version-3.0.0-green.svg?style=flat-square">
+    <img src="https://img.shields.io/badge/version-3.1.0-green.svg?style=flat-square">
   </a>
   <a href="https://goreportcard.com/report/github.com/egebalci/amber">
     <img src="https://goreportcard.com/badge/github.com/egebalci/amber?style=flat-square">
@@ -62,7 +62,7 @@ The following table lists switches supported by the amber.
   </tr>
   
   <tr>
-    <td><strong>-build</strong></td>
+    <td><strong>-b,--build</strong></td>
     <td><var>bool</var></td>
     <td>Build EXE stub that executes the generated reflective payload</td>
   </tr>
@@ -74,7 +74,7 @@ The following table lists switches supported by the amber.
   </tr> 
 
   <tr>
-    <td><strong>-f</strong></td>
+    <td><strong>-f,--file</strong></td>
     <td><var>string</var></td>
     <td>Input PE file.</td>
   </tr>
@@ -98,7 +98,7 @@ The following table lists switches supported by the amber.
   </tr>  
 
   <tr>
-    <td><strong>-stub</strong></td>
+    <td><strong>-s,--stub</strong></td>
     <td><var>string</var></td>
     <td>Use custom stub file for executing the generated reflective payload (currently very unstable)</td>
   </tr>  

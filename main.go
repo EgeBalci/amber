@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/EgeBalci/amber/config"
 	amber "github.com/EgeBalci/amber/pkg"
-	sgn "github.com/EgeBalci/sgn/pkg"
 	"github.com/briandowns/spinner"
 	"github.com/fatih/color"
 )
@@ -22,28 +22,18 @@ var spinr = spinner.New(spinner.CharSets[9], 30*time.Millisecond)
 func main() {
 
 	banner()
-	bp := new(amber.Blueprint)
-	encoder := sgn.NewEncoder()
-
-	flag.StringVar(&bp.FileName, "f", "", "Input PE file")
-	flag.BoolVar(&bp.IAT, "iat", false, "Use IAT API resolver block instead of CRC API resolver block")
-	flag.BoolVar(&bp.IgnoreIntegrity, "ignore-checks", false, "Ignore integrity check errors.")
-	flag.StringVar(&bp.CustomStubName, "stub", "", "Use custom stub file (experimental)")
-	flag.IntVar(&encoder.ObfuscationLimit, "max", 5, "Maximum number of bytes for obfuscation")
-	flag.IntVar(&encoder.EncodingCount, "e", 1, "Number of times to encode the generated reflective payload")
-	buildStub := flag.Bool("build", false, "Build EXE stub that executes the generated reflective payload")
-
-	green := color.New(color.FgGreen).Add(color.Bold)
-	flag.Parse()
-
-	if bp.FileName == "" {
-		flag.PrintDefaults()
-		os.Exit(0)
+	// Create a FlagSet and sets the usage
+	fs := flag.NewFlagSet(filepath.Base(os.Args[0]), flag.ExitOnError)
+	// Configure the options from the flags/config file
+	bp, encoder, err := config.ConfigureOptions(fs, os.Args[1:])
+	if err != nil {
+		config.PrintUsageErrorAndDie(err)
 	}
 
+	green := color.New(color.FgGreen).Add(color.Bold)
 	spinr.Start()
 	status("File: %s\n", bp.FileName)
-	status("Build Stub: %t\n", *buildStub)
+	status("Build Stub: %t\n", bp.BuildStub)
 	status("Encode Count: %d\n", encoder.EncodingCount)
 	if bp.IAT {
 		status("API: IAT\n")
@@ -71,14 +61,13 @@ func main() {
 		eror(err)
 	}
 
-	if !*buildStub {
+	if !bp.BuildStub {
 		bp.FullFileName += ".bin"
 	} else {
 		// Construct EXE stub
 		spinr.Suffix = " Building EXE stub..."
 		payload, err = bp.CompileStub(payload)
 		eror(err)
-
 		bp.FullFileName = strings.ReplaceAll(bp.FullFileName, filepath.Ext(bp.FullFileName), "_packed.exe")
 	}
 	spinr.Stop()
