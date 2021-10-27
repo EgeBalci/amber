@@ -1,0 +1,7 @@
+[submodule "CRC32_API"] 
+  path = loader/CRC32_API
+    url = git://github.com/EgeBalci/CRC32_API.git
+
+[submodule "IAT_API"] 
+  path = loader/IAT_API
+    url = git://github.com/EgeBalci/IAT_API.git

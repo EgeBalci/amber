@@ -1,5 +1,6 @@
 
 
+
 [![Banner](https://github.com/EgeBalci/Amber/raw/master/Banner.png)](https://github.com/egebalci/Amber)
 
 [![Version](https://img.shields.io/badge/version-1.3.0-green.svg)](https://github.com/egebalci/Amber) [![License](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://raw.githubusercontent.com/EgeBalci/Amber/master/LICENSE) [![Golang](https://img.shields.io/badge/Golang-1.9-blue.svg)](https://golang.org) [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/egeblc)
@@ -93,6 +94,8 @@ For compiling from source running the setup file will be enough.
 <strong>On Docker</strong><br>
 		`docker run -it -v /tmp/:/tmp/ amber /tmp/file.exe`
 
+
+
 # EXAMPLE USAGE
 
 - <strong>NOPcon 2018 [DEMO](https://www.youtube.com/watch?v=lCPdKSH6RMc)</strong>
@@ -107,3 +110,23 @@ For compiling from source running the setup file will be enough.
 	<img src="https://pentest.blog/wp-content/uploads/Screenshot-at-2018-02-23-22-42-18-2-1024x704.png" alt="DEMO1" width="400" height="300" align="left"/>
 </a><br><br><br>
 <br>
+- Generate reflective payload.
+```
+amber -f test.exe
+```
+- Generate reflective payload and build EXE stub for executing it.
+```
+amber -build -f test.exe
+``` 
+
+***Docker Usage***
+```
+docker run -it -v /tmp/:/tmp/ amber -f /tmp/file.exe
+```
+
+# Demo
+
+- [NOPcon 2018 DEMO](https://www.youtube.com/watch?v=lCPdKSH6RMc)
+- [Pentest.blog - Deploying Reflective PE Files With Metasploit](https://www.youtube.com/watch?v=3en0ftnjEpE)
+- [Pentest.blog - Deploying Reflective Ransomware POC](https://www.youtube.com/watch?v=JVv_spX6D4U)
+

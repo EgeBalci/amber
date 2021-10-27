@@ -1,0 +1,24 @@
+id ICON "amber.ico"
+2 VERSIONINFO
+FILEVERSION     2,1,0,0
+PRODUCTVERSION  2,1,0,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", "PRODAFT"
+      VALUE "FileDescription", "Amber - Reflective PE Packer"
+      VALUE "FileVersion", "2.1"
+      VALUE "InternalName", "AMBER"
+      VALUE "LegalCopyright", "Ege Balci"
+      VALUE "OriginalFilename", "amber.exe"
+      VALUE "ProductName", "AMBER - Reflective PE Packer"
+      VALUE "ProductVersion", "3.0.0"
+    END
+  END
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x809, 1252
+  END
+END
