@@ -1,79 +1,83 @@
 package config
 
 import (
-	"errors"
-	"flag"
 	"fmt"
 	"os"
 
-	amber "github.com/EgeBalci/amber/pkg"
-	sgn "github.com/EgeBalci/sgn/pkg"
-	"github.com/fatih/color"
+	"github.com/EgeBalci/amber/utils"
+	"github.com/alecthomas/kong"
 )
 
-var usageStr = `
-Usage: amber [options]
-Options:
-    -f, --file <file>        Input PE file
-    -s, --stub <file>        Use custom stub file (experimental)
-    -m, --max  <int>         Maximum number of bytes for obfuscation
-    -e,         <int>        Number of times to encode the generated reflective payload
-    -b, --build              Build EXE stub that executes the generated reflective payload
-    --iat,                   Use IAT API resolver block instead of CRC API resolver block
-    --ignore-checks,         Ignore integrity check errors.
-    -h,                      Show this message
-`
+const Version = "3.2.0"
 
-// PrintUsageErrorAndDie ...
-func PrintUsageErrorAndDie(err error) {
-	color.Red(err.Error())
-	fmt.Println(usageStr)
-	os.Exit(1)
+func HelpPrompt(options kong.HelpOptions, ctx *kong.Context) error {
+	err := kong.DefaultHelpPrinter(options, ctx)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-// PrintHelpAndDie ...
-func PrintHelpAndDie() {
-	fmt.Println(usageStr)
-	os.Exit(0)
+// Main config struct for parsing the TOML file
+type Config struct {
+	FileName         string `help:"Input PE file name." name:"file" short:"f"`
+	OutputFile       string `help:"Output binary payload file name." name:"out" short:"o"`
+	EncodeCount      int    `help:"Number of times to encode the generated reflective payload." name:"encode" short:"e" default:"1"`
+	ObfuscationLimit int    `help:"Maximum number of bytes for encoder obfuscation." name:"obfuscate-limit" short:"l" default:"5"`
+	UseIAT           bool   `help:"Use IAT API resolver block instead of CRC API resolver block." name:"iat"`
+	UseSyscalls      bool   `help:"Perform raw syscalls. (only x64)" name:"sys"`
+	ScrapePeHeaders  bool   `help:"Scrape magic byte and DOS stub from PE." name:"scrape"`
+	// IgnoreIntegrity  bool   `help:"Ignore PE file integrity check errors." name:"ignore"`
+	Verbose bool `help:"Verbose mode." name:"verbose" short:"v"`
+	Version kong.VersionFlag
 }
 
 // ConfigureOptions accepts a flag set and augments it with agentgo-server
 // specific flags. On success, an options structure is returned configured
 // based on the selected flags.
-func ConfigureOptions(fs *flag.FlagSet, args []string) (*amber.Blueprint, *sgn.Encoder, error) {
+func Parse() (*Config, error) {
 
-	// Create empty options
-	bp := &amber.Blueprint{}
-	encoder := sgn.NewEncoder()
-
-	// Define flags
-	help := fs.Bool("h", false, "Show help message")
-	fs.StringVar(&bp.FileName, "f", "", "Input PE file")
-	fs.StringVar(&bp.FileName, "file", "", "Input PE file")
-	fs.BoolVar(&bp.IAT, "iat", false, "Use IAT API resolver block instead of CRC API resolver block")
-	fs.BoolVar(&bp.IgnoreIntegrity, "ignore-checks", false, "Ignore integrity check errors.")
-	fs.StringVar(&bp.CustomStubName, "s", "", "Use custom stub file (experimental)")
-	fs.StringVar(&bp.CustomStubName, "stub", "", "Use custom stub file (experimental)")
-	fs.IntVar(&encoder.ObfuscationLimit, "max", 5, "Maximum number of bytes for obfuscation")
-	fs.IntVar(&encoder.EncodingCount, "e", 1, "Number of times to encode the generated reflective payload")
-	fs.BoolVar(&bp.BuildStub, "b", false, "Build EXE stub that executes the generated reflective payload")
-	fs.BoolVar(&bp.BuildStub, "build", false, "Build EXE stub that executes the generated reflective payload")
-
-	// Parse arguments and check for errors
-	if err := fs.Parse(args); err != nil {
-		return nil, nil, err
+	cfg := new(Config)
+	parser, err := kong.New(
+		cfg,
+		kong.Help(HelpPrompt),
+		kong.UsageOnError(),
+		kong.Vars{"version": Version},
+		kong.ConfigureHelp(kong.HelpOptions{
+			Summary: true,
+		}),
+	)
+	if err != nil {
+		return nil, err
+	}
+	_, err = parser.Parse(os.Args[1:])
+	if err != nil {
+		return nil, err
 	}
 
-	// If it is not help and other args are empty, return error
-	if (*help == false) && bp.FileName == "" {
-		err := errors.New("please specify all required arguments")
-		return nil, nil, err
+	if cfg.FileName == "" {
+		utils.PrintErr("no file specified! (-f <empty>)\n")
+		kong.Help(HelpPrompt)
+		os.Exit(1)
 	}
 
-	// If -help flag is defined, print help
-	if *help {
-		PrintHelpAndDie()
+	if cfg.OutputFile == "" {
+		cfg.OutputFile = fmt.Sprintf("%s.bin", cfg.FileName)
 	}
 
-	return bp, encoder, nil
+	return cfg, nil
+}
+
+func (cfg *Config) PrintSummary() {
+	utils.PrintStatus("File: %s\n", cfg.FileName)
+	utils.PrintStatus("Encode Count: %d\n", cfg.EncodeCount)
+	utils.PrintStatus("Obfuscation Limit: %d\n", cfg.ObfuscationLimit)
+	if cfg.UseIAT {
+		utils.PrintStatus("API Resolver: IAT\n")
+	} else {
+		utils.PrintStatus("API Resolver: CRC\n")
+	}
+	if cfg.UseSyscalls {
+		utils.PrintStatus("Raw Syscalls: True\n")
+	}
 }
