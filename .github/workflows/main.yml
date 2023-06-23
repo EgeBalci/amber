@@ -1,0 +1,61 @@
+
+name: build
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  linux-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+    - name: Install Keystone
+      run: ./install-keystone.sh
+    - name: Build for Linux
+      run: make
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: amber_linux
+        path: amber
+        retention-days: 5
+  macos-run:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+    - name: Install Keystone
+      run: ./install-keystone.sh
+    - name: Build for MacOS
+      run: make
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: amber_darwin
+        path: amber
+        retention-days: 5
+
+  windows-build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+    - name: Build for Windows
+      run: make
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: amber.exe
+        path: amber.exe
+        retention-days: 5
