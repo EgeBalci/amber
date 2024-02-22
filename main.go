@@ -22,7 +22,10 @@ func main() {
 		utils.PrintFatal(err)
 	}
 
-	encoder := sgn.NewEncoder()
+	encoder, err := sgn.NewEncoder(64)
+	if err != nil {
+		utils.PrintFatal(err)
+	}
 	encoder.EncodingCount = cfg.EncodeCount
 	encoder.ObfuscationLimit = cfg.ObfuscationLimit
 	cfg.PrintSummary()
